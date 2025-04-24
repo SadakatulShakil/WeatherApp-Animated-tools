@@ -18,7 +18,7 @@ class _PressureMeterState extends State<PressureMeter>
 
   void _startAnimation() {
     _controller.reset();
-    _animation = Tween<double>(begin: 0, end: widget.pressureValue).animate(
+    _animation = Tween<double>(begin: 0, end: widget.pressureValue/20).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     )..addListener(() {
       setState(() {});
@@ -119,8 +119,8 @@ class _PressureMeterState extends State<PressureMeter>
         animation: _animation,
         builder: (context, child) {
           return SizedBox(
-            width: 150,
-            height: 180,
+            width: 160,
+            height: 200,
             child:
             /// Pressure Meter01
             SfRadialGauge(

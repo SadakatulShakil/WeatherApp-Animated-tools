@@ -40,6 +40,8 @@ dependencies:
   flutter_svg: ^2.0.17
   visibility_detector: ^0.4.0+2
   syncfusion_flutter_gauges: ^29.1.38
+  weather_icons: ^3.0.0
+  fl_chart: ^0.71.0
 
 dev_dependencies:
   flutter_test:
