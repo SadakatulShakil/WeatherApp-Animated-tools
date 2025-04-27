@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:package_connector/view/pressure_meter.dart';
-import 'package:package_connector/view/sun_path_animation.dart';
+import 'package:package_connector/view/air_qulity_animation.dart';
+import 'package:package_connector/view/sunrise_arc_widget.dart';
+import 'package:package_connector/view/sunset_arc_widget.dart';
 import 'package:package_connector/view/weather_forecast.dart';
 import 'package:package_connector/view/xustom_paint_weather_data.dart';
 import 'package:package_connector/view/wind_meter.dart';
@@ -180,13 +182,40 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
             ),
           ),
           const SizedBox(height: 10),
-          /// Sunrise to Sunset indicator
+          /// Sunrise to Sunset indicator(Arc system)
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: SunriseSunsetWidget(
-              sunrise: sunrise,
-              sunset: sunset,
-              currentTime: now,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: SunriseArcWidget(
+                        sunrise: TimeOfDay(hour: 5, minute: 30),
+                        sunset: TimeOfDay(hour: 18, minute: 45),
+                        currentTime: TimeOfDay.now(),
+                      ),
+                    ),
+                    const SizedBox(width: 16), // Space between two widgets
+                    Expanded(
+                      child: SunsetArcWidget(
+                        moonrise: TimeOfDay(hour: 18, minute: 46),
+                        moonset: TimeOfDay(hour: 5, minute: 29),
+                        currentTime: TimeOfDay.now(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          /// Air quality indicator
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: AirQualityWidget(
+              currentValue: 42.0,
             ),
           ),
         ],
