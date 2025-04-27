@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-import '../models/weather_model.dart';
+import '../../models/weather_model.dart';
 
 class WeatherForecastChart extends StatelessWidget {
 

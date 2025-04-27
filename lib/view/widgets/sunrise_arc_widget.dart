@@ -97,7 +97,7 @@ class ArcPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final radius = size.width / 2;
+    final radius = size.width / 2.2;
     final center = Offset(size.width / 2, size.height);
 
     final Rect arcRect = Rect.fromCircle(center: center, radius: radius);
@@ -135,14 +135,14 @@ class ArcPainter extends CustomPainter {
     final Paint linePaint = Paint()
       ..color = Colors.white
       ..strokeWidth = 2;
-    canvas.drawLine(Offset(-15, size.height), Offset(size.width+15, size.height), linePaint);
+    canvas.drawLine(Offset(-5, size.height), Offset(size.width+5, size.height), linePaint);
 
     // 5. Draw the Dots
     final Paint dotPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(0, size.height), 4, dotPaint);
-    canvas.drawCircle(Offset(size.width, size.height), 4, dotPaint);
+    canvas.drawCircle(Offset(6, size.height), 4, dotPaint);
+    canvas.drawCircle(Offset(size.width-6, size.height), 4, dotPaint);
 
     // 6. Draw the Sun Icon
     final angle = math.pi + (math.pi * progress);
@@ -154,7 +154,7 @@ class ArcPainter extends CustomPainter {
     final textPainter = TextPainter(
       text: const TextSpan(
         text: '☀️', // or use any Flutter Icon
-        style: TextStyle(fontSize: 20),
+        style: TextStyle(fontSize: 18),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

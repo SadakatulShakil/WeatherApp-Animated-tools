@@ -34,23 +34,30 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
     _controller.forward();
   }
 
+  Duration _timeDiff(TimeOfDay start, TimeOfDay end) {
+    final startMinutes = start.hour * 60 + start.minute;
+    final endMinutes = end.hour * 60 + end.minute;
+
+    if (endMinutes < startMinutes) {
+      return Duration(minutes: (24 * 60 - startMinutes) + endMinutes);
+    } else {
+      return Duration(minutes: endMinutes - startMinutes);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    double totalMinutes =
-    _timeDiff(widget.moonrise, widget.moonset).inMinutes.toDouble();
+    double totalMinutes = _timeDiff(widget.moonrise, widget.moonset).inMinutes.toDouble();
 
     double currentMinutes;
-
-    // If current time is before moonrise, set currentMinutes = 0
     final nowMinutes = widget.currentTime.hour * 60 + widget.currentTime.minute;
     final riseMinutes = widget.moonrise.hour * 60 + widget.moonrise.minute;
 
     if (nowMinutes < riseMinutes) {
-      currentMinutes = 0;
+      currentMinutes = (24 * 60 - riseMinutes + nowMinutes).toDouble();
     } else {
-      currentMinutes =
-          _timeDiff(widget.moonrise, widget.currentTime).inMinutes.toDouble();
+      currentMinutes = (nowMinutes - riseMinutes).toDouble();
     }
 
     percent = (currentMinutes / totalMinutes).clamp(0, 1);
@@ -61,12 +68,6 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
     );
 
     _position = Tween<double>(begin: 0, end: 0).animate(_controller);
-  }
-
-  Duration _timeDiff(TimeOfDay start, TimeOfDay end) {
-    final startMinutes = start.hour * 60 + start.minute;
-    final endMinutes = end.hour * 60 + end.minute;
-    return Duration(minutes: endMinutes - startMinutes);
   }
 
   @override
@@ -118,7 +119,7 @@ class ArcPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final radius = size.width / 2;
+    final radius = size.width / 2.2;
     final center = Offset(size.width / 2, size.height);
 
     final Rect arcRect = Rect.fromCircle(center: center, radius: radius);
@@ -161,8 +162,8 @@ class ArcPainter extends CustomPainter {
           ..color = Colors.white
           ..strokeWidth = 2;
     canvas.drawLine(
-      Offset(-15, size.height),
-      Offset(size.width + 15, size.height),
+      Offset(-5, size.height),
+      Offset(size.width + 5, size.height),
       linePaint,
     );
 
@@ -171,8 +172,8 @@ class ArcPainter extends CustomPainter {
         Paint()
           ..color = Colors.white
           ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(0, size.height), 4, dotPaint);
-    canvas.drawCircle(Offset(size.width, size.height), 4, dotPaint);
+    canvas.drawCircle(Offset(6, size.height), 4, dotPaint);
+    canvas.drawCircle(Offset(size.width-6, size.height), 4, dotPaint);
 
     // 6. Draw the Moon Icon
     final angle = math.pi + (math.pi * progress);
@@ -194,7 +195,7 @@ class ArcPainter extends CustomPainter {
     )..layout();
     textPainter.paint(
       canvas,
-      sunOffset - const Offset(14, 14),
+      sunOffset - const Offset(10, 15),
     ); // Centered nicely
   }
 

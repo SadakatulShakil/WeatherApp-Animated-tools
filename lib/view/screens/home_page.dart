@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:package_connector/view/pressure_meter.dart';
-import 'package:package_connector/view/air_qulity_animation.dart';
-import 'package:package_connector/view/sunrise_arc_widget.dart';
-import 'package:package_connector/view/sunset_arc_widget.dart';
-import 'package:package_connector/view/weather_forecast.dart';
-import 'package:package_connector/view/xustom_paint_weather_data.dart';
-import 'package:package_connector/view/wind_meter.dart';
+import 'package:package_connector/view/widgets/other_info_card.dart';
+import 'package:package_connector/view/widgets/pressure_meter.dart';
+import 'package:package_connector/view/widgets/air_quality_animation.dart';
+import 'package:package_connector/view/widgets/sunrise_arc_widget.dart';
+import 'package:package_connector/view/widgets/sunset_arc_widget.dart';
+import 'package:package_connector/view/widgets/weather_forecast.dart';
+import 'package:package_connector/view/screens/xustom_paint_weather_data.dart';
+import 'package:package_connector/view/widgets/wind_meter.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+import '../widgets/sun_and_moon_widget.dart';
 
 class WeatherHomePage extends StatefulWidget {
   const WeatherHomePage({super.key});
@@ -39,7 +42,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   @override
   Widget build(BuildContext context) {
     final now = TimeOfDay.now();
-    final isNight = now.hour < 6 || now.hour > 18;
+    final isNight = now.hour < 6 || now.hour > 16;
     print('checkDayNight: ${now.hour}');
     return Scaffold(
       backgroundColor: Colors.blue.shade700,
@@ -51,7 +54,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           ],
         ),
         centerTitle: true,
-        backgroundColor: isNight ? Colors.black : Colors.blue,
+        backgroundColor: isNight? Colors.blue.shade500.withOpacity(.01): Colors.blue,
         actions: [
           IconButton(
             icon: const Icon(Icons.storage_outlined, color: Colors.white,),
@@ -82,7 +85,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue.shade500.withOpacity(.8), Colors.blue.withOpacity(.3)],
+                    colors: [Colors.blue.shade500.withOpacity(.4), Colors.blue.withOpacity(.3)],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -139,7 +142,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           const SizedBox(height: 10),
           /// Wind Speed compass and Pressure gauge
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -181,36 +184,17 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
               ],
             ),
           ),
-          const SizedBox(height: 10),
-          /// Sunrise to Sunset indicator(Arc system)
+          ///OtherInfo(Precipitation, Humidity, UV index, Visibility)
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: SunriseArcWidget(
-                        sunrise: TimeOfDay(hour: 5, minute: 30),
-                        sunset: TimeOfDay(hour: 18, minute: 45),
-                        currentTime: TimeOfDay.now(),
-                      ),
-                    ),
-                    const SizedBox(width: 16), // Space between two widgets
-                    Expanded(
-                      child: SunsetArcWidget(
-                        moonrise: TimeOfDay(hour: 18, minute: 46),
-                        moonset: TimeOfDay(hour: 5, minute: 29),
-                        currentTime: TimeOfDay.now(),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            child: OtherInfoCards(),
           ),
-
+          const SizedBox(height: 10),
+          ///Sun & Moon phase
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 8, bottom: 8),
+            child: SunAndMoonWidget(),
+          ),
           /// Air quality indicator
           Padding(
             padding: const EdgeInsets.all(10.0),
