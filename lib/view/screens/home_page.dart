@@ -42,7 +42,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   @override
   Widget build(BuildContext context) {
     final now = TimeOfDay.now();
-    final isNight = now.hour < 6 || now.hour > 16;
+    final isNight = now.hour < 6 || now.hour > 18;
     print('checkDayNight: ${now.hour}');
     return Scaffold(
       backgroundColor: Colors.blue.shade700,

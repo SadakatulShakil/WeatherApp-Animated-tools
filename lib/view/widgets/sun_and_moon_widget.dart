@@ -64,7 +64,7 @@ class SunAndMoonWidget extends StatelessWidget {
                       end: Alignment.bottomCenter,
                     ),
                   ),
-                  child: Icon(Icons.nightlight_rounded, size: 70,),
+                  child: Image.asset('assets/sun_moon.png', width: 70, height: 75,),
                 ),
               ),
               Padding(
@@ -95,7 +95,10 @@ class SunAndMoonWidget extends StatelessWidget {
                           end: Alignment.bottomCenter,
                         ),
                       ),
-                      child: Icon(Icons.circle, size: 45,),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Image.asset('assets/full_moon.png', width: 45, height: 45,),
+                      )
                     ),
                   ),
                   Padding(
@@ -123,7 +126,10 @@ class SunAndMoonWidget extends StatelessWidget {
                           end: Alignment.bottomCenter,
                         ),
                       ),
-                      child: Icon(Icons.change_circle_sharp, size: 45,),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Image.asset('assets/last_quarter.png', width: 40, height: 40,),
+                      )
                     ),
                   ),
                   Padding(

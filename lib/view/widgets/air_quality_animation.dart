@@ -48,9 +48,9 @@ class _AirQualityWidgetState extends State<AirQualityWidget> with SingleTickerPr
     final width = MediaQuery.of(context).size.width;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Air Quality', style: TextStyle(color: Colors.white, fontSize: 18)),
+        Text('Air Quality', style: TextStyle(color: Colors.white, fontSize: 18)),
         const SizedBox(height: 10),
         VisibilityDetector(
           key: const Key("air_quality"),

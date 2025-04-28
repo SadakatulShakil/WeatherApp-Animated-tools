@@ -65,6 +65,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/
     - assets/day.jpg
     - assets/night.jpg
 
