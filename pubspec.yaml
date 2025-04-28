@@ -42,6 +42,7 @@ dependencies:
   syncfusion_flutter_gauges: ^29.1.38
   weather_icons: ^3.0.0
   fl_chart: ^0.71.0
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
@@ -66,8 +67,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
-    - assets/day.jpg
-    - assets/night.jpg
+    - assets/twoD/
+    - assets/threeD/
 
       # To add assets to your application, add an assets section, like this:
   # assets:

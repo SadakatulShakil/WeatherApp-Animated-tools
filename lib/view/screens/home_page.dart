@@ -87,128 +87,161 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     final isNight = now.hour < 6 || now.hour > 18;
     print('checkDayNight: ${now.hour}');
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: Colors.blue.shade700,
-      appBar: AppBar(
-        title: Column(
-          children: [
-            Text(
-              'Mirpur DOHS, Dhaka',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            Text(
-              'Fri 5.00 PM',
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ],
-        ),
-        centerTitle: true,
-        backgroundColor:
-            isNight ? Colors.blue.shade500.withOpacity(.01) : Colors.blue,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.storage_outlined, color: Colors.white),
-            onPressed: () {
-              // Handle settings action
-            },
-          ),
-        ],
-      ),
       body: ListView(
         controller: _scrollController,
         children: [
           ///Weather day/night images
           Stack(
             children: [
+              // Background image
               Container(
-                height: 200,
+                height: 250,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image:
-                        isNight
-                            ? AssetImage('assets/night.jpg')
-                            : AssetImage('assets/day.jpg'),
-                    // replace with your image
+                    image: isNight
+                        ? const AssetImage('assets/night.jpg')
+                        : const AssetImage('assets/day.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
+
+              // Gradient overlay
               Container(
-                height: 200,
+                height: 250,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.blue.shade500.withOpacity(.4),
-                      Colors.blue.withOpacity(.3),
+                      Colors.blue.shade700,
+                      Colors.blue.withOpacity(.4),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
-                ), // Adjust opacity as needed
+                ),
               ),
+
+              // Location and time
+              Padding(
+                padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Mirpur DOHS, Dhaka',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Fri 5.00 PM',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.storage_outlined, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ),
+
+              // Temperature and weather info
               Positioned(
-                left: 20,
-                bottom: 0,
-                top: 50,
+                left: 16,
+                right: 16,
+                bottom: 20,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Weather condition
                     Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.blue.shade900,
+                        color: Colors.blue.shade900.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 8.0,
-                          right: 8.0,
-                          top: 2,
-                          bottom: 2,
-                        ),
-                        child: Text(
-                          "Fully Clear",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                      child: Text(
+                        "Fully Clear",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 8),
+
+                    // Temperature
                     Text(
                       "32°C",
                       style: TextStyle(
-                        fontSize: 60,
+                        fontSize: 72,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
+                        height: 0.9,
                       ),
                     ),
+                    const SizedBox(height: 12),
 
-                    ///problematic ROW. space between not work why?
+                    // Weather details row
                     Container(
-                      width: MediaQuery.of(context).size.width * .9,
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Feels like: 32°C",
+                            "Feels like 36°C",
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 14,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
                             ),
+                          ),
+                          Container(
+                            height: 16,
+                            width: 1,
+                            color: Colors.white.withOpacity(0.5),
                           ),
                           Text(
-                            "Humidity: 45%",
+                            "+41°C -29°C",
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 14,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Icon(Icons.sunny_snowing, color: Colors.white),
+                          Container(
+                            height: 16,
+                            width: 1,
+                            color: Colors.white.withOpacity(0.5),
+                          ),
+                          Text(
+                            "31%",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -338,10 +371,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           ),
 
           ///OtherInfo(Precipitation, Humidity, UV index, Visibility)
-          Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: OtherInfoCards()
-          ),
+          Padding(padding: const EdgeInsets.all(10.0), child: OtherInfoCards()),
           const SizedBox(height: 10),
 
           ///Sun & Moon phase
