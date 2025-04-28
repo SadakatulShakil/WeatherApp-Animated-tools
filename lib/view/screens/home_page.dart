@@ -10,6 +10,7 @@ import 'package:package_connector/view/screens/xustom_paint_weather_data.dart';
 import 'package:package_connector/view/widgets/wind_meter.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../widgets/air_quality_widget.dart';
 import '../widgets/sun_and_moon_widget.dart';
 
 class WeatherHomePage extends StatefulWidget {
@@ -29,15 +30,56 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   TimeOfDay sunset = const TimeOfDay(hour: 18, minute: 25);
 
   final List<Map<String, dynamic>> forecastData = [
-    {"date": "03/25", "day": "Today", "min": 32, "max": 38, "icon": Icons.wb_sunny},
-    {"date": "04/25", "day": "Friday", "min": 30, "max": 43, "icon": Icons.wb_sunny},
-    {"date": "05/25", "day": "Saturday", "min": 30, "max": 36, "icon": Icons.wb_sunny},
-    {"date": "06/25", "day": "Sunday", "min": 28, "max": 38, "icon": Icons.wb_sunny},
-    {"date": "07/25", "day": "Monday", "min": 30, "max": 44, "icon": Icons.wb_sunny},
-    {"date": "08/25", "day": "Thursday", "min": 32, "max": 43, "icon": Icons.wb_sunny},
-    {"date": "09/25", "day": "Wednesday", "min": 28, "max": 38, "icon": Icons.wb_sunny},
+    {
+      "date": "03/25",
+      "day": "Today",
+      "min": 32,
+      "max": 38,
+      "icon": Icons.wb_sunny,
+    },
+    {
+      "date": "04/25",
+      "day": "Friday",
+      "min": 30,
+      "max": 43,
+      "icon": Icons.wb_sunny,
+    },
+    {
+      "date": "05/25",
+      "day": "Saturday",
+      "min": 30,
+      "max": 36,
+      "icon": Icons.wb_sunny,
+    },
+    {
+      "date": "06/25",
+      "day": "Sunday",
+      "min": 28,
+      "max": 38,
+      "icon": Icons.wb_sunny,
+    },
+    {
+      "date": "07/25",
+      "day": "Monday",
+      "min": 30,
+      "max": 44,
+      "icon": Icons.wb_sunny,
+    },
+    {
+      "date": "08/25",
+      "day": "Thursday",
+      "min": 32,
+      "max": 43,
+      "icon": Icons.wb_sunny,
+    },
+    {
+      "date": "09/25",
+      "day": "Wednesday",
+      "min": 28,
+      "max": 38,
+      "icon": Icons.wb_sunny,
+    },
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,15 +91,22 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       appBar: AppBar(
         title: Column(
           children: [
-             Text('Mirpur DOHS, Dhaka', style: TextStyle(color: Colors.white, fontSize: 18)),
-             Text('Fri 5.00 PM', style: TextStyle(color: Colors.white, fontSize: 12)),
+            Text(
+              'Mirpur DOHS, Dhaka',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            Text(
+              'Fri 5.00 PM',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
           ],
         ),
         centerTitle: true,
-        backgroundColor: isNight? Colors.blue.shade500.withOpacity(.01): Colors.blue,
+        backgroundColor:
+            isNight ? Colors.blue.shade500.withOpacity(.01) : Colors.blue,
         actions: [
           IconButton(
-            icon: const Icon(Icons.storage_outlined, color: Colors.white,),
+            icon: const Icon(Icons.storage_outlined, color: Colors.white),
             onPressed: () {
               // Handle settings action
             },
@@ -75,7 +124,11 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: isNight? AssetImage('assets/night.jpg'):AssetImage('assets/day.jpg'), // replace with your image
+                    image:
+                        isNight
+                            ? AssetImage('assets/night.jpg')
+                            : AssetImage('assets/day.jpg'),
+                    // replace with your image
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -85,7 +138,10 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue.shade500.withOpacity(.4), Colors.blue.withOpacity(.3)],
+                    colors: [
+                      Colors.blue.shade500.withOpacity(.4),
+                      Colors.blue.withOpacity(.3),
+                    ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -103,104 +159,211 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.blue.shade900,
                       ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
-                          child: Text("Fully Clear", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
-                        )),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 8.0,
+                          right: 8.0,
+                          top: 2,
+                          bottom: 2,
+                        ),
+                        child: Text(
+                          "Fully Clear",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 4),
-                    Text("32°C", style: TextStyle(fontSize: 60, color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text(
+                      "32°C",
+                      style: TextStyle(
+                        fontSize: 60,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
                     ///problematic ROW. space between not work why?
                     Container(
                       width: MediaQuery.of(context).size.width * .9,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Feels like: 32°C", style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold)),
-                          Text("Humidity: 45%", style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold)),
-                          Icon(Icons.sunny_snowing, color: Colors.white,)
+                          Text(
+                            "Feels like: 32°C",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "Humidity: 45%",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(Icons.sunny_snowing, color: Colors.white),
                         ],
                       ),
                     ),
-
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
+
           ///Weather forecast data
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: WeatherForecastChart(),
           ),
           const SizedBox(height: 10),
+
           ///Weekly weather data
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: _weeklyForecastList(),
           ),
           const SizedBox(height: 10),
+
           /// Wind Speed compass and Pressure gauge
           Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: const EdgeInsets.all(10.0),
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              padding: const EdgeInsets.only(left: 4, right: 4),
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.70,
+              // <<< Important! Adjust card height!
               children: [
-                Card(
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
                     color: Colors.blue.shade400,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.air, color: Colors.white, size: 18,),
-                            Text('Wind', style: TextStyle(color: Colors.white, fontSize: 18)),
-                            SizedBox(width: 40,),
-                            Icon(Icons.arrow_forward_ios, color: Colors.white, size: 18,),
-                          ],
-                        ),
-                        WindCompass(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.air, color: Colors.white, size: 22),
+                          Expanded(
+                            child: Text(
+                              'Wind',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: WindCompass(
                           windSpeed: windSpeed,
                           windDirection: 0, // North
                         ),
-
-                      ],
-                    )),
-                Card(
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
                     color: Colors.blue.shade400,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.compress, color: Colors.white, size: 18,),
-                            Text('Pressure', style: TextStyle(color: Colors.white, fontSize: 18)),
-                            SizedBox(width: 20,),
-                            Icon(Icons.arrow_forward_ios, color: Colors.white, size: 18,),
-                          ],
-                        ),
-                        PressureMeter(pressureValue: pressure),
-                      ],
-                    )),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.compress, color: Colors.white, size: 22),
+                          Expanded(
+                            child: Text(
+                              'Pressure',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                      Expanded(child: PressureMeter(pressureValue: pressure)),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
+
           ///OtherInfo(Precipitation, Humidity, UV index, Visibility)
           Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: OtherInfoCards(),
+              padding: const EdgeInsets.all(10.0),
+              child: OtherInfoCards()
           ),
           const SizedBox(height: 10),
+
           ///Sun & Moon phase
           Padding(
-            padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 8, bottom: 8),
+            padding: const EdgeInsets.only(
+              left: 12.0,
+              right: 12.0,
+              top: 8,
+              bottom: 8,
+            ),
             child: SunAndMoonWidget(),
           ),
+
           /// Air quality indicator
           Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: AirQualityWidget(
-              currentValue: 42.0,
+            padding: const EdgeInsets.only(
+              left: 12.0,
+              right: 12.0,
+              top: 8,
+              bottom: 8,
             ),
+            child: AirQualityWidget(currentValue: 42.0),
           ),
         ],
       ),
@@ -224,7 +387,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "পরবর্তী 7 দিনের পূর্বাভাস",
+              "Forecast, Next 7 days",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -234,78 +397,112 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: forecastData.map((dayData) {
-              return Container(
-                margin: const EdgeInsets.symmetric(vertical: 4),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                child: Column(
-                  children: [
-                    Row(
+            children:
+                forecastData.map((dayData) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                dayData['date'],
-                                style: const TextStyle(color: Colors.white, fontSize: 14),
-                              ),
-                              Text(
-                                dayData['day'],
-                                style: const TextStyle(color: Colors.white, fontSize: 14),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(child: Icon(dayData['icon'], color: Colors.yellowAccent)),
-                        Text(
-                          '${dayData['min']}°',
-                          style: const TextStyle(color: Colors.white, fontSize: 14),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.white.withOpacity(0.2),
-                                  ),
-                                ),
-                                FractionallySizedBox(
-                                  widthFactor: (dayData['max'] - dayData['min']) / 15.0, // adjust max width range
-                                  child: Container(
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      gradient: const LinearGradient(
-                                        colors: [Colors.orange, Colors.deepOrange],
-                                      ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    dayData['date'],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    dayData['day'],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                            Expanded(
+                              child: Icon(
+                                dayData['icon'],
+                                color: Colors.yellowAccent,
+                              ),
+                            ),
+                            Text(
+                              '${dayData['min']}°',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.white.withOpacity(0.2),
+                                      ),
+                                    ),
+                                    FractionallySizedBox(
+                                      widthFactor:
+                                          (dayData['max'] - dayData['min']) /
+                                          15.0,
+                                      // adjust max width range
+                                      child: Container(
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Colors.orange,
+                                              Colors.deepOrange,
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                '${dayData['max']}°',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: Text(
-                            '${dayData['max']}°',
-                            style: const TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                        ),
-                        Icon(Icons.arrow_forward_ios, color: Colors.white, size: 18,),
                       ],
                     ),
-                  ],
-                ),
-              );
-            }).toList(),
+                  );
+                }).toList(),
           ),
         ],
       ),
     );
   }
 }
-

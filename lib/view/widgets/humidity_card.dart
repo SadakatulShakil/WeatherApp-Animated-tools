@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HumidityCard extends StatelessWidget {
@@ -19,8 +18,9 @@ class HumidityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.blue.shade400,
         borderRadius: BorderRadius.circular(16),
@@ -33,10 +33,9 @@ class HumidityCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // <<< Add this line
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top Row (Icon, Title, Arrow)
+          // Top Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,7 +50,7 @@ class HumidityCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 13,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -62,32 +61,46 @@ class HumidityCard extends StatelessWidget {
               ),
             ],
           ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 60,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 18.0),
-                  child: Text(
-                    unit,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+          const SizedBox(height: 10),
+          // Value Section
+          Expanded(
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 70,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Text(
+                      unit,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            subtitle: Text(
+          ),
+          // Subtitle
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
               subtitle,
               style: const TextStyle(
                 color: Colors.white,

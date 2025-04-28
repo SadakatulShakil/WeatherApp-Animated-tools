@@ -44,7 +44,7 @@ class WeatherForecastChart extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "পরবর্তী ৭২ ঘণ্টার পূর্বাভাস",
+              "Forecast, Next 72 hours",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,

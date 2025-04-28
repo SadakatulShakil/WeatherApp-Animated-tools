@@ -3,15 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class AirQualityWidget extends StatefulWidget {
+class AirQualityAnimated extends StatefulWidget {
   final double currentValue; // Expected between 0-100
-  const AirQualityWidget({super.key, required this.currentValue});
+  const AirQualityAnimated({super.key, required this.currentValue});
 
   @override
-  State<AirQualityWidget> createState() => _AirQualityWidgetState();
+  State<AirQualityAnimated> createState() => _AirQualityAnimatedState();
 }
 
-class _AirQualityWidgetState extends State<AirQualityWidget> with SingleTickerProviderStateMixin {
+class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _position;
 
@@ -50,8 +50,6 @@ class _AirQualityWidgetState extends State<AirQualityWidget> with SingleTickerPr
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Air Quality', style: TextStyle(color: Colors.white, fontSize: 18)),
-        const SizedBox(height: 10),
         VisibilityDetector(
           key: const Key("air_quality"),
           onVisibilityChanged: (info) {
@@ -113,8 +111,8 @@ class _AirQualityWidgetState extends State<AirQualityWidget> with SingleTickerPr
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
-            Text('Low', style: TextStyle(color: Colors.white)),
-            Text('High', style: TextStyle(color: Colors.white)),
+            Text('Good', style: TextStyle(color: Colors.white)),
+            Text('Danger', style: TextStyle(color: Colors.white)),
           ],
         )
       ],

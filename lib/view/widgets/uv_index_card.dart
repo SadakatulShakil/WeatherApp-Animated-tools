@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:package_connector/view/widgets/air_quality_animation.dart';
 import 'package:package_connector/view/widgets/uv_indicator_widget.dart';
 
 class UvIndexCard extends StatelessWidget {
@@ -21,8 +19,9 @@ class UvIndexCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.blue.shade400,
         borderRadius: BorderRadius.circular(16),
@@ -35,10 +34,9 @@ class UvIndexCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // <<< Add this line
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top Row (Icon, Title, Arrow)
+          // Top Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -53,7 +51,7 @@ class UvIndexCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 13,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -64,35 +62,52 @@ class UvIndexCard extends StatelessWidget {
               ),
             ],
           ),
-          // Middle (Big Value + Small Unit)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 58, // reduced from 50 to 40
-                  fontWeight: FontWeight.bold,
-                ),
+          const SizedBox(height: 10),
+          // Value Section
+          Expanded(
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 70,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Text(
+                      unit,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 4),
-              Text(
-                unit,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ],
+            ),
           ),
           UvIndicatorWidget(currentValue: 4),
           // Subtitle
-          Text(
-            subtitle,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 11,
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              subtitle,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+              ),
             ),
           ),
         ],
