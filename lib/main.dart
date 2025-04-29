@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:package_connector/controllers/forecast_controller.dart';
 import 'package:package_connector/view/screens/home_page.dart';
+import 'package:package_connector/view/widgets/weekly_forecast_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

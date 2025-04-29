@@ -43,6 +43,7 @@ dependencies:
   weather_icons: ^3.0.0
   fl_chart: ^0.71.0
   get: ^4.6.6
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

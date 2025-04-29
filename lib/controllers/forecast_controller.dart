@@ -1,69 +1,72 @@
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/forecast_model.dart';
+import '../models/icon_model.dart';
 
-enum IconMode { twoD, threeD }
 
 class ForecastController extends GetxController {
-  var iconMode = IconMode.twoD.obs;
+  var iconMode = ''.obs; // This will hold the selected icon package name like "twoD", "threeD"
   var forecastList = <ForecastItem>[].obs;
 
-  void switchIconMode(IconMode mode) {
-    iconMode.value = mode;
-    print('controller_check: ${iconMode.value}');
-  }
+  // All icon packages (key = package name, value = list of icons)
+  var iconPackages = <String, List<WeatherIcon>>{}.obs;
 
-  void updateForecastList(List<ForecastItem> data) {
-    forecastList.value = data;
-  }
-
-// Add this constructor or method to initialize demo data
   @override
   void onInit() {
     super.onInit();
-    forecastList.value = [
-      ForecastItem(
-        date: '2023-10-01',
-        day: 'Monday',
-        minTemp: 15.0,
-        maxTemp: 25.0,
-        icon2DUrl: 'assets/twoD/moon_cloud1.png',
-        icon3DUrl: 'assets/threeD/moon_cloud.png',
-      ),
-      ForecastItem(
-        date: '2023-10-02',
-        day: 'Tuesday',
-        minTemp: 16.0,
-        maxTemp: 26.0,
-        icon2DUrl: 'assets/twoD/moon_rain1.png',
-        icon3DUrl: 'assets/threeD/moon_rain.png',
-      ),
-      ForecastItem(
-        date: '2023-10-03',
-        day: 'Wednesday',
-        minTemp: 16.0,
-        maxTemp: 26.0,
-        icon2DUrl: 'assets/twoD/sun_cloud1.png',
-        icon3DUrl: 'assets/threeD/moon_cloud.png',
-      ),
-      ForecastItem(
-        date: '2023-10-04',
-        day: 'Thursday',
-        minTemp: 16.0,
-        maxTemp: 26.0,
-        icon2DUrl: 'assets/twoD/sun_rain1.png',
-        icon3DUrl: 'assets/threeD/sun_rain.png',
-      ),
-      ForecastItem(
-        date: '2023-10-05',
-        day: 'Friday',
-        minTemp: 16.0,
-        maxTemp: 26.0,
-        icon2DUrl: 'assets/twoD/tornado1.png',
-        icon3DUrl: 'assets/threeD/tornado.png',
-      ),
-      // Add more demo items as needed
-    ];
+    loadIconPreference();
+    loadMockData(); // Replace with real API in production
   }
 
+  void switchIconMode(String mode) async {
+    iconMode.value = mode;
+    // iconMode.refresh();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('icon_mode', mode);
+  }
+
+  String getIconUrl(String iconKey) {
+    final currentIcons = iconPackages[iconMode.value] ?? [];
+    return currentIcons.firstWhere(
+          (i) => i.iconKey == iconKey,
+      orElse: () => WeatherIcon(iconKey: '', iconUrl: ''),
+    ).iconUrl;
+  }
+
+  void loadIconPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('icon_mode') ?? 'twoD';
+    iconMode.value = saved;
+  }
+
+  void loadMockData() {
+    // Simulating API response structure
+    iconPackages.assignAll({
+      'twoD': [
+        WeatherIcon(iconKey: 'moon_cloud', iconUrl: 'assets/twoD/moon_cloud1.png'),
+        WeatherIcon(iconKey: 'moon_rain', iconUrl: 'assets/twoD/moon_rain1.png'),
+        WeatherIcon(iconKey: 'sun_cloud', iconUrl: 'assets/twoD/sun_cloud1.png'),
+        WeatherIcon(iconKey: 'sun_rain', iconUrl: 'assets/twoD/sun_rain1.png'),
+        WeatherIcon(iconKey: 'tornado', iconUrl: 'assets/twoD/tornado1.png'),
+      ],
+      'threeD': [
+        WeatherIcon(iconKey: 'moon_cloud', iconUrl: 'assets/threeD/moon_cloud.png'),
+        WeatherIcon(iconKey: 'moon_rain', iconUrl: 'assets/threeD/moon_rain.png'),
+        WeatherIcon(iconKey: 'sun_cloud', iconUrl: 'assets/threeD/sun_cloud.png'),
+        WeatherIcon(iconKey: 'sun_rain', iconUrl: 'assets/threeD/sun_rain.png'),
+        WeatherIcon(iconKey: 'tornado', iconUrl: 'assets/threeD/tornado.png'),
+      ],
+      // Add more dynamically here like 'dark', 'light'
+    });
+
+    forecastList.assignAll([
+      ForecastItem(day: 'Mon', date: '05/22', minTemp: 15, maxTemp: 35, iconKey: 'moon_cloud'),
+      ForecastItem(day: 'Tues', date: '05/23', minTemp: 16, maxTemp: 33, iconKey: 'moon_rain'),
+      ForecastItem(day: 'Wed', date: '05/24', minTemp: 17, maxTemp: 34, iconKey: 'sun_cloud'),
+      ForecastItem(day: 'Thurs', date: '05/25', minTemp: 18, maxTemp: 32, iconKey: 'sun_rain'),
+      ForecastItem(day: 'Fri', date: '05/26', minTemp: 19, maxTemp: 31, iconKey: 'tornado'),
+    ]);
+  }
 }

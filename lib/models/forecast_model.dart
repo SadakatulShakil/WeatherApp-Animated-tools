@@ -3,15 +3,13 @@ class ForecastItem {
   final String day;
   final double minTemp;
   final double maxTemp;
-  final String icon2DUrl; // new
-  final String icon3DUrl; // new
+  final String iconKey; // new
 
   ForecastItem({
     required this.date,
     required this.day,
     required this.minTemp,
     required this.maxTemp,
-    required this.icon2DUrl,
-    required this.icon3DUrl,
+    required this.iconKey,
   });
 }

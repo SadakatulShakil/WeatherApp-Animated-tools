@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:package_connector/utills/app_drawer.dart';
 import 'package:package_connector/view/widgets/other_info_card.dart';
 import 'package:package_connector/view/widgets/pressure_meter.dart';
 import 'package:package_connector/view/widgets/air_quality_animation.dart';
@@ -7,9 +10,11 @@ import 'package:package_connector/view/widgets/sunrise_arc_widget.dart';
 import 'package:package_connector/view/widgets/sunset_arc_widget.dart';
 import 'package:package_connector/view/widgets/weather_forecast.dart';
 import 'package:package_connector/view/screens/xustom_paint_weather_data.dart';
+import 'package:package_connector/view/widgets/weekly_forecast_widget.dart';
 import 'package:package_connector/view/widgets/wind_meter.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../controllers/forecast_controller.dart';
 import '../widgets/air_quality_widget.dart';
 import '../widgets/sun_and_moon_widget.dart';
 
@@ -22,6 +27,8 @@ class WeatherHomePage extends StatefulWidget {
 
 class _WeatherHomePageState extends State<WeatherHomePage> {
   final ScrollController _scrollController = ScrollController();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ForecastController controller = Get.put(ForecastController());
 
   // Dummy weather data
   double windSpeed = 16.8;
@@ -87,6 +94,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     final isNight = now.hour < 6 || now.hour > 18;
     print('checkDayNight: ${now.hour}');
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: AppDrawer(),
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.blue.shade700,
       body: ListView(
@@ -101,9 +110,10 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: isNight
-                        ? const AssetImage('assets/night.jpg')
-                        : const AssetImage('assets/day.jpg'),
+                    image:
+                        isNight
+                            ? const AssetImage('assets/night.jpg')
+                            : const AssetImage('assets/day.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -115,10 +125,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      Colors.blue.shade700,
-                      Colors.blue.withOpacity(.4),
-                    ],
+                    colors: [Colors.blue.shade700, Colors.blue.withOpacity(.4)],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -154,8 +161,14 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.storage_outlined, color: Colors.white),
-                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.storage_outlined,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        // Show the drawer
+                        _scaffoldKey.currentState!.openDrawer();
+                      },
                     ),
                   ],
                 ),
@@ -171,17 +184,17 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                   children: [
                     // Weather condition
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.blue.shade900.withOpacity(0.7),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
                         "Fully Clear",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.white),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -200,7 +213,10 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
                     // Weather details row
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12),
@@ -262,7 +278,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           ///Weekly weather data
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: _weeklyForecastList(),
+            child: WeeklyForecastView(),
           ),
           const SizedBox(height: 10),
 
@@ -400,139 +416,129 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     );
   }
 
-  Widget _weeklyForecastList() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          colors: [Colors.blue.shade500, Colors.blue.shade500],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Forecast, Next 7 days",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:
-                forecastData.map((dayData) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    dayData['date'],
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    dayData['day'],
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Icon(
-                                dayData['icon'],
-                                color: Colors.yellowAccent,
-                              ),
-                            ),
-                            Text(
-                              '${dayData['min']}°',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      height: 8,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Colors.white.withOpacity(0.2),
-                                      ),
-                                    ),
-                                    FractionallySizedBox(
-                                      widthFactor:
-                                          (dayData['max'] - dayData['min']) /
-                                          15.0,
-                                      // adjust max width range
-                                      child: Container(
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Colors.orange,
-                                              Colors.deepOrange,
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                '${dayData['max']}°',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _weeklyForecastList() {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(16),
+  //       gradient: LinearGradient(
+  //         colors: [Colors.blue.shade500, Colors.blue.shade500],
+  //         begin: Alignment.topCenter,
+  //         end: Alignment.bottomCenter,
+  //       ),
+  //     ),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: Text(
+  //             "Forecast, Next 7 days",
+  //             style: TextStyle(
+  //               color: Colors.white,
+  //               fontSize: 20,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         SingleChildScrollView(
+  //           child: Obx(
+  //             () => Column(
+  //               children: List.generate(controller.forecastList.length, (index) {
+  //                 final item = controller.forecastList[index];
+  //                 final iconUrl = controller.getIconUrl(item.iconKey);
+  //
+  //                 return Column(
+  //                   children: [
+  //                     SizedBox(height: 16,),
+  //                     Row(
+  //                       children: [
+  //                         Expanded(
+  //                           child: Column(
+  //                             children: [
+  //                               Text(
+  //                                 '${item.day}',
+  //                                 style: const TextStyle(
+  //                                   color: Colors.white,
+  //                                   fontSize: 14,
+  //                                 ),
+  //                               ),
+  //                               Text(
+  //                                 '${item.date}',
+  //                                 style: const TextStyle(
+  //                                   color: Colors.white,
+  //                                   fontSize: 14,
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                         Expanded(
+  //                           child: Image.asset(iconUrl, width: 25, height: 25),
+  //                         ),
+  //                         Text(
+  //                           '${item.minTemp}°C',
+  //                           style: const TextStyle(
+  //                             color: Colors.white,
+  //                             fontSize: 14,
+  //                           ),
+  //                         ),
+  //                         Expanded(
+  //                           child: Padding(
+  //                             padding: const EdgeInsets.symmetric(horizontal: 10),
+  //                             child: Stack(
+  //                               children: [
+  //                                 Container(
+  //                                   height: 8,
+  //                                   decoration: BoxDecoration(
+  //                                     borderRadius: BorderRadius.circular(8),
+  //                                     color: Colors.white.withOpacity(0.2),
+  //                                   ),
+  //                                 ),
+  //                                 FractionallySizedBox(
+  //                                   widthFactor: (item.maxTemp - item.minTemp) / 15.0,
+  //                                   child: Container(
+  //                                     height: 8,
+  //                                     decoration: BoxDecoration(
+  //                                       borderRadius: BorderRadius.circular(8),
+  //                                       gradient: const LinearGradient(
+  //                                         colors: [
+  //                                           Colors.orange,
+  //                                           Colors.deepOrange,
+  //                                         ],
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Expanded(
+  //                           child: Text(
+  //                             '${item.maxTemp}°C',
+  //                             style: const TextStyle(
+  //                               color: Colors.white,
+  //                               fontSize: 14,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Icon(
+  //                           Icons.arrow_forward_ios,
+  //                           color: Colors.white,
+  //                           size: 18,
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     SizedBox(height: 10,),
+  //                   ],
+  //                 );
+  //               }),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
