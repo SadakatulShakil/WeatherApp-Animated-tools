@@ -1,29 +1,32 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:weather_icons/weather_icons.dart';
 
+import '../../../controllers/forecast_controller.dart';
 import '../../../models/hourly_weather_model.dart';
 
 class WeatherForecastChart extends StatelessWidget {
 
-
+  final ForecastController controller = Get.put(ForecastController());
   final List<HourlyWeatherModel> demoData = [
-    HourlyWeatherModel("00:00", WeatherIcons.night_clear, 25.0, 10, 0),
-    HourlyWeatherModel("03:00", WeatherIcons.cloud, 30.0, 20, 1),
-    HourlyWeatherModel("06:00", WeatherIcons.rain, 38.0, 70, 2),
-    HourlyWeatherModel("09:00", WeatherIcons.day_sunny, 24.0, 15, 3),
-    HourlyWeatherModel("12:00", WeatherIcons.day_sunny, 32.0, 5, 4),
-    HourlyWeatherModel("15:00", WeatherIcons.cloud, 30.0, 25, 5),
-    HourlyWeatherModel("18:00", WeatherIcons.rain, 38.5, 60, 6),
-    HourlyWeatherModel("21:00", WeatherIcons.night_clear, 25.0, 10, 7),
-    HourlyWeatherModel("00:00", WeatherIcons.night_clear, 32.5, 12, 8),
-    HourlyWeatherModel("03:00", WeatherIcons.cloud, 36.0, 30, 9),
-    HourlyWeatherModel("06:00", WeatherIcons.rain, 38.5, 80, 10),
-    HourlyWeatherModel("09:00", WeatherIcons.day_sunny, 25.0, 20, 11),
-    HourlyWeatherModel("12:00", WeatherIcons.day_sunny, 28.0, 10, 12),
-    HourlyWeatherModel("15:00", WeatherIcons.cloud, 35.0, 40, 13),
-    HourlyWeatherModel("18:00", WeatherIcons.rain, 32.5, 55, 14),
-    HourlyWeatherModel("21:00", WeatherIcons.night_clear, 30.0, 18, 15),
+    HourlyWeatherModel("00:00", 'moon_cloud', 25.0, 10, 0),
+    HourlyWeatherModel("03:00", 'moon_rain', 30.0, 20, 1),
+    HourlyWeatherModel("06:00", 'sun_cloud', 38.0, 70, 2),
+    HourlyWeatherModel("09:00", 'sun_rain', 24.0, 15, 3),
+    HourlyWeatherModel("12:00", 'tornado', 32.0, 5, 4),
+    HourlyWeatherModel("15:00", 'moon_cloud', 30.0, 25, 5),
+    HourlyWeatherModel("18:00", 'moon_rain', 38.5, 60, 6),
+    HourlyWeatherModel("21:00", 'sun_cloud', 25.0, 10, 7),
+    HourlyWeatherModel("00:00", 'sun_rain', 32.5, 12, 8),
+    HourlyWeatherModel("03:00", 'tornado', 36.0, 30, 9),
+    HourlyWeatherModel("06:00", 'moon_cloud', 38.5, 80, 10),
+    HourlyWeatherModel("09:00", 'moon_rain', 25.0, 20, 11),
+    HourlyWeatherModel("12:00", 'sun_cloud', 28.0, 10, 12),
+    HourlyWeatherModel("15:00", 'sun_rain', 35.0, 40, 13),
+    HourlyWeatherModel("18:00", 'sun_cloud', 32.5, 55, 14),
+    HourlyWeatherModel("21:00", 'tornado', 30.0, 18, 15),
   ];
 
   @override
@@ -113,10 +116,11 @@ class WeatherForecastChart extends StatelessWidget {
                         ),
                       ),
                       Positioned.fill(
-                        child: Row(
+                        child: Obx(() =>  Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children:
                           demoData.map((hour) {
+                            final iconUrl = controller.getIconUrl(hour.iconKey);
                             return Expanded(
                               child: Column(
                                 children: [
@@ -129,11 +133,7 @@ class WeatherForecastChart extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(height: 4),
-                                  Icon(
-                                    hour.icon,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
+                                  Image.asset(iconUrl, width: 25, height: 25),
                                   Spacer(),
 
                                   // Temperature just below dot
@@ -170,6 +170,7 @@ class WeatherForecastChart extends StatelessWidget {
                               ),
                             );
                           }).toList(),
+                        ),
                         ),
                       ),
                     ],

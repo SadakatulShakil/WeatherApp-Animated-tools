@@ -2,12 +2,12 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum HomeSection {
-  weatherForecast,
-  weeklyForecast,
-  windPressure,
-  otherInfo,
-  sunMoon,
-  airQuality,
+  weather_Forecast,
+  weekly_Forecast,
+  wind_Pressure,
+  other_Info,
+  sun_Moon,
+  air_Quality,
 }
 
 class HomeController extends GetxController {
@@ -46,12 +46,12 @@ class HomeController extends GetxController {
     } else {
       /// Default Order(If there is no saved order in sharedPreference)
       sectionOrder.value = [
-        HomeSection.weatherForecast,
-        HomeSection.weeklyForecast,
-        HomeSection.windPressure,
-        HomeSection.otherInfo,
-        HomeSection.sunMoon,
-        HomeSection.airQuality,
+        HomeSection.weather_Forecast,
+        HomeSection.weekly_Forecast,
+        HomeSection.wind_Pressure,
+        HomeSection.other_Info,
+        HomeSection.sun_Moon,
+        HomeSection.air_Quality,
       ];
     }
   }
@@ -59,6 +59,6 @@ class HomeController extends GetxController {
   ///Converts a string (e.g., "sunMoon") back to the corresponding enum value.
   ///Uses firstWhere to match the name of the enum value.
   HomeSection _stringToHomeSection(String name) {
-    return HomeSection.values.firstWhere((e) => e.name == name, orElse: () => HomeSection.weatherForecast);
+    return HomeSection.values.firstWhere((e) => e.name == name, orElse: () => HomeSection.weather_Forecast);
   }
 }

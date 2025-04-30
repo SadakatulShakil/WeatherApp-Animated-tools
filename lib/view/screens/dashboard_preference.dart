@@ -40,7 +40,7 @@ class DashboardPreference extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 5),
             child: ListTile(
               title: Text(
-                section.name.capitalizeFirst!,
+                section.name.capitalizeFirst!.replaceAll('_', ' '),/// beautify the widget name
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               trailing: const Icon(Icons.drag_indicator),
