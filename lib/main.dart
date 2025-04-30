@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_connector/controllers/forecast_controller.dart';
+import 'package:package_connector/controllers/home_controller.dart';
 import 'package:package_connector/view/screens/home_page.dart';
-import 'package:package_connector/view/widgets/weekly_forecast_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Get.put(ForecastController());
+  Get.put(HomeController());
   runApp(const WeatherApp());
 }
 
@@ -21,7 +22,8 @@ class WeatherApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home:  WeatherHomePage(),
+      home: WeatherHomePage(),
+      //HomePage(),
     );
   }
 }

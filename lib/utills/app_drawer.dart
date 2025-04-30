@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_connector/view/screens/dashboard_preference.dart';
 
 import '../view/screens/icon_preference.dart';
 
@@ -11,8 +12,6 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  // final userPrefService = UserPrefService();
-  // final controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +39,17 @@ class _AppDrawerState extends State<AppDrawer> {
             leading: Icon(Icons.room_preferences),
             title: Text('Dashboard Preference'),
             onTap: () {
-              //Get.to(()=> ReportDataList(), transition: Transition.rightToLeft);
+              Navigator.of(context).pop();
+              Get.to(()=> DashboardPreference(), transition: Transition.rightToLeft);
             },
           ),
           ListTile(
             leading: Icon(Icons.file_present_outlined),
             title: Text('Icon Preference'),
-            onTap: () => Get.to(() => IconPreferencePage()),
+            onTap: () {
+              Navigator.of(context).pop();
+              Get.to(() => IconPreferencePage());
+            }
           ),
         ],
       ),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
-import '../../controllers/forecast_controller.dart';
-import '../screens/icon_preference.dart';
+import '../../../controllers/forecast_controller.dart';
+import '../../screens/icon_preference.dart';
 
 class WeeklyForecastView extends StatelessWidget {
   final ForecastController controller = Get.put(ForecastController());

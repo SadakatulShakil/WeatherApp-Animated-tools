@@ -1,22 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:package_connector/utills/app_drawer.dart';
-import 'package:package_connector/view/widgets/other_info_card.dart';
-import 'package:package_connector/view/widgets/pressure_meter.dart';
-import 'package:package_connector/view/widgets/air_quality_animation.dart';
-import 'package:package_connector/view/widgets/sunrise_arc_widget.dart';
-import 'package:package_connector/view/widgets/sunset_arc_widget.dart';
-import 'package:package_connector/view/widgets/weather_forecast.dart';
-import 'package:package_connector/view/screens/xustom_paint_weather_data.dart';
-import 'package:package_connector/view/widgets/weekly_forecast_widget.dart';
-import 'package:package_connector/view/widgets/wind_meter.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:package_connector/view/widgets/other_info_widget/other_info_card.dart';
+import 'package:package_connector/view/widgets/forecast_widget/weather_forecast.dart';
+import 'package:package_connector/view/widgets/forecast_widget/weekly_forecast_widget.dart';
 
-import '../../controllers/forecast_controller.dart';
-import '../widgets/air_quality_widget.dart';
-import '../widgets/sun_and_moon_widget.dart';
+import '../../controllers/home_controller.dart';
+import '../widgets/air_widget/air_quality_widget.dart';
+import '../widgets/sun_and_moon_widget/sun_and_moon_widget.dart';
+import '../widgets/wind_and_pressure_widget/wind_pressure_cards.dart';
 
 class WeatherHomePage extends StatefulWidget {
   const WeatherHomePage({super.key});
@@ -28,65 +20,13 @@ class WeatherHomePage extends StatefulWidget {
 class _WeatherHomePageState extends State<WeatherHomePage> {
   final ScrollController _scrollController = ScrollController();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final ForecastController controller = Get.put(ForecastController());
+  final HomeController controller = Get.put(HomeController());
 
   // Dummy weather data
   double windSpeed = 16.8;
   double pressure = 1002.0;
   TimeOfDay sunrise = const TimeOfDay(hour: 5, minute: 42);
   TimeOfDay sunset = const TimeOfDay(hour: 18, minute: 25);
-
-  final List<Map<String, dynamic>> forecastData = [
-    {
-      "date": "03/25",
-      "day": "Today",
-      "min": 32,
-      "max": 38,
-      "icon": Icons.wb_sunny,
-    },
-    {
-      "date": "04/25",
-      "day": "Friday",
-      "min": 30,
-      "max": 43,
-      "icon": Icons.wb_sunny,
-    },
-    {
-      "date": "05/25",
-      "day": "Saturday",
-      "min": 30,
-      "max": 36,
-      "icon": Icons.wb_sunny,
-    },
-    {
-      "date": "06/25",
-      "day": "Sunday",
-      "min": 28,
-      "max": 38,
-      "icon": Icons.wb_sunny,
-    },
-    {
-      "date": "07/25",
-      "day": "Monday",
-      "min": 30,
-      "max": 44,
-      "icon": Icons.wb_sunny,
-    },
-    {
-      "date": "08/25",
-      "day": "Thursday",
-      "min": 32,
-      "max": 43,
-      "icon": Icons.wb_sunny,
-    },
-    {
-      "date": "09/25",
-      "day": "Wednesday",
-      "min": 28,
-      "max": 38,
-      "icon": Icons.wb_sunny,
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -98,22 +38,21 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       drawer: AppDrawer(),
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.blue.shade700,
-      body: ListView(
-        controller: _scrollController,
+      body: Column(
         children: [
-          ///Weather day/night images
+          /// Fixed top section (weather image stack)
           Stack(
             children: [
               // Background image
               Container(
-                height: 250,
+                height: 280,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image:
-                        isNight
-                            ? const AssetImage('assets/night.jpg')
-                            : const AssetImage('assets/day.jpg'),
+                    isNight
+                        ? const AssetImage('assets/night.jpg')
+                        : const AssetImage('assets/day.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -121,7 +60,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
               // Gradient overlay
               Container(
-                height: 250,
+                height: 280,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -134,7 +73,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
               // Location and time
               Padding(
-                padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+                padding: const EdgeInsets.only(top: 35, left: 16, right: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -266,279 +205,56 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
 
-          ///Weather forecast data
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: WeatherForecastChart(),
-          ),
-          const SizedBox(height: 10),
+          /// Dynamic sections based on saved order
+          Expanded(
+            child: Obx(() {
+              return ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: controller.sectionOrder.length,
+                itemBuilder: (context, index) {
+                  final section = controller.sectionOrder[index];
 
-          ///Weekly weather data
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: WeeklyForecastView(),
-          ),
-          const SizedBox(height: 10),
-
-          /// Wind Speed compass and Pressure gauge
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              padding: const EdgeInsets.only(left: 4, right: 4),
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.70,
-              // <<< Important! Adjust card height!
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade400,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.air, color: Colors.white, size: 22),
-                          Expanded(
-                            child: Text(
-                              'Wind',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: WindCompass(
-                          windSpeed: windSpeed,
-                          windDirection: 0, // North
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade400,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.compress, color: Colors.white, size: 22),
-                          Expanded(
-                            child: Text(
-                              'Pressure',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                      Expanded(child: PressureMeter(pressureValue: pressure)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          ///OtherInfo(Precipitation, Humidity, UV index, Visibility)
-          Padding(padding: const EdgeInsets.all(10.0), child: OtherInfoCards()),
-          const SizedBox(height: 10),
-
-          ///Sun & Moon phase
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 12.0,
-              right: 12.0,
-              top: 8,
-              bottom: 8,
-            ),
-            child: SunAndMoonWidget(),
-          ),
-
-          /// Air quality indicator
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 12.0,
-              right: 12.0,
-              top: 8,
-              bottom: 8,
-            ),
-            child: AirQualityWidget(currentValue: 42.0),
+                  switch (section) {
+                    case HomeSection.weatherForecast:
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: WeatherForecastChart(),
+                      );
+                    case HomeSection.weeklyForecast:
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: WeeklyForecastView(),
+                      );
+                    case HomeSection.windPressure:
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: WindAndPressureCards(),
+                      );
+                    case HomeSection.otherInfo:
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: OtherInfoCards(),
+                      );
+                    case HomeSection.sunMoon:
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: SunAndMoonWidget(),
+                      );
+                    case HomeSection.airQuality:
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: AirQualityWidget(currentValue: 42.0),
+                      );
+                    default:
+                      return SizedBox.shrink();
+                  }
+                },
+              );
+            }),
           ),
         ],
       ),
     );
   }
-
-  // Widget _weeklyForecastList() {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(16),
-  //       gradient: LinearGradient(
-  //         colors: [Colors.blue.shade500, Colors.blue.shade500],
-  //         begin: Alignment.topCenter,
-  //         end: Alignment.bottomCenter,
-  //       ),
-  //     ),
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.start,
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Padding(
-  //           padding: const EdgeInsets.all(8.0),
-  //           child: Text(
-  //             "Forecast, Next 7 days",
-  //             style: TextStyle(
-  //               color: Colors.white,
-  //               fontSize: 20,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  //         ),
-  //         SingleChildScrollView(
-  //           child: Obx(
-  //             () => Column(
-  //               children: List.generate(controller.forecastList.length, (index) {
-  //                 final item = controller.forecastList[index];
-  //                 final iconUrl = controller.getIconUrl(item.iconKey);
-  //
-  //                 return Column(
-  //                   children: [
-  //                     SizedBox(height: 16,),
-  //                     Row(
-  //                       children: [
-  //                         Expanded(
-  //                           child: Column(
-  //                             children: [
-  //                               Text(
-  //                                 '${item.day}',
-  //                                 style: const TextStyle(
-  //                                   color: Colors.white,
-  //                                   fontSize: 14,
-  //                                 ),
-  //                               ),
-  //                               Text(
-  //                                 '${item.date}',
-  //                                 style: const TextStyle(
-  //                                   color: Colors.white,
-  //                                   fontSize: 14,
-  //                                 ),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                         Expanded(
-  //                           child: Image.asset(iconUrl, width: 25, height: 25),
-  //                         ),
-  //                         Text(
-  //                           '${item.minTemp}°C',
-  //                           style: const TextStyle(
-  //                             color: Colors.white,
-  //                             fontSize: 14,
-  //                           ),
-  //                         ),
-  //                         Expanded(
-  //                           child: Padding(
-  //                             padding: const EdgeInsets.symmetric(horizontal: 10),
-  //                             child: Stack(
-  //                               children: [
-  //                                 Container(
-  //                                   height: 8,
-  //                                   decoration: BoxDecoration(
-  //                                     borderRadius: BorderRadius.circular(8),
-  //                                     color: Colors.white.withOpacity(0.2),
-  //                                   ),
-  //                                 ),
-  //                                 FractionallySizedBox(
-  //                                   widthFactor: (item.maxTemp - item.minTemp) / 15.0,
-  //                                   child: Container(
-  //                                     height: 8,
-  //                                     decoration: BoxDecoration(
-  //                                       borderRadius: BorderRadius.circular(8),
-  //                                       gradient: const LinearGradient(
-  //                                         colors: [
-  //                                           Colors.orange,
-  //                                           Colors.deepOrange,
-  //                                         ],
-  //                                       ),
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         Expanded(
-  //                           child: Text(
-  //                             '${item.maxTemp}°C',
-  //                             style: const TextStyle(
-  //                               color: Colors.white,
-  //                               fontSize: 14,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         Icon(
-  //                           Icons.arrow_forward_ios,
-  //                           color: Colors.white,
-  //                           size: 18,
-  //                         ),
-  //                       ],
-  //                     ),
-  //                     SizedBox(height: 10,),
-  //                   ],
-  //                 );
-  //               }),
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

@@ -2,24 +2,25 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/forecast_model.dart';
+import '../models/weekly_forecast_model.dart';
 import '../models/icon_model.dart';
 
 
 class ForecastController extends GetxController {
   var iconMode = ''.obs; // This will hold the selected icon package name like "twoD", "threeD"
-  var forecastList = <ForecastItem>[].obs;
+  var forecastList = <WeeklyForecastItem>[].obs;
 
-  // All icon packages (key = package name, value = list of icons)
+  /// All icon packages (key = package name, value = list of icons)
   var iconPackages = <String, List<WeatherIcon>>{}.obs;
 
   @override
   void onInit() {
     super.onInit();
     loadIconPreference();
-    loadMockData(); // Replace with real API in production
+    loadMockData(); /// Replace with real API in production
   }
 
+  /// This method is called when the user selects a new icon mode.
   void switchIconMode(String mode) async {
     iconMode.value = mode;
     // iconMode.refresh();
@@ -27,6 +28,7 @@ class ForecastController extends GetxController {
     await prefs.setString('icon_mode', mode);
   }
 
+  /// This method returns the icon URL based on the current icon mode and the icon key.
   String getIconUrl(String iconKey) {
     final currentIcons = iconPackages[iconMode.value] ?? [];
     return currentIcons.firstWhere(
@@ -35,12 +37,14 @@ class ForecastController extends GetxController {
     ).iconUrl;
   }
 
+  /// This method loads the icon mode from shared preferences when the app starts.
   void loadIconPreference() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString('icon_mode') ?? 'twoD';
     iconMode.value = saved;
   }
 
+  /// This method simulates loading data from an API.
   void loadMockData() {
     // Simulating API response structure
     iconPackages.assignAll({
@@ -58,15 +62,16 @@ class ForecastController extends GetxController {
         WeatherIcon(iconKey: 'sun_rain', iconUrl: 'assets/threeD/sun_rain.png'),
         WeatherIcon(iconKey: 'tornado', iconUrl: 'assets/threeD/tornado.png'),
       ],
-      // Add more dynamically here like 'dark', 'light'
+      /// Add more dynamically here like 'darkMode', 'lightMode', etc.
     });
 
+    /// Mock data for forecast items
     forecastList.assignAll([
-      ForecastItem(day: 'Mon', date: '05/22', minTemp: 15, maxTemp: 35, iconKey: 'moon_cloud'),
-      ForecastItem(day: 'Tues', date: '05/23', minTemp: 16, maxTemp: 33, iconKey: 'moon_rain'),
-      ForecastItem(day: 'Wed', date: '05/24', minTemp: 17, maxTemp: 34, iconKey: 'sun_cloud'),
-      ForecastItem(day: 'Thurs', date: '05/25', minTemp: 18, maxTemp: 32, iconKey: 'sun_rain'),
-      ForecastItem(day: 'Fri', date: '05/26', minTemp: 19, maxTemp: 31, iconKey: 'tornado'),
+      WeeklyForecastItem(day: 'Mon', date: '05/22', minTemp: 15, maxTemp: 35, iconKey: 'moon_cloud'),
+      WeeklyForecastItem(day: 'Tues', date: '05/23', minTemp: 16, maxTemp: 33, iconKey: 'moon_rain'),
+      WeeklyForecastItem(day: 'Wed', date: '05/24', minTemp: 17, maxTemp: 34, iconKey: 'sun_cloud'),
+      WeeklyForecastItem(day: 'Thurs', date: '05/25', minTemp: 18, maxTemp: 32, iconKey: 'sun_rain'),
+      WeeklyForecastItem(day: 'Fri', date: '05/26', minTemp: 19, maxTemp: 31, iconKey: 'tornado'),
     ]);
   }
 }

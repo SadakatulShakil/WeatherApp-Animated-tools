@@ -2,28 +2,28 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-import '../../models/weather_model.dart';
+import '../../../models/hourly_weather_model.dart';
 
 class WeatherForecastChart extends StatelessWidget {
 
 
-  final List<HourlyWeather> demoData = [
-    HourlyWeather("00:00", WeatherIcons.night_clear, 25.0, 10, 0),
-    HourlyWeather("03:00", WeatherIcons.cloud, 30.0, 20, 1),
-    HourlyWeather("06:00", WeatherIcons.rain, 38.0, 70, 2),
-    HourlyWeather("09:00", WeatherIcons.day_sunny, 24.0, 15, 3),
-    HourlyWeather("12:00", WeatherIcons.day_sunny, 32.0, 5, 4),
-    HourlyWeather("15:00", WeatherIcons.cloud, 30.0, 25, 5),
-    HourlyWeather("18:00", WeatherIcons.rain, 38.5, 60, 6),
-    HourlyWeather("21:00", WeatherIcons.night_clear, 25.0, 10, 7),
-    HourlyWeather("00:00", WeatherIcons.night_clear, 32.5, 12, 8),
-    HourlyWeather("03:00", WeatherIcons.cloud, 36.0, 30, 9),
-    HourlyWeather("06:00", WeatherIcons.rain, 38.5, 80, 10),
-    HourlyWeather("09:00", WeatherIcons.day_sunny, 25.0, 20, 11),
-    HourlyWeather("12:00", WeatherIcons.day_sunny, 28.0, 10, 12),
-    HourlyWeather("15:00", WeatherIcons.cloud, 35.0, 40, 13),
-    HourlyWeather("18:00", WeatherIcons.rain, 32.5, 55, 14),
-    HourlyWeather("21:00", WeatherIcons.night_clear, 30.0, 18, 15),
+  final List<HourlyWeatherModel> demoData = [
+    HourlyWeatherModel("00:00", WeatherIcons.night_clear, 25.0, 10, 0),
+    HourlyWeatherModel("03:00", WeatherIcons.cloud, 30.0, 20, 1),
+    HourlyWeatherModel("06:00", WeatherIcons.rain, 38.0, 70, 2),
+    HourlyWeatherModel("09:00", WeatherIcons.day_sunny, 24.0, 15, 3),
+    HourlyWeatherModel("12:00", WeatherIcons.day_sunny, 32.0, 5, 4),
+    HourlyWeatherModel("15:00", WeatherIcons.cloud, 30.0, 25, 5),
+    HourlyWeatherModel("18:00", WeatherIcons.rain, 38.5, 60, 6),
+    HourlyWeatherModel("21:00", WeatherIcons.night_clear, 25.0, 10, 7),
+    HourlyWeatherModel("00:00", WeatherIcons.night_clear, 32.5, 12, 8),
+    HourlyWeatherModel("03:00", WeatherIcons.cloud, 36.0, 30, 9),
+    HourlyWeatherModel("06:00", WeatherIcons.rain, 38.5, 80, 10),
+    HourlyWeatherModel("09:00", WeatherIcons.day_sunny, 25.0, 20, 11),
+    HourlyWeatherModel("12:00", WeatherIcons.day_sunny, 28.0, 10, 12),
+    HourlyWeatherModel("15:00", WeatherIcons.cloud, 35.0, 40, 13),
+    HourlyWeatherModel("18:00", WeatherIcons.rain, 32.5, 55, 14),
+    HourlyWeatherModel("21:00", WeatherIcons.night_clear, 30.0, 18, 15),
   ];
 
   @override

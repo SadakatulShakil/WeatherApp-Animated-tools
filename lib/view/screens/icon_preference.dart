@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/forecast_controller.dart';
-import '../widgets/icon_row_widget.dart';
+import '../widgets/other_info_widget/icon_row_widget.dart';
 
 class IconPreferencePage extends StatelessWidget {
   final ForecastController controller = Get.find<ForecastController>();

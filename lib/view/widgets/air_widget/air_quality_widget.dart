@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:package_connector/view/widgets/air_quality_animation.dart';
-import 'package:package_connector/view/widgets/sunrise_arc_widget.dart';
-import 'package:package_connector/view/widgets/sunset_arc_widget.dart';
+import 'package:package_connector/view/widgets/air_widget/air_quality_animation.dart';
+import 'package:package_connector/view/widgets/sun_and_moon_widget/sunrise_arc_widget.dart';
+import 'package:package_connector/view/widgets/sun_and_moon_widget/sunset_arc_widget.dart';
 
 class AirQualityWidget extends StatefulWidget {
 
