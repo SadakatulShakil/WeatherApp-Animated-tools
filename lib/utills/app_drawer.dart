@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:package_connector/view/screens/dashboard_preference.dart';
 
+import '../view/screens/dashboard_preference.dart';
 import '../view/screens/icon_preference.dart';
 
 class AppDrawer extends StatefulWidget {

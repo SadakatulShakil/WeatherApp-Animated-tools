@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:package_connector/utills/app_drawer.dart';
-import 'package:package_connector/view/widgets/other_info_widget/other_info_card.dart';
-import 'package:package_connector/view/widgets/forecast_widget/weather_forecast.dart';
-import 'package:package_connector/view/widgets/forecast_widget/weekly_forecast_widget.dart';
 
+import '../../controllers/forecast_controller.dart';
 import '../../controllers/home_controller.dart';
+import '../../utills/app_drawer.dart';
 import '../widgets/air_widget/air_quality_widget.dart';
+import '../widgets/forecast_widget/weather_forecast.dart';
+import '../widgets/forecast_widget/weekly_forecast_widget.dart';
+import '../widgets/other_info_widget/other_info_card.dart';
 import '../widgets/sun_and_moon_widget/sun_and_moon_widget.dart';
 import '../widgets/wind_and_pressure_widget/wind_pressure_cards.dart';
 
@@ -20,6 +21,7 @@ class WeatherHomePage extends StatefulWidget {
 class _WeatherHomePageState extends State<WeatherHomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final HomeController controller = Get.put(HomeController());
+  final ForecastController foreCast_controller = Get.put(ForecastController());
 
   // Dummy weather data
   double windSpeed = 16.8;
@@ -135,14 +137,20 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          "32°C",
-                          style: TextStyle(
-                            fontSize: 72,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            height: 0.9,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "32°C",
+                              style: TextStyle(
+                                fontSize: 72,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                height: 0.9,
+                              ),
+                            ),
+                            Image.asset(foreCast_controller.getIconUrl('sun_cloud'), width: 80, height: 80),
+                          ],
                         ),
                         const SizedBox(height: 12),
                         Container(

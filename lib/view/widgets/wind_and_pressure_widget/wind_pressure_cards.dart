@@ -1,8 +1,8 @@
+import 'package:bmd_weather_app/view/widgets/wind_and_pressure_widget/pressure_meter.dart';
+import 'package:bmd_weather_app/view/widgets/wind_and_pressure_widget/wind_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:package_connector/view/widgets/wind_and_pressure_widget/pressure_meter.dart';
-import 'package:package_connector/view/widgets/wind_and_pressure_widget/wind_meter.dart';
 
 import '../../../controllers/forecast_controller.dart';
 import '../../screens/icon_preference.dart';

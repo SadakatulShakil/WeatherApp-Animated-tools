@@ -1,6 +1,6 @@
+import 'package:bmd_weather_app/view/widgets/sun_and_moon_widget/sunrise_arc_widget.dart';
+import 'package:bmd_weather_app/view/widgets/sun_and_moon_widget/sunset_arc_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:package_connector/view/widgets/sun_and_moon_widget/sunrise_arc_widget.dart';
-import 'package:package_connector/view/widgets/sun_and_moon_widget/sunset_arc_widget.dart';
 
 class SunAndMoonWidget extends StatelessWidget {
 

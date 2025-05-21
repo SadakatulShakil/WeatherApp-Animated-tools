@@ -1,4 +1,4 @@
-package com.galaxy.package_connector;
+package com.rimes.bmd_weather_app;
 
 import io.flutter.embedding.android.FlutterActivity;
 

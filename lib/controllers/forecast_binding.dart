@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:package_connector/controllers/forecast_controller.dart';
+
+import 'forecast_controller.dart';
 
 
 class ForecastBinding extends Bindings {

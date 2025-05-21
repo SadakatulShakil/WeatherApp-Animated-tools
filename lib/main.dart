@@ -1,8 +1,9 @@
+import 'package:bmd_weather_app/view/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:package_connector/controllers/forecast_controller.dart';
-import 'package:package_connector/controllers/home_controller.dart';
-import 'package:package_connector/view/screens/home_page.dart';
+
+import 'controllers/forecast_controller.dart';
+import 'controllers/home_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

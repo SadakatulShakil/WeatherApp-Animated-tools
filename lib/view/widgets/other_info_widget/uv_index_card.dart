@@ -1,5 +1,5 @@
+import 'package:bmd_weather_app/view/widgets/other_info_widget/uv_indicator_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:package_connector/view/widgets/other_info_widget/uv_indicator_widget.dart';
 
 class UvIndexCard extends StatelessWidget {
   final String title;
