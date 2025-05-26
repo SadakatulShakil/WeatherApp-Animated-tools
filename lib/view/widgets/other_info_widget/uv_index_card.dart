@@ -1,5 +1,9 @@
 import 'package:bmd_weather_app/view/widgets/other_info_widget/uv_indicator_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../../../controllers/theme_controller.dart';
 
 class UvIndexCard extends StatelessWidget {
   final String title;
@@ -19,11 +23,13 @@ class UvIndexCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final ThemeController themeController = Get.find<ThemeController>();
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.blue.shade400,
+        color: themeController.themeMode.value == ThemeMode.light
+            ? Colors.white
+            : Colors.blue.shade400,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -42,23 +48,29 @@ class UvIndexCard extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: Colors.white,
+                color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white,
                 size: 22,
               ),
               Expanded(
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
                     fontSize: 16,
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.arrow_forward_ios,
                 size: 16,
-                color: Colors.white,
+                color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white,
               ),
             ],
           ),
@@ -77,7 +89,9 @@ class UvIndexCard extends StatelessWidget {
                       child: Text(
                         value,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ? Colors.black
+                              : Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 70,
                         ),
@@ -89,7 +103,9 @@ class UvIndexCard extends StatelessWidget {
                     child: Text(
                       unit,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: themeController.themeMode.value == ThemeMode.light
+                            ? Colors.black
+                            : Colors.white,
                         fontSize: 16,
                       ),
                     ),
@@ -104,8 +120,10 @@ class UvIndexCard extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               subtitle,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white,
                 fontSize: 11,
               ),
             ),

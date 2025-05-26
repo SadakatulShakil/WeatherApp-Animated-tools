@@ -1,13 +1,12 @@
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../models/weekly_forecast_model.dart';
 import '../models/icon_model.dart';
 
 
 class ForecastController extends GetxController {
-  var iconMode = ''.obs; // This will hold the selected icon package name like "twoD", "threeD"
+  var iconMode = 'twoD'.obs; // This will hold the selected icon package name like "twoD", "threeD"
   var forecastList = <WeeklyForecastItem>[].obs;
 
   /// All icon packages (key = package name, value = list of icons)

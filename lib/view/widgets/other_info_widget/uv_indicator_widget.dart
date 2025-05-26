@@ -1,12 +1,15 @@
 import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+import '../../../controllers/theme_controller.dart';
 
 class UvIndicatorWidget extends StatefulWidget {
   final double currentValue; // Expected between 0-100
-  const UvIndicatorWidget({super.key, required this.currentValue});
-
+  UvIndicatorWidget({super.key, required this.currentValue});
   @override
   State<UvIndicatorWidget> createState() => _UvIndicatorWidgetState();
 }
@@ -14,6 +17,7 @@ class UvIndicatorWidget extends StatefulWidget {
 class _UvIndicatorWidgetState extends State<UvIndicatorWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _position;
+  final ThemeController themeController = Get.find<ThemeController>();
 
   void _startAnimation() {
     _controller.reset();
@@ -90,11 +94,15 @@ class _UvIndicatorWidgetState extends State<UvIndicatorWidget> with SingleTicker
                       width: 16,
                       height: 16,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: themeController.themeMode.value == ThemeMode.light
+                            ? Colors.black87
+                            : Colors.white,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.white.withOpacity(0.6),
+                            color: themeController.themeMode.value == ThemeMode.light
+                                ? Colors.black.withOpacity(0.5)
+                                :Colors.white.withOpacity(0.6),
                             blurRadius: 8,
                             spreadRadius: 2,
                           )
@@ -109,9 +117,13 @@ class _UvIndicatorWidgetState extends State<UvIndicatorWidget> with SingleTicker
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text('Low', style: TextStyle(color: Colors.white, fontSize: 10)),
-            Text('High', style: TextStyle(color: Colors.white, fontSize: 10)),
+          children: [
+            Text('Low', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                ? Colors.black
+                : Colors.white, fontSize: 10)),
+            Text('High', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                ? Colors.black
+                : Colors.white, fontSize: 10)),
           ],
         )
       ],

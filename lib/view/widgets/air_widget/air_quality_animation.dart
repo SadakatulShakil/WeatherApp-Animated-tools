@@ -1,7 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+import '../../../controllers/theme_controller.dart';
 
 class AirQualityAnimated extends StatefulWidget {
   final double currentValue; // Expected between 0-100
@@ -14,6 +18,7 @@ class AirQualityAnimated extends StatefulWidget {
 class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _position;
+  final ThemeController themeController = Get.find<ThemeController>();
 
   void _startAnimation() {
     _controller.reset();
@@ -90,11 +95,15 @@ class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTick
                       width: 16,
                       height: 16,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: themeController.themeMode.value == ThemeMode.light
+                            ? Colors.black87
+                            : Colors.white,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.white.withOpacity(0.6),
+                            color: themeController.themeMode.value == ThemeMode.light
+                                ? Colors.black.withOpacity(0.6)
+                                : Colors.white.withOpacity(0.6),
                             blurRadius: 8,
                             spreadRadius: 2,
                           )
@@ -110,9 +119,13 @@ class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTick
         const SizedBox(height: 6),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text('Good', style: TextStyle(color: Colors.white)),
-            Text('Danger', style: TextStyle(color: Colors.white)),
+          children: [
+            Text('Good', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                ? Colors.black
+                : Colors.white,)),
+            Text('Danger', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                ? Colors.black
+                : Colors.white,)),
           ],
         )
       ],

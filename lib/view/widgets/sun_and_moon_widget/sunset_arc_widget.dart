@@ -1,6 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+import '../../../controllers/theme_controller.dart';
 
 class SunsetArcWidget extends StatefulWidget {
   final TimeOfDay moonrise;
@@ -22,6 +26,7 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _position;
+  final ThemeController themeController = Get.find<ThemeController>();
   double percent = 0.0;
 
   void _startAnimation() {
@@ -90,7 +95,7 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
           },
           child: CustomPaint(
             size: Size(140, 70), // Width and Height of the widget
-            painter: ArcPainter(progress: _position.value),
+            painter: ArcPainter(controller: themeController, progress: _position.value),
           ),
         ),
         const SizedBox(height: 6),
@@ -99,11 +104,15 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
           children: [
             Text(
               '${widget.moonrise.format(context)}',
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.black
+                  : Colors.white),
             ),
             Text(
               '${widget.moonset.format(context)}',
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.black
+                  : Colors.white),
             ),
           ],
         ),
@@ -114,8 +123,9 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
 
 class ArcPainter extends CustomPainter {
   final double progress;
+  final ThemeController controller;
 
-  ArcPainter({required this.progress});
+  ArcPainter({required this.progress, required this.controller});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -150,8 +160,10 @@ class ArcPainter extends CustomPainter {
     // 3. Draw the Arc Stroke
     final Paint arcPaint =
         Paint()
-          ..color = Colors.white.withOpacity(0.3)
-          ..strokeWidth = 5
+          ..color = controller.themeMode.value == ThemeMode.light
+              ? Colors.black
+              : Colors.white.withOpacity(0.3)
+          ..strokeWidth = 3
           ..style = PaintingStyle.stroke;
 
     canvas.drawArc(arcRect, math.pi, math.pi, false, arcPaint);
@@ -159,7 +171,9 @@ class ArcPainter extends CustomPainter {
     // 4. Draw the Bottom Straight Line
     final Paint linePaint =
         Paint()
-          ..color = Colors.white
+          ..color = controller.themeMode.value == ThemeMode.light
+              ? Colors.black
+              : Colors.white
           ..strokeWidth = 2;
     canvas.drawLine(
       Offset(-5, size.height),
@@ -170,7 +184,9 @@ class ArcPainter extends CustomPainter {
     // 5. Draw the Dots
     final Paint dotPaint =
         Paint()
-          ..color = Colors.white
+          ..color = controller.themeMode.value == ThemeMode.light
+              ? Colors.black
+              : Colors.white
           ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(6, size.height), 4, dotPaint);
     canvas.drawCircle(Offset(size.width-6, size.height), 4, dotPaint);

@@ -5,11 +5,13 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../../../controllers/forecast_controller.dart';
+import '../../../controllers/theme_controller.dart';
 import '../../../models/hourly_weather_model.dart';
 
 class WeatherForecastChart extends StatelessWidget {
 
   final ForecastController controller = Get.put(ForecastController());
+  final ThemeController themeController = Get.find<ThemeController>();
   final List<HourlyWeatherModel> demoData = [
     HourlyWeatherModel("00:00", 'moon_cloud', 25.0, 10, 0),
     HourlyWeatherModel("03:00", 'moon_rain', 30.0, 20, 1),
@@ -36,7 +38,9 @@ class WeatherForecastChart extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
-          colors: [Colors.blue.shade500, Colors.blue.shade500],
+          colors: themeController.themeMode.value == ThemeMode.light
+              ? [Colors.white, Colors.white]
+              : [Colors.blue.shade500, Colors.blue.shade500],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -49,7 +53,9 @@ class WeatherForecastChart extends StatelessWidget {
             child: Text(
               "Forecast, Next 72 hours",
               style: TextStyle(
-                color: Colors.white,
+                color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -90,10 +96,9 @@ class WeatherForecastChart extends StatelessWidget {
                               isCurved: true,
                               belowBarData: BarAreaData(
                                 gradient: LinearGradient(
-                                  colors: [
-                                    Colors.blue.shade200,
-                                    Colors.blue.shade500,
-                                  ],
+                                  colors: themeController.themeMode.value == ThemeMode.light
+                                      ? [Colors.grey.shade400, Colors.white]
+                                      : [Colors.blue.shade200, Colors.blue.shade500,],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 ),
@@ -106,13 +111,42 @@ class WeatherForecastChart extends StatelessWidget {
                                     FlDotCirclePainter(
                                       radius: 2,
                                       color: Colors.transparent,
-                                      strokeColor: Colors.greenAccent,
+                                      strokeColor: themeController.themeMode.value == ThemeMode.light
+                                      ? Colors.blue
+                                          :Colors.greenAccent,
                                       // Your desired dot color
                                       strokeWidth: 2.5,
                                     ),
                               ),
                             ),
                           ],
+                          lineTouchData: LineTouchData(
+                            touchTooltipData: LineTouchTooltipData(
+                              tooltipRoundedRadius: 8,
+                              fitInsideHorizontally: true,
+                              fitInsideVertically: true,
+                              getTooltipItems: (touchedSpots) {
+                                return touchedSpots.map((LineBarSpot spot) {
+                                  return LineTooltipItem(
+                                    '${spot.y.toInt()}°C', // or '${spot.x}, ${spot.y}'
+                                    TextStyle(
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.black
+                                          : Colors.white,       // Text color
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    children: [],
+                                    textAlign: TextAlign.center,
+                                    // 👇 Background now comes from the tooltip's paint configuration
+                                  );
+                                }).toList();
+                              },
+                              tooltipPadding: const EdgeInsets.all(8),
+                              tooltipMargin: 12,
+                              tooltipBorder: BorderSide.none,
+                            ),
+                          ),
+
                         ),
                       ),
                       Positioned.fill(
@@ -128,7 +162,9 @@ class WeatherForecastChart extends StatelessWidget {
                                   Text(
                                     hour.time,
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.black
+                                          : Colors.white,
                                       fontSize: 12,
                                     ),
                                   ),
@@ -140,7 +176,9 @@ class WeatherForecastChart extends StatelessWidget {
                                   Text(
                                     '${hour.temp.toInt()}°C',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.black
+                                          : Colors.white,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -150,7 +188,9 @@ class WeatherForecastChart extends StatelessWidget {
                                   Text(
                                     '${hour.rainChance}% ',
                                     style: TextStyle(
-                                      color: Colors.greenAccent,
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.blue
+                                          :Colors.greenAccent,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
                                     ),
@@ -161,7 +201,9 @@ class WeatherForecastChart extends StatelessWidget {
                                   Text(
                                     '${(hour.temp * 0.5).toStringAsFixed(1)} km/h',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.black
+                                          : Colors.white,
                                       fontSize: 12,
                                     ),
                                   ),

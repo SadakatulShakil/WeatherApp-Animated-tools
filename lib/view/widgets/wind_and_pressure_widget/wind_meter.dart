@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+import '../../../controllers/theme_controller.dart';
 
 class WindCompass extends StatefulWidget {
   final double windSpeed;      // e.g., 16.0
@@ -18,6 +22,7 @@ class WindCompass extends StatefulWidget {
 
 class _WindCompassState extends State<WindCompass>
     with SingleTickerProviderStateMixin {
+  final ThemeController themeController = Get.find<ThemeController>();
   double animatedValue = 0;
   late AnimationController _controller;
   late Animation<double> _needleAnimation;
@@ -90,7 +95,9 @@ class _WindCompassState extends State<WindCompass>
                     width: 145,
                     height: 145,
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade300,
+                      color: themeController.themeMode.value == ThemeMode.light
+                          ? Colors.grey.shade400
+                          : Colors.blue.shade300,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -116,18 +123,24 @@ class _WindCompassState extends State<WindCompass>
                           thickness: 2,
                         ),
                         axisLabelStyle: GaugeTextStyle(
-                          color: Colors.white,
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ?Colors.black
+                              :Colors.white60,
                           fontWeight: FontWeight.bold,
                           fontSize: 10,
                         ),
                         minorTickStyle: MinorTickStyle(
-                          color: Colors.white60,
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ?Colors.black
+                              :Colors.white60,
                           thickness: 1.6,
                           length: 0.058,
                           lengthUnit: GaugeSizeUnit.factor,
                         ),
-                        majorTickStyle: const MajorTickStyle(
-                          color: Colors.white,
+                        majorTickStyle: MajorTickStyle(
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ?Colors.black
+                              :Colors.white,
                           thickness: 2,
                           length: 0.1,
                           lengthUnit: GaugeSizeUnit.factor,
@@ -138,10 +151,14 @@ class _WindCompassState extends State<WindCompass>
                             needleLength: 0.6,
                             needleStartWidth: 0,
                             needleEndWidth: 5,
-                            needleColor: Colors.white,
-                            knobStyle: const KnobStyle(
+                            needleColor: themeController.themeMode.value == ThemeMode.light
+                                ?Colors.black
+                                :Colors.white,
+                            knobStyle: KnobStyle(
                               knobRadius: 0.045,
-                              color: Colors.white,
+                              color: themeController.themeMode.value == ThemeMode.light
+                                  ?Colors.black
+                                  :Colors.white,
                               borderWidth: 1,
                             ),
                           ),
@@ -157,7 +174,9 @@ class _WindCompassState extends State<WindCompass>
                         radiusFactor: 0.4,
                         axisLineStyle: AxisLineStyle(
                           thicknessUnit: GaugeSizeUnit.factor,
-                          color: Colors.blue.shade400,
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ?Colors.white
+                              :Colors.blue.shade400,
                         ),
                         annotations: <GaugeAnnotation>[
                           GaugeAnnotation(
@@ -166,7 +185,9 @@ class _WindCompassState extends State<WindCompass>
                             widget: Text(
                               '90 mps',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: themeController.themeMode.value == ThemeMode.light
+                                    ?Colors.black
+                                    :Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
@@ -178,69 +199,6 @@ class _WindCompassState extends State<WindCompass>
                   ),
                 ],
               ),
-          );
-
-          /// Wind compass01
-            SfRadialGauge(
-            axes: [
-              RadialAxis(
-                minimum: 0,
-                maximum: 360,
-                showTicks: false,
-                showLabels: false,
-                startAngle: 270,
-                endAngle: 630,
-                axisLineStyle: AxisLineStyle(
-                  thickness: 0.1,
-                  color: Colors.transparent,
-                ),
-                pointers: [
-                  NeedlePointer(
-                    value: _needleAnimation.value,
-                    enableAnimation: false,
-                    needleColor: Colors.white,
-                    needleLength: 0.95, // REACHES OUTER RING
-                    needleStartWidth: 0,
-                    needleEndWidth: 8,
-                    knobStyle: KnobStyle(
-                      knobRadius: 0.50,
-                      color: Colors.blue.shade300,
-                      borderWidth: 1,
-                    ),
-                  ),
-                ],
-                annotations: const [
-                  GaugeAnnotation(
-                    angle: 270,
-                    positionFactor: 0.9,
-                    widget: Text('N',
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  GaugeAnnotation(
-                    angle: 0,
-                    positionFactor: 0.9,
-                    widget: Text('E',
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  GaugeAnnotation(
-                    angle: 90,
-                    positionFactor: 0.9,
-                    widget: Text('S',
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  GaugeAnnotation(
-                    angle: 180,
-                    positionFactor: 0.9,
-                    widget: Text('W',
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-            ],
           );
         },
       ),

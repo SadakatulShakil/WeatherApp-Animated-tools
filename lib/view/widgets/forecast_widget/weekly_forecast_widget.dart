@@ -3,18 +3,21 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../../../controllers/forecast_controller.dart';
+import '../../../controllers/theme_controller.dart';
 import '../../screens/icon_preference.dart';
 
 class WeeklyForecastView extends StatelessWidget {
   final ForecastController controller = Get.put(ForecastController());
-
+  final ThemeController themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
-          colors: [Colors.blue.shade500, Colors.blue.shade500],
+          colors: themeController.themeMode.value == ThemeMode.light
+              ? [Colors.white, Colors.white]
+              : [Colors.blue.shade500, Colors.blue.shade500],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -28,7 +31,9 @@ class WeeklyForecastView extends StatelessWidget {
             child: Text(
               "Forecast, Next 7 days",
               style: TextStyle(
-                color: Colors.white,
+                color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -51,15 +56,19 @@ class WeeklyForecastView extends StatelessWidget {
                               children: [
                                 Text(
                                   '${item.day}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: themeController.themeMode.value == ThemeMode.light
+                                        ? Colors.black
+                                        : Colors.white,
                                     fontSize: 14,
                                   ),
                                 ),
                                 Text(
                                   '${item.date}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: themeController.themeMode.value == ThemeMode.light
+                                        ? Colors.black
+                                        : Colors.white,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -71,14 +80,16 @@ class WeeklyForecastView extends StatelessWidget {
                           ),
                           Text(
                             '${item.minTemp}°C',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: themeController.themeMode.value == ThemeMode.light
+                                  ? Colors.black
+                                  : Colors.white,
                               fontSize: 14,
                             ),
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                               child: Stack(
                                 children: [
                                   Container(
@@ -110,16 +121,23 @@ class WeeklyForecastView extends StatelessWidget {
                           Expanded(
                             child: Text(
                               '${item.maxTemp}°C',
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: themeController.themeMode.value == ThemeMode.light
+                                    ? Colors.black
+                                    : Colors.white,
                                 fontSize: 14,
                               ),
                             ),
                           ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                            size: 18,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              color: themeController.themeMode.value == ThemeMode.light
+                                  ? Colors.black
+                                  : Colors.white,
+                              size: 18,
+                            ),
                           ),
                         ],
                       ),
