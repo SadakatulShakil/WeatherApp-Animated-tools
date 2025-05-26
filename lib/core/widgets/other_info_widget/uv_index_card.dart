@@ -1,4 +1,4 @@
-import 'package:bmd_weather_app/view/widgets/other_info_widget/uv_indicator_widget.dart';
+import 'package:bmd_weather_app/core/widgets/other_info_widget/uv_indicator_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';

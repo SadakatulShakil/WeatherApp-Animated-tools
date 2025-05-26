@@ -107,14 +107,48 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                         ],
                       ),
                     ),
-                    IconButton(
-                      icon: themeController.themeMode.value == ThemeMode.light
-                          ? Icon(Icons.brightness_4_outlined, color: Colors.black)
-                          :Icon(Icons.brightness_7, color: Colors.white),
-                      onPressed: () {
-                        themeController.toggleTheme(themeController.themeMode.value != ThemeMode.dark);
-                      },
-                    ),
+                    // GestureDetector(
+                    //   onTap: (){themeController.toggleTheme(themeController.themeMode.value != ThemeMode.dark);},
+                    //   child: AnimatedContainer(
+                    //     duration: const Duration(milliseconds: 400),
+                    //     width: 50,
+                    //     height: 20,
+                    //     padding: const EdgeInsets.symmetric(horizontal: 0),
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(30),
+                    //       image: DecorationImage(
+                    //         image: AssetImage(
+                    //           themeController.themeMode.value == ThemeMode.dark
+                    //               ? 'assets/toggle/night.png'
+                    //               : 'assets/toggle/day.png',
+                    //         ),
+                    //         fit: BoxFit.fill,
+                    //       ),
+                    //     ),
+                    //     child: AnimatedAlign(
+                    //       duration: const Duration(milliseconds: 400),
+                    //       alignment: themeController.themeMode.value == ThemeMode.dark
+                    //           ? Alignment.centerRight
+                    //           : Alignment.centerLeft,
+                    //       child: Container(
+                    //         width: 18,
+                    //         height: 18,
+                    //         decoration: const BoxDecoration(
+                    //           shape: BoxShape.circle,
+                    //           color: Colors.transparent,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // IconButton(
+                    //   icon: themeController.themeMode.value == ThemeMode.light
+                    //       ? Icon(Icons.brightness_4_outlined, color: Colors.black)
+                    //       :Icon(Icons.brightness_7, color: Colors.white),
+                    //   onPressed: () {
+                    //     themeController.toggleTheme(themeController.themeMode.value != ThemeMode.dark);
+                    //   },
+                    // ),
                     IconButton(
                       icon: Icon(
                         Icons.storage_outlined,

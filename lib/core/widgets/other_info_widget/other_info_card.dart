@@ -1,6 +1,6 @@
-import 'package:bmd_weather_app/view/widgets/other_info_widget/precipitation_card.dart';
-import 'package:bmd_weather_app/view/widgets/other_info_widget/uv_index_card.dart';
-import 'package:bmd_weather_app/view/widgets/other_info_widget/visibility_card.dart';
+import 'package:bmd_weather_app/core/widgets/other_info_widget/precipitation_card.dart';
+import 'package:bmd_weather_app/core/widgets/other_info_widget/uv_index_card.dart';
+import 'package:bmd_weather_app/core/widgets/other_info_widget/visibility_card.dart';
 import 'package:flutter/material.dart';
 
 import 'humidity_card.dart';
