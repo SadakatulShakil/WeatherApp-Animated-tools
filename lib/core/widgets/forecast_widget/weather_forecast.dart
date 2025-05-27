@@ -1,17 +1,15 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 import '../../../controllers/forecast_controller.dart';
 import '../../../controllers/theme_controller.dart';
 import '../../../models/hourly_weather_model.dart';
 
 class WeatherForecastChart extends StatelessWidget {
-
   final ForecastController controller = Get.put(ForecastController());
   final ThemeController themeController = Get.find<ThemeController>();
+
   final List<HourlyWeatherModel> demoData = [
     HourlyWeatherModel("00:00", 'moon_cloud', 25.0, 10, 0),
     HourlyWeatherModel("03:00", 'moon_rain', 30.0, 20, 1),
@@ -33,17 +31,28 @@ class WeatherForecastChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double chartHeight = 200;
+    final double minY = 10;
+    final double maxY = 55;
+
     return Container(
-      height: 280,
+      height: 300,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
           colors: themeController.themeMode.value == ThemeMode.light
               ? [Colors.white, Colors.white]
-              : [Colors.blue.shade500, Colors.blue.shade500],
+              : [Color(0xFF3986DD), Color(0xFF3986DD)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,14 +70,13 @@ class WeatherForecastChart extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8),
-          // Weather forecast chart
+          SizedBox(height: 5),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+              padding: const EdgeInsets.only(left: 12.0, right: 12.0,bottom: 12.0),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Container(
+                child: SizedBox(
                   width: demoData.length * 80,
                   child: Stack(
                     children: [
@@ -77,44 +85,39 @@ class WeatherForecastChart extends StatelessWidget {
                           gridData: FlGridData(show: false),
                           titlesData: FlTitlesData(show: false),
                           borderData: FlBorderData(show: false),
-                          minX: -.4,
+                          minX: -.25,
                           maxX: demoData.length.toDouble() - .5,
-                          minY: 12,
-                          maxY: 50,
+                          minY: minY,
+                          maxY: maxY,
                           lineBarsData: [
                             LineChartBarData(
-                              spots:
-                              demoData
-                                  .map(
-                                    (e) => FlSpot(
-                                  e.index.toDouble(),
-                                  e.temp,
-                                ),
-                              )
+                              spots: demoData
+                                  .map((e) => FlSpot(
+                                e.index.toDouble(),
+                                e.temp,
+                              ))
                                   .toList(),
-                              color: Colors.transparent,
                               isCurved: true,
                               belowBarData: BarAreaData(
                                 gradient: LinearGradient(
                                   colors: themeController.themeMode.value == ThemeMode.light
                                       ? [Colors.grey.shade400, Colors.white]
-                                      : [Colors.blue.shade200, Colors.blue.shade500,],
+                                      : [Colors.blue.shade200, Color(0xFF3986DD)],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 ),
                                 show: true,
                               ),
+                              color: Colors.transparent,
                               dotData: FlDotData(
                                 show: true,
-                                getDotPainter:
-                                    (spot, percent, barData, index) =>
+                                getDotPainter: (spot, percent, barData, index) =>
                                     FlDotCirclePainter(
                                       radius: 2,
                                       color: Colors.transparent,
                                       strokeColor: themeController.themeMode.value == ThemeMode.light
-                                      ? Colors.blue
-                                          :Colors.greenAccent,
-                                      // Your desired dot color
+                                          ? Colors.blue
+                                          : Colors.greenAccent,
                                       strokeWidth: 2.5,
                                     ),
                               ),
@@ -146,73 +149,86 @@ class WeatherForecastChart extends StatelessWidget {
                               tooltipBorder: BorderSide.none,
                             ),
                           ),
-
                         ),
                       ),
                       Positioned.fill(
-                        child: Obx(() =>  Row(
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children:
-                          demoData.map((hour) {
+                          children: demoData.map((hour) {
                             final iconUrl = controller.getIconUrl(hour.iconKey);
+                            final double y = chartHeight * (1 - (hour.temp - minY) / (maxY - minY));
+
                             return Expanded(
-                              child: Column(
+                              child: Stack(
                                 children: [
-                                  // Time and icon at top
-                                  Text(
-                                    hour.time,
-                                    style: TextStyle(
-                                      color: themeController.themeMode.value == ThemeMode.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 12,
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          hour.time,
+                                          style: TextStyle(
+                                            color: themeController.themeMode.value == ThemeMode.light
+                                                ? Colors.black
+                                                : Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Image.asset(iconUrl, width: 25, height: 25),
+                                      ],
                                     ),
                                   ),
-                                  SizedBox(height: 4),
-                                  Image.asset(iconUrl, width: 25, height: 25),
-                                  Spacer(),
-
-                                  // Temperature just below dot
-                                  Text(
-                                    '${hour.temp.toInt()}°C',
-                                    style: TextStyle(
-                                      color: themeController.themeMode.value == ThemeMode.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 14,
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        SizedBox(height: 4),
+                                        Text(
+                                          '${hour.rainChance}% ',
+                                          style: TextStyle(
+                                            color: themeController.themeMode.value == ThemeMode.light
+                                                ? Colors.blue
+                                                : Colors.greenAccent,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          '${(hour.temp * 0.5).toStringAsFixed(1)} km/h',
+                                          style: TextStyle(
+                                            color: themeController.themeMode.value == ThemeMode.light
+                                                ? Colors.black
+                                                : Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-
-                                  SizedBox(height: 4),
-                                  // Rain chance
-                                  Text(
-                                    '${hour.rainChance}% ',
-                                    style: TextStyle(
-                                      color: themeController.themeMode.value == ThemeMode.light
-                                          ? Colors.blue
-                                          :Colors.greenAccent,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                                  Positioned(
+                                    top: y - 24,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: Text(
+                                        '${hour.temp.toInt()}°C',
+                                        style: TextStyle(
+                                          color: themeController.themeMode.value == ThemeMode.light
+                                              ? Colors.black
+                                              : Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ),
-
-                                  // Wind at the bottom
-                                  SizedBox(height: 4),
-                                  Text(
-                                    '${(hour.temp * 0.5).toStringAsFixed(1)} km/h',
-                                    style: TextStyle(
-                                      color: themeController.themeMode.value == ThemeMode.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
                                 ],
                               ),
                             );
                           }).toList(),
-                        ),
                         ),
                       ),
                     ],
@@ -221,6 +237,18 @@ class WeatherForecastChart extends StatelessWidget {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                "প্রধানত মেঘলা আকাশসহ হাল্কা বৃষ্টির সম্ভাবনা আছে",
+                style: TextStyle(
+                  color: Colors.lightGreenAccent.shade100,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );

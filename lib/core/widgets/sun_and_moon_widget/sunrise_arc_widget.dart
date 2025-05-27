@@ -139,7 +139,7 @@ class ArcPainter extends CustomPainter {
     // 3. Draw the Arc Stroke
     final Paint arcPaint = Paint()
       ..color = controller.themeMode.value == ThemeMode.light
-          ? Colors.black
+          ? Colors.black.withOpacity(.7)
           : Colors.white.withOpacity(0.3)
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
@@ -149,7 +149,7 @@ class ArcPainter extends CustomPainter {
     // 4. Draw the Bottom Straight Line
     final Paint linePaint = Paint()
       ..color = controller.themeMode.value == ThemeMode.light
-          ? Colors.black
+          ? Colors.black.withOpacity(.7)
           : Colors.white
       ..strokeWidth = 2;
     canvas.drawLine(Offset(-5, size.height), Offset(size.width+5, size.height), linePaint);
@@ -157,7 +157,7 @@ class ArcPainter extends CustomPainter {
     // 5. Draw the Dots
     final Paint dotPaint = Paint()
       ..color = controller.themeMode.value == ThemeMode.light
-          ? Colors.black
+          ? Colors.black.withOpacity(.7)
           : Colors.white
       ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(6, size.height), 4, dotPaint);

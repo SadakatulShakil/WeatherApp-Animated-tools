@@ -1,3 +1,4 @@
+import 'package:bmd_weather_app/core/widgets/forecast_widget/temp_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -6,9 +7,16 @@ import '../../../controllers/forecast_controller.dart';
 import '../../../controllers/theme_controller.dart';
 import '../../screens/icon_preference.dart';
 
-class WeeklyForecastView extends StatelessWidget {
+class WeeklyForecastView extends StatefulWidget {
+  @override
+  State<WeeklyForecastView> createState() => _WeeklyForecastViewState();
+}
+
+class _WeeklyForecastViewState extends State<WeeklyForecastView> {
   final ForecastController controller = Get.put(ForecastController());
+
   final ThemeController themeController = Get.find<ThemeController>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -99,20 +107,8 @@ class WeeklyForecastView extends StatelessWidget {
                                       color: Colors.white.withOpacity(0.2),
                                     ),
                                   ),
-                                  FractionallySizedBox(
-                                    widthFactor: (item.maxTemp - item.minTemp) / 15.0,
-                                    child: Container(
-                                      height: 8,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Colors.orange,
-                                            Colors.deepOrange,
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                  AnimatedTempIndicator(
+                                    rangeFactor: ((item.maxTemp - item.minTemp)),
                                   ),
                                 ],
                               ),

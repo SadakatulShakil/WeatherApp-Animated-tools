@@ -74,7 +74,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                   widget.currentValue.toStringAsFixed(0),
                   style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
-                          ? Colors.black
+                          ? Colors.black.withOpacity(.7)
                           : Colors.white,
                       fontSize: 65,
                     fontWeight: FontWeight.bold

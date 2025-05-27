@@ -14,7 +14,8 @@ class UvIndicatorWidget extends StatefulWidget {
   State<UvIndicatorWidget> createState() => _UvIndicatorWidgetState();
 }
 
-class _UvIndicatorWidgetState extends State<UvIndicatorWidget> with SingleTickerProviderStateMixin {
+class _UvIndicatorWidgetState extends State<UvIndicatorWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _position;
   final ThemeController themeController = Get.find<ThemeController>();

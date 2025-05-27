@@ -161,7 +161,7 @@ class ArcPainter extends CustomPainter {
     final Paint arcPaint =
         Paint()
           ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black
+              ? Colors.black.withOpacity(.7)
               : Colors.white.withOpacity(0.3)
           ..strokeWidth = 3
           ..style = PaintingStyle.stroke;
@@ -172,7 +172,7 @@ class ArcPainter extends CustomPainter {
     final Paint linePaint =
         Paint()
           ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black
+              ? Colors.black.withOpacity(.7)
               : Colors.white
           ..strokeWidth = 2;
     canvas.drawLine(
@@ -185,7 +185,7 @@ class ArcPainter extends CustomPainter {
     final Paint dotPaint =
         Paint()
           ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black
+              ? Colors.black.withOpacity(.7)
               : Colors.white
           ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(6, size.height), 4, dotPaint);

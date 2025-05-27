@@ -89,7 +89,7 @@ class PrecipitationCard extends StatelessWidget {
                         value,
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
-                              ? Colors.black
+                              ? Colors.black.withOpacity(.7)
                               : Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 70,

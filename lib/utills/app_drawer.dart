@@ -1,3 +1,4 @@
+import 'package:bmd_weather_app/core/screens/visibility_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -73,6 +74,22 @@ class _AppDrawerState extends State<AppDrawer> {
             }
           ),
           ListTile(
+            leading: Icon(Icons.disabled_visible,
+                color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white),
+            title: Text('Visibility Preference',
+                style: TextStyle(
+                  color: themeController.themeMode.value == ThemeMode.light
+                      ? Colors.black
+                      : Colors.white,
+                )),
+            onTap: () {
+              Navigator.of(context).pop();
+              Get.to(()=> VisibilityPreference(), transition: Transition.rightToLeft);
+            },
+          ),
+          ListTile(
               leading: Icon(Icons.design_services,
                   color: themeController.themeMode.value == ThemeMode.light
                       ? Colors.black
@@ -130,6 +147,7 @@ class _AppDrawerState extends State<AppDrawer> {
               },
             splashColor: Colors.transparent,
           ),
+
         ],
       ),
     );

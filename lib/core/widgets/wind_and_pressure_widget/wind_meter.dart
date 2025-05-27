@@ -125,14 +125,14 @@ class _WindCompassState extends State<WindCompass>
                         axisLabelStyle: GaugeTextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
                               ?Colors.black
-                              :Colors.white60,
+                              :Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 10,
                         ),
                         minorTickStyle: MinorTickStyle(
                           color: themeController.themeMode.value == ThemeMode.light
                               ?Colors.black
-                              :Colors.white60,
+                              :Colors.white,
                           thickness: 1.6,
                           length: 0.058,
                           lengthUnit: GaugeSizeUnit.factor,
