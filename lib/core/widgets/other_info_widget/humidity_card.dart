@@ -28,7 +28,7 @@ class HumidityCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: themeController.themeMode.value == ThemeMode.light
             ? Colors.white
-            : Colors.blue.shade400,
+            : Color(0xFF3986DD),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -89,7 +89,7 @@ class HumidityCard extends StatelessWidget {
                         value,
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
-                              ? Colors.black.withOpacity(.7)
+                              ? Colors.black.withValues(alpha: 0.7)
                               : Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 70,

@@ -26,10 +26,17 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
         gradient: LinearGradient(
           colors: themeController.themeMode.value == ThemeMode.light
               ? [Colors.white, Colors.white]
-              : [Colors.blue.shade500, Colors.blue.shade500],
+              : [Color(0xFF3986DD), Color(0xFF3986DD)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -74,7 +81,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                   widget.currentValue.toStringAsFixed(0),
                   style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
-                          ? Colors.black.withOpacity(.7)
+                          ? Colors.black.withValues(alpha: 0.7)
                           : Colors.white,
                       fontSize: 65,
                     fontWeight: FontWeight.bold

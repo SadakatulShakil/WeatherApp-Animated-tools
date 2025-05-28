@@ -102,8 +102,8 @@ class _UvIndicatorWidgetState extends State<UvIndicatorWidget>
                         boxShadow: [
                           BoxShadow(
                             color: themeController.themeMode.value == ThemeMode.light
-                                ? Colors.black.withOpacity(0.5)
-                                :Colors.white.withOpacity(0.6),
+                                ? Colors.black.withValues(alpha: 0.5)
+                                :Colors.white.withValues(alpha: 0.6),
                             blurRadius: 8,
                             spreadRadius: 2,
                           )

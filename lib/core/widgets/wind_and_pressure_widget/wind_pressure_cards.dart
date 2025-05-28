@@ -30,7 +30,7 @@ class WindAndPressureCards extends StatelessWidget {
           decoration: BoxDecoration(
             color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.white
-                : Colors.blue.shade400,
+                : Color(0xFF3986DD),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -84,7 +84,7 @@ class WindAndPressureCards extends StatelessWidget {
           decoration: BoxDecoration(
             color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.white
-                : Colors.blue.shade400,
+                : Color(0xFF3986DD),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(

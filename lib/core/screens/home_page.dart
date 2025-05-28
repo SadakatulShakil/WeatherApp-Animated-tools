@@ -1,5 +1,3 @@
-import 'package:bmd_weather_app/utills/app_color.dart';
-import 'package:bmd_weather_app/utills/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -81,7 +79,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                     gradient: LinearGradient(
                       colors: themeController.themeMode.value == ThemeMode.light
                           ?[Colors.black26, Colors.grey.shade300]
-                          :[Colors.blue.withOpacity(.2), Colors.blue.shade700]
+                          :[Colors.blue.withValues(alpha: 0.4), Color(0xFF165ABC)]
                       ,
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -110,7 +108,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                             Text(
                               'Fri 5.00 PM',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withValues(alpha: 0.9),
                                 fontSize: 14,
                               ),
                             ),
@@ -147,8 +145,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                         ),
                         decoration: BoxDecoration(
                           color: themeController.themeMode.value == ThemeMode.light
-                              ? Colors.white.withOpacity(0.7)
-                              : Colors.blue.shade900.withOpacity(0.7),
+                              ? Colors.white.withValues(alpha: 0.7)
+                              : Colors.blue.shade900.withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
@@ -184,7 +182,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                         decoration: BoxDecoration(
                           color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.white
-                              : Colors.white.withOpacity(0.2),
+                              : Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(

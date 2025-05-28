@@ -17,10 +17,17 @@ class SunAndMoonWidget extends StatelessWidget {
         gradient: LinearGradient(
           colors: themeController.themeMode.value == ThemeMode.light
           ? [Colors.white, Colors.white]
-              :[Colors.blue.shade500, Colors.blue.shade500],
+              :[Color(0xFF3986DD), Color(0xFF3986DD)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -53,14 +60,27 @@ class SunAndMoonWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: themeController.themeMode.value == ThemeMode.light
-                      ? Colors.black
-                      : Colors.white,
+                Spacer(),
+                Text(
+                  "Details",
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Color(0xFF00E5CA),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Divider(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.grey.shade300
+                  : Colors.grey.shade500,
+              height: 1,
             ),
           ),
           SizedBox(height: 8),
@@ -73,8 +93,8 @@ class SunAndMoonWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     gradient: LinearGradient(
                       colors: themeController.themeMode.value == ThemeMode.light
-                          ? [Colors.blue.withOpacity(.5), Colors.blue.withOpacity(.5)]
-                          : [Colors.white.withOpacity(.5), Colors.white.withOpacity(.5)],
+                          ? [Colors.blue.withValues(alpha: 0.5), Colors.blue.withOpacity(.5)]
+                          : [Colors.white.withValues(alpha: 0.5), Colors.white.withOpacity(.5)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
@@ -110,8 +130,8 @@ class SunAndMoonWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         gradient: LinearGradient(
                           colors: themeController.themeMode.value == ThemeMode.light
-                              ? [Colors.blue.withOpacity(.5), Colors.blue.withOpacity(.5)]
-                              : [Colors.white.withOpacity(.5), Colors.white.withOpacity(.5)],
+                              ? [Colors.blue.withValues(alpha: 0.5), Colors.blue.withOpacity(.5)]
+                              : [Colors.white.withValues(alpha: 0.5), Colors.white.withOpacity(.5)],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -147,8 +167,8 @@ class SunAndMoonWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         gradient: LinearGradient(
                           colors: themeController.themeMode.value == ThemeMode.light
-                              ? [Colors.blue.withOpacity(.5), Colors.blue.withOpacity(.5)]
-                              : [Colors.white.withOpacity(.5), Colors.white.withOpacity(.5)],
+                              ? [Colors.blue.withValues(alpha: 0.5), Colors.blue.withOpacity(.5)]
+                              : [Colors.white.withValues(alpha: 0.5), Colors.white.withOpacity(.5)],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),

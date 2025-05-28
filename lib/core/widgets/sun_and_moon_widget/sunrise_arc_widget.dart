@@ -126,8 +126,8 @@ class ArcPainter extends CustomPainter {
     final Paint fillPaint = Paint()
       ..shader = LinearGradient(
         colors: [
-          Colors.yellow.shade400.withOpacity(0.6),
-          Colors.blue.shade200.withOpacity(0.07),
+          Color(0xFFFFCD68).withValues(alpha: 0.7),
+          Color(0x000c2a96),
         ],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -139,9 +139,9 @@ class ArcPainter extends CustomPainter {
     // 3. Draw the Arc Stroke
     final Paint arcPaint = Paint()
       ..color = controller.themeMode.value == ThemeMode.light
-          ? Colors.black.withOpacity(.7)
-          : Colors.white.withOpacity(0.3)
-      ..strokeWidth = 3
+          ? Colors.black.withValues(alpha: 0.7)
+          : Color(0xFFF6B32A)
+      ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
     canvas.drawArc(arcRect, math.pi, math.pi, false, arcPaint);
@@ -149,7 +149,7 @@ class ArcPainter extends CustomPainter {
     // 4. Draw the Bottom Straight Line
     final Paint linePaint = Paint()
       ..color = controller.themeMode.value == ThemeMode.light
-          ? Colors.black.withOpacity(.7)
+          ? Colors.black.withValues(alpha: 0.7)
           : Colors.white
       ..strokeWidth = 2;
     canvas.drawLine(Offset(-5, size.height), Offset(size.width+5, size.height), linePaint);
@@ -157,7 +157,7 @@ class ArcPainter extends CustomPainter {
     // 5. Draw the Dots
     final Paint dotPaint = Paint()
       ..color = controller.themeMode.value == ThemeMode.light
-          ? Colors.black.withOpacity(.7)
+          ? Colors.black.withValues(alpha: 0.7)
           : Colors.white
       ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(6, size.height), 4, dotPaint);

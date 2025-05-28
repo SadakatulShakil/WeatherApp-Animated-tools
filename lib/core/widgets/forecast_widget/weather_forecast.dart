@@ -59,15 +59,39 @@ class WeatherForecastChart extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Forecast, Next 72 hours",
-              style: TextStyle(
-                color: themeController.themeMode.value == ThemeMode.light
-                    ? Colors.black
-                    : Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  "Forecast, Next 72 hours",
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  "Details",
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Color(0xFF00E5CA),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Divider(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.grey.shade300
+                  : Colors.grey.shade500,
+              height: 1,
             ),
           ),
           SizedBox(height: 5),
@@ -235,6 +259,15 @@ class WeatherForecastChart extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Divider(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.grey.shade300
+                  : Color(0xFF00E5CA),
+              height: 1,
             ),
           ),
           Padding(

@@ -25,10 +25,17 @@ class _WeeklyForecastViewState extends State<WeeklyForecastView> {
         gradient: LinearGradient(
           colors: themeController.themeMode.value == ThemeMode.light
               ? [Colors.white, Colors.white]
-              : [Colors.blue.shade500, Colors.blue.shade500],
+              : [Color(0xFF3986DD), Color(0xFF3986DD)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -36,15 +43,40 @@ class _WeeklyForecastViewState extends State<WeeklyForecastView> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Forecast, Next 7 days",
-              style: TextStyle(
-                color: themeController.themeMode.value == ThemeMode.light
-                    ? Colors.black
-                    : Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  "Forecast, Next 7 days",
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  "Details",
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Color(0xFF00E5CA),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Divider(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.grey.shade300
+                  : Colors.grey.shade500,
+              height: 1,
             ),
           ),
           SingleChildScrollView(
@@ -104,7 +136,7 @@ class _WeeklyForecastViewState extends State<WeeklyForecastView> {
                                     height: 8,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: Colors.white.withOpacity(0.2),
+                                      color: Colors.white.withValues(alpha: 0.2),
                                     ),
                                   ),
                                   AnimatedTempIndicator(

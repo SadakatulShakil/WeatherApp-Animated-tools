@@ -34,7 +34,7 @@ final dark_text_color =  Colors.white;
 final light_text_color =  Colors.black;
 final light_background_linear1 = Colors.black26;
 final light_background_linear2 = Colors.grey[300];
-final dark_background_linear1 = Colors.blue.withOpacity(.2);
+final dark_background_linear1 = Colors.blue.withValues(alpha: 0.2);
 final dark_background_linear2 = Colors.blue[700];
 final dark_temp_info_background = Colors.blue[700];
 final light_temp_info_background = Colors.white;
@@ -61,7 +61,7 @@ AppColors();
 // final light_text_color =  Colors.black
 // final light_background_linear1 = Colors.black26
 // final light_background_linear2 = Colors.grey.shade300
-// final dark_background_linear1 = Colors.blue.withOpacity(.2)
+// final dark_background_linear1 = Colors.blue.withValues(alpha: 0.2)
 // final dark_background_linear2 = Colors.blue.shade700
 // final dark_temp_info_background = Colors.blue.shade700
 // final light_temp_info_background = Colors.white

@@ -147,8 +147,8 @@ class ArcPainter extends CustomPainter {
         Paint()
           ..shader = LinearGradient(
             colors: [
-              Colors.purple.shade400.withOpacity(0.6),
-              Colors.blue.shade200.withOpacity(0.07),
+              Color(0xFFD777FF).withValues(alpha: 0.7),
+              Color(0x000c2a96),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -161,9 +161,9 @@ class ArcPainter extends CustomPainter {
     final Paint arcPaint =
         Paint()
           ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black.withOpacity(.7)
-              : Colors.white.withOpacity(0.3)
-          ..strokeWidth = 3
+              ? Colors.black.withValues(alpha: 0.7)
+              : Color(0xFFD777FF)
+          ..strokeWidth = 1
           ..style = PaintingStyle.stroke;
 
     canvas.drawArc(arcRect, math.pi, math.pi, false, arcPaint);
@@ -172,7 +172,7 @@ class ArcPainter extends CustomPainter {
     final Paint linePaint =
         Paint()
           ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black.withOpacity(.7)
+              ? Colors.black.withValues(alpha: 0.7)
               : Colors.white
           ..strokeWidth = 2;
     canvas.drawLine(
@@ -185,7 +185,7 @@ class ArcPainter extends CustomPainter {
     final Paint dotPaint =
         Paint()
           ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black.withOpacity(.7)
+              ? Colors.black.withValues(alpha: 0.7)
               : Colors.white
           ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(6, size.height), 4, dotPaint);
