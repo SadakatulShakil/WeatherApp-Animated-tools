@@ -243,7 +243,7 @@ class WeatherForecastChart extends StatelessWidget {
               child: Text(
                 "প্রধানত মেঘলা আকাশসহ হাল্কা বৃষ্টির সম্ভাবনা আছে",
                 style: TextStyle(
-                  color: Colors.lightGreenAccent.shade100,
+                  color: Color(0xFF00E5CA),
                   fontWeight: FontWeight.bold,
                 ),
               ),
