@@ -233,9 +233,9 @@ class WeatherForecastChart extends StatelessWidget {
                                     ),
                                   ),
                                   Positioned(
-                                    top: y - 24,
+                                    top: y - 35,
                                     left: 0,
-                                    right: 0,
+                                    right: 20,
                                     child: Center(
                                       child: Text(
                                         '${hour.temp.toInt()}°C',
@@ -243,7 +243,7 @@ class WeatherForecastChart extends StatelessWidget {
                                           color: themeController.themeMode.value == ThemeMode.light
                                               ? Colors.black
                                               : Colors.white,
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

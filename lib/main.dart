@@ -1,5 +1,6 @@
 import 'package:bmd_weather_app/utills/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'controllers/forecast_controller.dart';
@@ -21,6 +22,10 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // makes status bar transparent
+      statusBarIconBrightness: Brightness.dark, // or Brightness.light depending on text color
+    ));
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Weather UI',
