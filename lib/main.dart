@@ -2,14 +2,16 @@ import 'package:bmd_weather_app/utills/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'controllers/forecast_controller.dart';
 import 'controllers/home_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'core/screens/home_page.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('bn_BD', null);
   Get.put(ForecastController());
   Get.put(HomeController());
   Get.put(ThemeController());

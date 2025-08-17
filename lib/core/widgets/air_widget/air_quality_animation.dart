@@ -120,10 +120,10 @@ class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTick
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Good', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text('ভাল', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white,)),
-            Text('Danger', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text('বিপজ্জনক', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white,)),
           ],

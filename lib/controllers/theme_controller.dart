@@ -21,7 +21,7 @@ class ThemeController extends GetxController {
 
   Future<void> _loadThemeFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    final isDark = prefs.getBool(_themeKey) ?? false;
+    final isDark = prefs.getBool(_themeKey) ?? true; // true to dark mode if not set and false to light mode if not set
     themeMode.value = isDark ? ThemeMode.dark : ThemeMode.light;
     Get.changeThemeMode(themeMode.value);
   }

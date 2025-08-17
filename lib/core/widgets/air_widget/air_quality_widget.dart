@@ -58,7 +58,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                     ),
                     SizedBox(width: 16),
                     Text(
-                      'Air Quality',
+                      'বাতাসের মান',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: themeController.themeMode.value == ThemeMode.light
@@ -78,7 +78,8 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  widget.currentValue.toStringAsFixed(0),
+                  '৪২',
+                  //widget.currentValue.toStringAsFixed(0),
                   style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black.withValues(alpha: 0.7)
@@ -89,7 +90,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Good', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                child: Text('ভাল', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                     ? Colors.black
                     : Colors.white, fontSize: 16),),
               )
@@ -98,7 +99,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
           SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Air Quality is considered satisfactory and air pollution passes little or no risk.',
+            child: Text('বাতাসের মান সন্তোষজনক বলে মনে করা হয়, এবং বায়ু দূষণ খুব কম বা কোনও ঝুঁকি তৈরি করে না',
               style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                   ? Colors.black
                   : Colors.white, fontSize: 16),),

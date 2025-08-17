@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../controllers/forecast_controller.dart';
 import '../../../controllers/theme_controller.dart';
 import '../../../models/hourly_weather_model.dart';
+import '../../screens/hourly_forecast_page.dart';
 
 class WeatherForecastChart extends StatelessWidget {
   final ForecastController controller = Get.put(ForecastController());
@@ -57,32 +58,38 @@ class WeatherForecastChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Text(
-                  "Forecast, Next 72 hours",
-                  style: TextStyle(
-                    color: themeController.themeMode.value == ThemeMode.light
-                        ? Colors.black
-                        : Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
+          GestureDetector(
+            onTap: () {
+              // Handle tap for details
+             Get.to(() => HourlyForecastDetailsPage());
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "পরবর্তী ৭২ ঘন্টার পূর্বাভাস",
+                    style: TextStyle(
+                      color: themeController.themeMode.value == ThemeMode.light
+                          ? Colors.black
+                          : Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                Spacer(),
-                Text(
-                  "Details",
-                  style: TextStyle(
-                    color: themeController.themeMode.value == ThemeMode.light
-                        ? Colors.black
-                        : Color(0xFF00E5CA),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                  Spacer(),
+                  Text(
+                    "বিস্তারিত",
+                    style: TextStyle(
+                      color: themeController.themeMode.value == ThemeMode.light
+                          ? Colors.black
+                          : Color(0xFF00E5CA),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Padding(

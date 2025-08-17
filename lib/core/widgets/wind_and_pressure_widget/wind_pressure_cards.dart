@@ -1,3 +1,4 @@
+import 'package:bmd_weather_app/core/screens/pressure_details_page.dart';
 import 'package:bmd_weather_app/core/widgets/wind_and_pressure_widget/pressure_meter.dart';
 import 'package:bmd_weather_app/core/widgets/wind_and_pressure_widget/wind_meter.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../controllers/forecast_controller.dart';
 import '../../../controllers/theme_controller.dart';
 import '../../screens/icon_preference.dart';
+import '../../screens/wind_details_page.dart';
 
 class WindAndPressureCards extends StatelessWidget {
   final ForecastController controller = Get.put(ForecastController());
@@ -43,32 +45,37 @@ class WindAndPressureCards extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.air, color: themeController.themeMode.value == ThemeMode.light
-                      ? Colors.black
-                      : Colors.white, size: 22),
-                  Expanded(
-                    child: Text(
-                      'Wind',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: themeController.themeMode.value == ThemeMode.light
-                            ? Colors.black
-                            : Colors.white,
-                        fontSize: 16,
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => WindDetailsPage());
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.air, color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white, size: 22),
+                    Expanded(
+                      child: Text(
+                        'বাতাস',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ? Colors.black
+                              : Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                    color: themeController.themeMode.value == ThemeMode.light
-                        ? Colors.black
-                        : Colors.white,
-                  ),
-                ],
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: themeController.themeMode.value == ThemeMode.light
+                          ? Colors.black
+                          : Colors.white,
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 child: WindCompass(
@@ -97,32 +104,37 @@ class WindAndPressureCards extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.compress, color: themeController.themeMode.value == ThemeMode.light
-                      ? Colors.black
-                      : Colors.white, size: 22),
-                  Expanded(
-                    child: Text(
-                      'Pressure',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: themeController.themeMode.value == ThemeMode.light
-                            ? Colors.black
-                            : Colors.white,
-                        fontSize: 16,
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => PressureDetailsPage());
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.compress, color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white, size: 22),
+                    Expanded(
+                      child: Text(
+                        'চাপ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ? Colors.black
+                              : Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                    color: themeController.themeMode.value == ThemeMode.light
-                        ? Colors.black
-                        : Colors.white,
-                  ),
-                ],
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: themeController.themeMode.value == ThemeMode.light
+                          ? Colors.black
+                          : Colors.white,
+                    ),
+                  ],
+                ),
               ),
               Expanded(child: PressureMeter(pressureValue: pressure)),
             ],

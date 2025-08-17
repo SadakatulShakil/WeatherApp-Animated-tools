@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart' as lottie;
 
 import '../../controllers/forecast_controller.dart';
 import '../../controllers/home_controller.dart';
@@ -59,95 +60,161 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
               end: Alignment.bottomCenter,
             ),
           ),
-          child: ListView(
-            padding: EdgeInsets.zero,
+          child: Column(
             children: [
-              /// Header (Top section fixed)
-              Stack(
-                children: [
-                  // Background image
-                  Container(
-                    height: 280,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: isNight
-                            ? const AssetImage('assets/night.jpg')
-                            : const AssetImage('assets/day.jpg'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+              /// Fixed Header (Top section)
+              _buildFixedHeader(isNight),
 
-                  // Gradient overlay
-                  Container(
-                    height: 280,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: themeController.themeMode.value == ThemeMode.light
-                            ?[Colors.black26, Colors.grey.shade300]
-                            :[Colors.blue.withValues(alpha: 0.4), Color(0xFF165ABC)]
-                        ,
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
+              /// Scrollable Dynamic widgets
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: controller.sectionOrder
+                      .where((section) => controller.sectionVisibility[section] ?? true)
+                      .map((section) {
+                    switch (section) {
+                      case HomeSection.weather_Forecast:
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: WeatherForecastChart(),
+                        );
+                      case HomeSection.weekly_Forecast:
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: WeeklyForecastView(),
+                        );
+                      case HomeSection.wind_Pressure:
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: WindAndPressureCards(),
+                        );
+                      case HomeSection.other_Info:
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: OtherInfoCards(),
+                        );
+                      case HomeSection.sun_Moon:
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SunAndMoonWidget(),
+                        );
+                      case HomeSection.air_Quality:
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: AirQualityWidget(currentValue: 42.0),
+                        );
+                    }
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+  }
 
-                  // Location and time
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildFixedHeader(bool isNight) {
+    return Stack(
+      children: [
+        // Background image
+        Container(
+          height: 280,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: isNight
+                  ? const AssetImage('assets/night.jpg')
+                  : const AssetImage('assets/day.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        // Gradient overlay
+        Container(
+          height: 330,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: themeController.themeMode.value == ThemeMode.light
+                  ?[Colors.black26, Colors.grey.shade300]
+                  :[Colors.blue.withValues(alpha: 0.4), Color(0xFF165ABC)]
+              ,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+        // Location and time
+        Padding(
+          padding: const EdgeInsets.only(top: 45, left: 8, right: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Mirpur DOHS, Dhaka',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'Fri 5.00 PM',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          'মিরপুর ডিওএইচএস, ঢাকা',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/svg/menu_icon.svg',
-                            color: Colors.white,
-                            width: 30,
-                            height: 30,
-                          ),
-                          onPressed: () {
-                            _scaffoldKey.currentState!.openDrawer();
-                          },
+                        Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          size: 24,
                         ),
                       ],
                     ),
-                  ),
-
-                  // Temperature and weather info
-                  Positioned(
-                    left: 16,
-                    right: 16,
-                    bottom: 20,
-                    child: Column(
+                    Text(
+                      'Fri 5.00 PM',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: SvgPicture.asset(
+                  'assets/svg/menu_icon.svg',
+                  width: 40,
+                  height: 40,
+                ),
+                onPressed: () {
+                  _scaffoldKey.currentState!.openDrawer();
+                },
+              ),
+            ],
+          ),
+        ),
+        // Temperature and weather info
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:  EdgeInsets.only(left: 16.0, right: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(height: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding:  EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 4,
                           ),
@@ -155,89 +222,37 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                             color: themeController.themeMode.value == ThemeMode.light
                                 ? Colors.white.withValues(alpha: 0.7)
                                 : Colors.blue.shade900.withValues(alpha: 0.7),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            "Fully Clear",
+                            "সম্পূর্ণ পরিষ্কার",
                             style: TextStyle(fontSize: 14,
+                                letterSpacing: 0.5,
                                 color: themeController.themeMode.value == ThemeMode.light
                                     ? Colors.black
                                     : Colors.white),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "32°C",
-                              style: TextStyle(
-                                fontSize: 72,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                height: 0.9,
-                              ),
-                            ),
-                            Image.asset(foreCast_controller.getIconUrl('sun_cloud'), width: 80, height: 80),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: themeController.themeMode.value == ThemeMode.light
-                                ? Colors.white
-                                : Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        SizedBox(height: 8),
+                        RichText(
+                          text: TextSpan(
                             children: [
-                              Text(
-                                "Feels like 36°C",
+                              TextSpan(
+                                text: '৩২°',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: themeController.themeMode.value == ThemeMode.light
-                                      ? Colors.black
-                                      : Colors.white,
-                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'NotoSansBengali',
+                                  fontSize: 62,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
                                 ),
                               ),
-                              Container(
-                                height: 16,
-                                width: 1,
-                                color: themeController.themeMode.value == ThemeMode.light
-                                    ? Colors.black
-                                    : Colors.white,
-                              ),
-                              Text(
-                                "+41°C -29°C",
+                              TextSpan(
+                                text: 'সে',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: themeController.themeMode.value == ThemeMode.light
-                                      ? Colors.black
-                                      : Colors.white,
+                                  fontFamily: 'NotoSansBengali',
+                                  fontSize: 35,
                                   fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Container(
-                                height: 16,
-                                width: 1,
-                                color: themeController.themeMode.value == ThemeMode.light
-                                    ? Colors.black
-                                    : Colors.white,
-                              ),
-                              Text(
-                                "31%",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: themeController.themeMode.value == ThemeMode.light
-                                      ? Colors.black
-                                      : Colors.white,
-                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -245,50 +260,145 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    Column(
+                      children: [
+                        Image.asset(foreCast_controller.getIconUrl('sun_cloud'),
+                            width: 64, height: 64),
+                        SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF00CEB5),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.visibility_outlined,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                "আমার পর্যবেক্ষণ",
+                                style: TextStyle(fontSize: 14,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              /// Dynamic widgets
-              ...controller.sectionOrder
-                  .where((section) => controller.sectionVisibility[section] ?? true)
-                  .map((section) {
-                switch (section) {
-                  case HomeSection.weather_Forecast:
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: WeatherForecastChart(),
-                    );
-                  case HomeSection.weekly_Forecast:
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: WeeklyForecastView(),
-                    );
-                  case HomeSection.wind_Pressure:
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: WindAndPressureCards(),
-                    );
-                  case HomeSection.other_Info:
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: OtherInfoCards(),
-                    );
-                  case HomeSection.sun_Moon:
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: SunAndMoonWidget(),
-                    );
-                  case HomeSection.air_Quality:
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: AirQualityWidget(currentValue: 42.0),
-                    );
-                }
-              }),
+              SizedBox(height: 12),
+              Padding(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "মনে হচ্ছে ৩৬° সে",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ? Colors.black
+                              : Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Container(
+                        height: 16,
+                        width: 1,
+                        color: themeController.themeMode.value == ThemeMode.light
+                            ? Colors.black
+                            : Colors.white,
+                      ),
+                      Text(
+                        "+৪১°সে - ২৯°সে",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ? Colors.black
+                              : Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Container(
+                        height: 16,
+                        width: 1,
+                        color: themeController.themeMode.value == ThemeMode.light
+                            ? Colors.black
+                            : Colors.white,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.cloudy_snowing,
+                            size: 16,
+                            color: themeController.themeMode.value == ThemeMode.light
+                                ? Colors.black
+                                : Colors.white,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            "৩১%",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: themeController.themeMode.value == ThemeMode.light
+                                  ? Colors.black
+                                  : Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                height: 45,
+                color: Colors.orange,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    lottie.Lottie.asset(
+                      'assets/json/alert.json',
+                      width: 30,
+                      height: 30,
+                      repeat: true,
+                    ),
+                    SizedBox(width: 8.0,),
+                    Text('২ ঘন্টার মধ্যে ঘূর্ণিঝড়ের সম্ভাবনা রয়েছে',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        )),
+                    lottie.Lottie.asset(
+                      'assets/json/arrow_forward.json',
+                      width: 40,
+                      height: 40,
+                      repeat: true,
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
-      ),
-    ));
+      ],
+    );
   }
 }

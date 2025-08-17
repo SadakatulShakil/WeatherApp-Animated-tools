@@ -49,7 +49,7 @@ class SunAndMoonWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 16,),
                     Text(
-                      'Sun & Moon',
+                      'সূর্য ও চাঁদ',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: themeController.themeMode.value == ThemeMode.light
@@ -62,7 +62,7 @@ class SunAndMoonWidget extends StatelessWidget {
                 ),
                 Spacer(),
                 Text(
-                  "Details",
+                  "বিস্তারিত",
                   style: TextStyle(
                     color: themeController.themeMode.value == ThemeMode.light
                         ? Colors.black
@@ -107,10 +107,10 @@ class SunAndMoonWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Waxing Gibbous', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                    Text('ওয়াক্সিং গিব্বাস', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                         ? Colors.black
                         : Colors.white, fontSize: 24),),
-                    Text('Moon Phase', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                    Text('চন্দ্রের অবস্থান', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                         ? Colors.black
                         : Colors.white, fontSize: 16),),
                   ],
@@ -147,10 +147,10 @@ class SunAndMoonWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('04/13', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        Text('০৪/১৩', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                             ? Colors.black
                             : Colors.white, fontSize: 22),),
-                        Text('Full Moon', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        Text('পূর্ণিমা', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                             ? Colors.black
                             : Colors.white, fontSize: 14),),
                       ],
@@ -184,10 +184,10 @@ class SunAndMoonWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('04/21', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        Text('০৪/২১', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                             ? Colors.black
                             : Colors.white, fontSize: 22),),
-                        Text('Last quarter', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        Text('কৃষ্ণপক্ষ', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                             ? Colors.black
                             : Colors.white, fontSize: 14),),
                       ],
