@@ -157,8 +157,6 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
                     }
                     // Now it’s safe to access index 0 or selectedWindDay
                     final dayData = controller.rainDays[controller.selectedRainyDay.value].toJson();
-                    final chartData = controller.rainDays[controller.selectedRainyDay.value];
-                    final brownValues = chartData.brown;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,

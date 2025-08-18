@@ -35,7 +35,7 @@ class UltraviolateRayController extends GetxController {
       final date = now.add(Duration(days: index));
 
       // Generate heatmap values (0-4)
-      final values = List.generate(5, (_) => (random.nextDouble() * 30).toDouble());
+      final values = List.generate(15, (_) => (random.nextDouble() * 30).toDouble());
 
       return {
         'date': DateFormat('dd/MM').format(date),

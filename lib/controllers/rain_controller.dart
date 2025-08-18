@@ -46,18 +46,6 @@ class RainController extends GetxController {
           9 + dayIndex, 10 + dayIndex, 11 + dayIndex, 12 + dayIndex, 14 + dayIndex, 12 + dayIndex,
         ];
 
-        // final brownValues = List.generate(24, (i) {
-        //   // Base sine wave between 7 and 17 (amplitude 5, offset 12)
-        //   double value = 12 + 5 * sin((i / 24) * 2 * pi + dayIndex * 0.3);
-        //   return double.parse(value.toStringAsFixed(1)); // optional: round to 1 decimal
-        // });
-        //
-        // final greenValues = List.generate(24, (i) {
-        //   // Cosine wave slightly lower than brown (amplitude 4, offset 10)
-        //   double value = 10 + 4 * cos((i / 24) * 2 * pi + dayIndex * 0.3);
-        //   return double.parse(value.toStringAsFixed(1));
-        // });
-
         return {
           "date": formattedDate,
           "day": dayName,

@@ -1,29 +1,21 @@
-import 'dart:math';
-
-import 'package:bmd_weather_app/controllers/rain_controller.dart';
-import 'package:bmd_weather_app/controllers/ultraviolate_controller.dart';
+import 'package:bmd_weather_app/controllers/wind_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+import '../../controllers/forecast_details_controller.dart';
+import '../../controllers/humidity_controller.dart';
 
 
-class UltraviolateDetailsPage extends StatefulWidget {
+class HumidityDetailsPage extends StatefulWidget {
   @override
-  State<UltraviolateDetailsPage> createState() => _UltraviolateDetailsPageState();
+  State<HumidityDetailsPage> createState() => _HumidityDetailsPageState();
 }
 
-class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
-  final UltraviolateRayController controller = Get.put(UltraviolateRayController());
+class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
 
-  Color getSmoothHeatColor(double value) {
-    final t = value.clamp(0, 30) / 30;
-    if (t < 0.5) {
-      return Color.lerp(Colors.green, Colors.orange, t * 2)!;
-    } else {
-      return Color.lerp(Colors.orange, Colors.red, (t - 0.5) * 2)!;
-    }
-  }
-
+  final HumidityController controller = Get.put(HumidityController());
   String toBanglaNumber(num value) {
     const en = ['0','1','2','3','4','5','6','7','8','9','.'];
     const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯','.'];
@@ -35,13 +27,12 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
   }
 
   String getChartTitle(Map<String, dynamic> dayData) {
-    final List<double> values = List<double>.from(dayData["values"]);
-    final minVal = values.reduce((a, b) => a < b ? a : b);
-    final maxVal = values.reduce((a, b) => a > b ? a : b);
+    final List<double> brown = List<double>.from(dayData["brown"]);
+    final minVal = brown.reduce((a, b) => a < b ? a : b);
+    final maxVal = brown.reduce((a, b) => a > b ? a : b);
 
-    return "${toBanglaNumber(minVal)}–${toBanglaNumber(maxVal)} মিটার/সেকেন্ড";
+    return "${toBanglaNumber(minVal)}% – ${toBanglaNumber(maxVal)}%";
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +40,7 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: const Text('অতিবেগুনী রশ্মি'),
+        title: const Text('আদ্রতা'),
         elevation: 0,
         leading:  GestureDetector(
             onTap: () => Get.back(),
@@ -66,26 +57,25 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                 SizedBox(
                   height: 80,
                   child: Obx(() {
-                    if (controller.rayDays.isEmpty) {
+                    if (controller.humidityDay.isEmpty) {
                       return const Center(child: CircularProgressIndicator(color: Colors.white));
                     }
-                    final dayData = controller.rayDays[controller.selectedRayDay.value];
 
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: controller.rayDays.length,
+                      itemCount: controller.humidityDay.length,
                       itemBuilder: (context, index) {
-                        final item = controller.rayDays[index];
+                        final item = controller.humidityDay[index];
 
                         return Container(
                           margin: EdgeInsets.only(
                             left: index == 0 ? 16.0 : 8.0,
-                            right: index == controller.rayDays.length - 1 ? 16.0 : 8.0,
+                            right: index == controller.humidityDay.length - 1 ? 16.0 : 8.0,
                           ),
                           child: GestureDetector(
-                            onTap: () => controller.selectedRayDay.value = index,
+                            onTap: () => controller.selectedHumidityDay.value = index,
                             child: Obx(() {
-                              final isSelected = controller.selectedRayDay.value == index;
+                              final isSelected = controller.selectedHumidityDay.value == index;
                               return AnimatedContainer(
                                 duration: Duration(milliseconds: 250),
                                 curve: Curves.easeInOut,
@@ -118,7 +108,7 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          item['date'],
+                                          item.date,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
@@ -127,7 +117,7 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                                           ),
                                         ),
                                         Text(
-                                          item['day'],
+                                          item.day,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
@@ -137,7 +127,7 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                                         ),
                                         const SizedBox(height: 6),
                                         Icon(
-                                          item['icon'],
+                                          item.icon,
                                           color: Colors.white,
                                           size: isSelected ? 24 : 20,
                                         ),
@@ -161,19 +151,23 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                     color: Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Obx((){
-                    final speeds = controller.rayDays[controller.selectedRayDay.value]['values'] as List<double>;
+                  child: Obx(() {
+                    if (controller.humidityDay.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      );
+                    }
+                    // Now it’s safe to access index 0 or selectedWindDay
+                    final dayData = controller.humidityDay[controller.selectedHumidityDay.value].toJson();
+                    final chartData = controller.humidityDay[controller.selectedHumidityDay.value];
+                    final brownValues = chartData.brown;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          getChartTitle(controller.rayDays[controller.selectedRayDay.value]),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                          getChartTitle(dayData),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         const Text(
@@ -187,72 +181,88 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                         SizedBox(
                           height: 250,
                           child: LineChart(
-                            LineChartData(
-                              minY: 0,
-                              maxY: 30,
-                              gridData: FlGridData(
-                                show: true,
-                                drawVerticalLine: false,
-                                horizontalInterval: 5,
-                                getDrawingHorizontalLine: (value) => FlLine(
-                                  color: Colors.white24,
-                                  strokeWidth: 1,
-                                ),
-                              ),
-                              titlesData: FlTitlesData(
-                                bottomTitles: AxisTitles(
-                                  sideTitles: SideTitles(
-                                    showTitles: true,
-                                    getTitlesWidget: (value, _) {
-                                      final hours = ['০০', '০৬', '১২', '১৮', '২৪'];
-                                      if (value.toInt() < hours.length) {
-                                        return Text(
-                                          hours[value.toInt()],
-                                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                              LineChartData(
+                                minY: 0,
+                                maxY: 100,
+                                minX: 0,
+                                maxX: 24,
+                                backgroundColor: Colors.transparent,
+                                gridData: FlGridData(show: false),
+                                titlesData: FlTitlesData(
+                                  bottomTitles: AxisTitles(
+                                    sideTitles: SideTitles(
+                                      showTitles: true,
+                                      reservedSize: 32,
+                                      interval: 6,
+                                      getTitlesWidget: (value, meta) {
+                                        final hour = value.toInt();
+                                        return Padding(
+                                          padding: const EdgeInsets.only(top: 8.0),
+                                          child: Text(
+                                            hour.toString().padLeft(2, '0'), // 00, 06, etc.
+                                            style: const TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 10,
+                                            ),
+                                          ),
                                         );
-                                      }
-                                      return const SizedBox.shrink();
-                                    },
-                                  ),
-                                ),
-                                leftTitles: AxisTitles(
-                                  sideTitles: SideTitles(
-                                    showTitles: true,
-                                    interval: 5,
-                                    getTitlesWidget: (value, _) => Text(
-                                      '${value.toInt()} মি/সে',
-                                      style: const TextStyle(color: Colors.white, fontSize: 10),
+                                      },
                                     ),
-                                    reservedSize: 40,
                                   ),
+                                  leftTitles: AxisTitles(
+                                    sideTitles: SideTitles(
+                                      showTitles: true,
+                                      reservedSize: 40,
+                                      interval: 20,
+                                      getTitlesWidget: (value, meta) {
+                                        const allowedValues = [0, 20, 40, 60, 80, 100];
+                                        if (allowedValues.contains(value.toInt())) {
+                                          return Text(
+                                            '${value.toInt()}%',
+                                            style: const TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 10,
+                                            ),
+                                          );
+                                        }
+                                        return const SizedBox.shrink();
+                                      },
+                                    ),
+                                  ),
+                                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                                 ),
-                                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                borderData: FlBorderData(
+                                  show: true,
+                                  border: Border.all(color: Colors.white24),
+                                ),
+                                lineBarsData: [
+                                  LineChartBarData(
+                                    spots: brownValues
+                                        .asMap()
+                                        .entries
+                                        .map((e) => FlSpot(e.key.toDouble(), e.value))
+                                        .toList(),
+                                    isCurved: true,
+                                    color: Colors.transparent,
+                                    barWidth: 2,
+                                    dotData: FlDotData(show: false),
+                                    belowBarData: BarAreaData(
+                                      show: true,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Color(0xFF295CBB).withOpacity(0.7),
+                                          Color(0xFF3D8C78).withOpacity(0.5),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              borderData: FlBorderData(show: false),
-                              lineBarsData: [
-                                LineChartBarData(
-                                  isCurved: true,
-                                  spots: List.generate(speeds.length, (i) => FlSpot(i.toDouble(), speeds[i])),
-                                  barWidth: 0,
-                                  isStrokeCapRound: true,
-                                  belowBarData: BarAreaData(
-                                    show: true,
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.red,
-                                        Colors.orange,
-                                        Colors.green,
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                                  ),
-                                  dotData: FlDotData(show: true),
-                                ),
-                              ],
-                            ),
-                          ),
+                            )
+
                         ),
                         Divider(
                           color: Colors.white24,
@@ -280,7 +290,7 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                         ),
                       ],
                     );
-                  }),
+                  })
                 ),
               ],
             ),
