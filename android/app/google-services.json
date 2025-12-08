@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "434626678676",
+    "project_id": "bmd-weather-app-38f0a",
+    "storage_bucket": "bmd-weather-app-38f0a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:434626678676:android:370dd149ea92b7637ec981",
+        "android_client_info": {
+          "package_name": "com.rimes.bmd_weather_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfH6xVMknThK0e95t5WLT5zNlSX6voG0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,8 @@
+import 'package:bmd_weather_app/core/widgets/activity_indicator/activity_indicator_widget.dart';
+import 'package:bmd_weather_app/core/widgets/prayer_time/prayer_time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart' as lottie;
@@ -13,6 +16,7 @@ import '../widgets/forecast_widget/weather_forecast.dart';
 import '../widgets/forecast_widget/weekly_forecast_widget.dart';
 import '../widgets/other_info_widget/other_info_card.dart';
 import '../widgets/sun_and_moon_widget/sun_and_moon_widget.dart';
+import '../widgets/survey/survey_widget.dart';
 import '../widgets/wind_and_pressure_widget/wind_pressure_cards.dart';
 
 class WeatherHomePage extends StatefulWidget {
@@ -24,7 +28,7 @@ class WeatherHomePage extends StatefulWidget {
 
 class _WeatherHomePageState extends State<WeatherHomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final HomeController controller = Get.put(HomeController());
+  final HomeController controller = Get.find<HomeController>();
   final ForecastController foreCast_controller = Get.put(ForecastController());
   final ThemeController themeController = Get.find<ThemeController>();
   // Dummy weather data
@@ -38,80 +42,97 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     final now = TimeOfDay.now();
     final isNight = now.hour < 6 || now.hour > 18;
     print('checkDayNight: ${now.hour}');
-    return Obx(() => AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // makes status bar transparent
-        statusBarIconBrightness: themeController.themeMode.value == ThemeMode.light
-            ? Brightness.dark
-            : Brightness.light, // or Brightness.light depending on text color
-      ),
-      child: Scaffold(
-        key: _scaffoldKey,
-        drawer: AppDrawer(),
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.transparent,
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: themeController.themeMode.value == ThemeMode.light
-                  ? [Colors.grey.shade300, Colors.white]
-                  : [Color(0xFF165ABC), Color(0xFF1B76AB)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+
+    return Obx(() {
+      if (!controller.isLoaded.value) {
+        return Center(child: lottie.Lottie.asset('assets/json/loading_anim.json', width: 80.w, height: 80.h),);
+      }
+
+      return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, // makes status bar transparent
+          statusBarIconBrightness: themeController.themeMode.value == ThemeMode.light
+              ? Brightness.dark
+              : Brightness.light, // or Brightness.light depending on text color
+        ),
+        child: Scaffold(
+          key: _scaffoldKey,
+          endDrawer: AppDrawer(),
+          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.transparent,
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: themeController.themeMode.value == ThemeMode.light
+                    ? [Colors.grey.shade300, Colors.white]
+                    : [Color(0xFF165ABC), Color(0xFF1B76AB)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: Column(
+              children: [
+                /// Fixed Header (Top section)
+                _buildFixedHeader(isNight),
+
+                /// Scrollable Dynamic widgets
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: controller.sectionOrder
+                        .where((section) => controller.sectionVisibility[section] ?? true)
+                        .map((section) {
+                      switch (section) {
+                        case HomeSection.weather_Forecast:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: WeatherForecastChart(),
+                          );
+                        case HomeSection.weekly_Forecast:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: WeeklyForecastView(),
+                          );
+                        case HomeSection.wind_Pressure:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: WindAndPressureCards(),
+                          );
+                        case HomeSection.other_Info:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: OtherInfoCards(),
+                          );
+                        case HomeSection.sun_Moon:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: SunAndMoonWidget(),
+                          );
+                        case HomeSection.air_Quality:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: AirQualityWidget(currentValue: 42.0),
+                          );
+                        case HomeSection.activity_Indicator:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ActivityIndicatorWidget(),
+                          );
+                        case HomeSection.prayer_Time:
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: PrayerTimeWidget(),
+                          );
+                      }
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
           ),
-          child: Column(
-            children: [
-              /// Fixed Header (Top section)
-              _buildFixedHeader(isNight),
-
-              /// Scrollable Dynamic widgets
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: controller.sectionOrder
-                      .where((section) => controller.sectionVisibility[section] ?? true)
-                      .map((section) {
-                    switch (section) {
-                      case HomeSection.weather_Forecast:
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: WeatherForecastChart(),
-                        );
-                      case HomeSection.weekly_Forecast:
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: WeeklyForecastView(),
-                        );
-                      case HomeSection.wind_Pressure:
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: WindAndPressureCards(),
-                        );
-                      case HomeSection.other_Info:
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: OtherInfoCards(),
-                        );
-                      case HomeSection.sun_Moon:
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: SunAndMoonWidget(),
-                        );
-                      case HomeSection.air_Quality:
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: AirQualityWidget(currentValue: 42.0),
-                        );
-                    }
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
         ),
-      ),
-    ));
+      );
+    });
   }
 
   Widget _buildFixedHeader(bool isNight) {
@@ -190,7 +211,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                   height: 40,
                 ),
                 onPressed: () {
-                  _scaffoldKey.currentState!.openDrawer();
+                  _scaffoldKey.currentState!.openEndDrawer();
                 },
               ),
             ],
@@ -265,30 +286,35 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                         Image.asset(foreCast_controller.getIconUrl('sun_cloud'),
                             width: 64, height: 64),
                         SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xFF00CEB5),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.visibility_outlined,
-                                size: 16,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                "আমার পর্যবেক্ষণ",
-                                style: TextStyle(fontSize: 14,
-                                    color: Colors.white),
-                              ),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            showTopSurveyDialog(context: context, controller: controller);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF00CEB5),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.visibility_outlined,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  "আমার পর্যবেক্ষণ",
+                                  style: TextStyle(fontSize: 14,
+                                      color: Colors.white),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(height: 8),

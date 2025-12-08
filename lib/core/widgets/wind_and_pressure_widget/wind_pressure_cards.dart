@@ -27,29 +27,29 @@ class WindAndPressureCards extends StatelessWidget {
       childAspectRatio: 0.70,
       // <<< Important! Adjust card height!
       children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: themeController.themeMode.value == ThemeMode.light
-                ? Colors.white
-                : Color(0xFF3986DD),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.to(() => WindDetailsPage());
-                },
-                child: Row(
+        GestureDetector(
+          onTap: () {
+            Get.to(() => WindDetailsPage());
+          },
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.white
+                  : Color(0xFF3986DD),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(Icons.air, color: themeController.themeMode.value == ThemeMode.light
@@ -76,39 +76,39 @@ class WindAndPressureCards extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              Expanded(
-                child: WindCompass(
-                  windSpeed: windSpeed,
-                  windDirection: 0, // North
+                Expanded(
+                  child: WindCompass(
+                    windSpeed: windSpeed,
+                    windDirection: 0, // North
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: themeController.themeMode.value == ThemeMode.light
-                ? Colors.white
-                : Color(0xFF3986DD),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.to(() => PressureDetailsPage());
-                },
-                child: Row(
+        GestureDetector(
+          onTap: () {
+            Get.to(() => PressureDetailsPage());
+          },
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.white
+                  : Color(0xFF3986DD),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(Icons.compress, color: themeController.themeMode.value == ThemeMode.light
@@ -135,9 +135,9 @@ class WindAndPressureCards extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              Expanded(child: PressureMeter(pressureValue: pressure)),
-            ],
+                Expanded(child: PressureMeter(pressureValue: pressure)),
+              ],
+            ),
           ),
         ),
       ],

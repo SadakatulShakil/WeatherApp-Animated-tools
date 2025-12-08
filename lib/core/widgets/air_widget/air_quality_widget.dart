@@ -1,3 +1,4 @@
+import 'package:bmd_weather_app/core/widgets/air_widget/air_quality_details_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -20,96 +21,110 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
   final ThemeController themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          colors: themeController.themeMode.value == ThemeMode.light
-              ? [Colors.white, Colors.white]
-              : [Color(0xFF3986DD), Color(0xFF3986DD)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: (){
+        Get.to(()=>AirQualityDetailsWidget());
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: themeController.themeMode.value == ThemeMode.light
+                ? [Colors.white, Colors.white]
+                : [Color(0xFF3986DD), Color(0xFF3986DD)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.wind_power,
-                      color: themeController.themeMode.value == ThemeMode.light
-                          ? Colors.black
-                          : Colors.white,
-                      size: 22,
-                    ),
-                    SizedBox(width: 16),
-                    Text(
-                      'বাতাসের মান',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: themeController.themeMode.value == ThemeMode.light
-                            ? Colors.black
-                            : Colors.white,
-                        fontSize: 16,
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.wind_power,
+                          color: themeController.themeMode.value == ThemeMode.light
+                              ? Colors.black
+                              : Colors.white,
+                          size: 22,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'বাতাসের মান',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: themeController.themeMode.value == ThemeMode.light
+                                ? Colors.black
+                                : Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const Icon(Icons.arrow_drop_down, color: Colors.white),
+                      ],
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                Divider(
+                  color: themeController.themeMode.value == ThemeMode.light
+                      ? Colors.grey.shade300
+                      : Colors.grey.shade500,
+                  height: 1,
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '৪২',
+                        //widget.currentValue.toStringAsFixed(0),
+                        style: TextStyle(
+                            color: themeController.themeMode.value == ThemeMode.light
+                                ? Colors.black.withValues(alpha: 0.7)
+                                : Colors.white,
+                            fontSize: 65,
+                          fontWeight: FontWeight.bold
+                        )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('ভাল', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                          ? Colors.black
+                          : Colors.white, fontSize: 16),),
+                    )
+                  ],
+                ),
+                SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('বাতাসের মান সন্তোষজনক বলে মনে করা হয়, এবং বায়ু দূষণ খুব কম বা কোনও ঝুঁকি তৈরি করে না',
+                    style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white, fontSize: 16),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: AirQualityAnimated(currentValue: widget.currentValue),
+                )
+                // Sun and Moon icons
               ],
             ),
           ),
-          SizedBox(height: 8),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  '৪২',
-                  //widget.currentValue.toStringAsFixed(0),
-                  style: TextStyle(
-                      color: themeController.themeMode.value == ThemeMode.light
-                          ? Colors.black.withValues(alpha: 0.7)
-                          : Colors.white,
-                      fontSize: 65,
-                    fontWeight: FontWeight.bold
-                  )),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('ভাল', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
-                    ? Colors.black
-                    : Colors.white, fontSize: 16),),
-              )
-            ],
-          ),
-          SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('বাতাসের মান সন্তোষজনক বলে মনে করা হয়, এবং বায়ু দূষণ খুব কম বা কোনও ঝুঁকি তৈরি করে না',
-              style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
-                  ? Colors.black
-                  : Colors.white, fontSize: 16),),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AirQualityAnimated(currentValue: widget.currentValue),
-          )
-          // Sun and Moon icons
-        ],
+        ),
       ),
     );
   }
