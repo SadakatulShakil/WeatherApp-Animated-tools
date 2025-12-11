@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/theme_controller.dart';
 import '../core/screens/dashboard_preference.dart';
 import '../core/screens/icon_preference.dart';
+import '../water_watch_pages/mobile.dart';
 import 'app_color.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -129,14 +130,13 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
 
           _drawerItem(
-            icon: Icons.dark_mode,
+            icon: Icons.science_outlined,
             isLight: isLight,
-            title: "Theme Preference",
-            trailing: _buildThemeSwitch(),
+            title: "Citizen Scientist",
             onTap: () {
-              themeController.toggleTheme(
-                themeController.themeMode.value != ThemeMode.dark,
-              );
+              Get.to(() => WaterWatchMobile(),
+                  transition: Transition.rightToLeft,
+                  duration: Duration(milliseconds: 300));
             },
           ),
 
@@ -146,6 +146,18 @@ class _AppDrawerState extends State<AppDrawer> {
             title: "profile_language_select".tr,
             trailing: _buildLanguageSegment(controller: settingsController),
             onTap: () {},
+          ),
+
+          _drawerItem(
+            icon: Icons.dark_mode,
+            isLight: isLight,
+            title: "Theme Preference",
+            trailing: _buildThemeSwitch(),
+            onTap: () {
+              themeController.toggleTheme(
+                themeController.themeMode.value != ThemeMode.dark,
+              );
+            },
           ),
 
           SizedBox(height: 20.h),

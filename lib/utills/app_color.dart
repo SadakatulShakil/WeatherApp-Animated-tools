@@ -10,6 +10,7 @@ class AppColors {
   final app_secondary = const Color(0xFFFFFFFF);
   final app_secondary_bg = const Color(0xFFE0F2d1);
   final positive_bg = const Color(0xFF14A20A);
+  final btn_bg = const Color(0xFF00D3B9);
 
   final black_font_color = const Color(0xFF000000);
   final grey_font_color = const Color(0xFF4D534D);

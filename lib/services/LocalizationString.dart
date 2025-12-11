@@ -15,7 +15,7 @@ class LocalizationString extends Translations {
       //Login Page
       'app_name': 'FFWC App',
       'welcome_login': 'LOGIN',
-      'login_greetings': 'Please login safely to your account',
+      'login_greetings': 'Welcome to Citizen Science',
       'welcome_message': 'Welcome to the FFWC App',
       'mobile_no_hint': 'Enter Mobile Number',
       'login_btn': 'Login',
@@ -26,6 +26,7 @@ class LocalizationString extends Translations {
       'wait': 'Wait ',
       'after_wait': ' seconds to send new code.',
       'resend_otp': 'RESEND CODE',
+      'otp_btn': 'Send OTP',
 
       //Dashboard
       'location_text': 'Mirpur DOHS, Dhaka, Bangladesh',
@@ -255,7 +256,7 @@ class LocalizationString extends Translations {
       "graph_title" :"Graph",
       "time_header": "Time",
       "water_level_heder": "Water Level",
-      "status_header": "Status",
+      "status_header": "Action",
       "update": "Update",
       "delete": "Delete",
       "confirm_delete_title": "Confirm Delete",
@@ -317,10 +318,10 @@ class LocalizationString extends Translations {
       //Login Page
       'app_name': 'এফএফডব্লিউসি অ্যাপ',
       'welcome_login': 'লগইন',
-      'login_greetings': 'আপনার অ্যাকাউন্টে নিরাপদে লগইন করুন',
+      'login_greetings': 'সিটিজেন সেয়েন্সে স্বাগত',
       'welcome_message': 'এফএফডব্লিউসি অ্যাপে আপনাকে স্বাগতম',
       'mobile_no_hint': 'মোবাইল নম্বর',
-      'login_btn': 'লগইন',
+      'login_btn': 'লগইন করুন',
 
       //Otp Page
       'otp_title': 'ওটিপি যাচাইকরণ',
@@ -328,6 +329,7 @@ class LocalizationString extends Translations {
       'wait': 'অপেক্ষা করুন ',
       'after_wait': ' সেকেন্ড নতুন কোড পাঠানোর জন্য',
       'resend_otp': 'কোড পুনরায় পাঠান',
+      'otp_btn': 'OTP পাঠান',
 
       //Dashboard
       'location_text': 'মিরপুর ডিওএইচএস, ঢাকা, বাংলাদেশ',
@@ -554,7 +556,7 @@ class LocalizationString extends Translations {
       "graph_title" :"গ্রাফ",
       "time_header": "সময়",
       "water_level_heder": "পানির স্তর",
-      "status_header": "অবস্থা",
+      "status_header": "একশন",
       "update": "হালনাগাদ",
       "delete": "মুছুন",
       'canceled': 'বাতিল',

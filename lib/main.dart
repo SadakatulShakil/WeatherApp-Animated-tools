@@ -3,6 +3,7 @@ import 'package:bmd_weather_app/services/LocalizationString.dart';
 import 'package:bmd_weather_app/services/user_pref_service.dart';
 import 'package:bmd_weather_app/utills/firebase_option.dart';
 import 'package:bmd_weather_app/utills/theme.dart';
+import 'package:bmd_weather_app/water_watch_controller/dashboard/DashboardController.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,6 +57,7 @@ void main() async {
 
   // --- Put Controllers ---
   Get.put(ThemeController());
+  Get.put(WaterWatchDashboardController());
   Get.put(ForecastController());
   Get.put(HomeController(), permanent: true);
 
