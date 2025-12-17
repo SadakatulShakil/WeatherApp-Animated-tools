@@ -5,13 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart' as lottie;
 
 import '../../controllers/forecast_controller.dart';
 import '../../controllers/home_controller.dart';
+import '../../controllers/network_controller.dart';
 import '../../controllers/theme_controller.dart';
+import '../../services/api_urls.dart';
+import '../../utills/app_color.dart';
 import '../../utills/app_drawer.dart';
 import '../widgets/air_widget/air_quality_widget.dart';
+import '../widgets/base_weather_card.dart';
 import '../widgets/forecast_widget/weather_forecast.dart';
 import '../widgets/forecast_widget/weekly_forecast_widget.dart';
 import '../widgets/other_info_widget/other_info_card.dart';
@@ -28,9 +33,10 @@ class WeatherHomePage extends StatefulWidget {
 
 class _WeatherHomePageState extends State<WeatherHomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final HomeController controller = Get.find<HomeController>();
+  final HomeController controller = Get.put(HomeController());
   final ForecastController foreCast_controller = Get.put(ForecastController());
   final ThemeController themeController = Get.find<ThemeController>();
+  final internetController = Get.put(NetworkController(), permanent: true);
   // Dummy weather data
   double windSpeed = 16.8;
   double pressure = 1002.0;
@@ -153,7 +159,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
         ),
         // Gradient overlay
         Container(
-          height: 330,
+          height: 300,
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -167,54 +173,20 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           ),
         ),
         // Location and time
-        Padding(
-          padding: const EdgeInsets.only(top: 45, left: 8, right: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'মিরপুর ডিওএইচএস, ঢাকা',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          size: 24,
-                        ),
-                      ],
-                    ),
-                    Text(
-                      'Fri 5.00 PM',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 30, left: 8, right: 8),
+            child: IconButton(
+              icon: SvgPicture.asset(
+                'assets/svg/menu_icon.svg',
+                width: 40,
+                height: 40,
               ),
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/svg/menu_icon.svg',
-                  width: 40,
-                  height: 40,
-                ),
-                onPressed: () {
-                  _scaffoldKey.currentState!.openEndDrawer();
-                },
-              ),
-            ],
+              onPressed: () {
+                _scaffoldKey.currentState!.openEndDrawer();
+              },
+            ),
           ),
         ),
         // Temperature and weather info
@@ -225,175 +197,31 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding:  EdgeInsets.only(left: 16.0, right: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 8),
-                        Container(
-                          padding:  EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: themeController.themeMode.value == ThemeMode.light
-                                ? Colors.white.withValues(alpha: 0.7)
-                                : Colors.blue.shade900.withValues(alpha: 0.7),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            "সম্পূর্ণ পরিষ্কার",
-                            style: TextStyle(fontSize: 14,
-                                letterSpacing: 0.5,
-                                color: themeController.themeMode.value == ThemeMode.light
-                                    ? Colors.black
-                                    : Colors.white),
+              ///------- Added Logic Here ------//
+              Obx(() {
+                print('check_state_dashboard: ${internetController.networkState.value}');
+                switch (internetController.networkState.value) {
+                  case NetworkState.loading:
+                    return SizedBox(
+                      height: 220.h,
+                      child: Center(
+                        child: Text(
+                          'data_load_indicator'.tr,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.sp,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '৩২°',
-                                style: TextStyle(
-                                  fontFamily: 'NotoSansBengali',
-                                  fontSize: 62,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'সে',
-                                style: TextStyle(
-                                  fontFamily: 'NotoSansBengali',
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Image.asset(foreCast_controller.getIconUrl('sun_cloud'),
-                            width: 64, height: 64),
-                        SizedBox(height: 8),
-                        GestureDetector(
-                          onTap: () {
-                            showTopSurveyDialog(context: context, controller: controller);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Color(0xFF00CEB5),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.visibility_outlined,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  "আমার পর্যবেক্ষণ",
-                                  style: TextStyle(fontSize: 14,
-                                      color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                      ),
+                    );
+                  case NetworkState.online:
+                    return _buildWeatherCard();
+                  case NetworkState.offline:
+                    return _buildWeatherCardDemo();
+                }
+              }),
+              ///-------add here ------//
               SizedBox(height: 12),
-              Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "মনে হচ্ছে ৩৬° সে",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: themeController.themeMode.value == ThemeMode.light
-                              ? Colors.black
-                              : Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Container(
-                        height: 16,
-                        width: 1,
-                        color: themeController.themeMode.value == ThemeMode.light
-                            ? Colors.black
-                            : Colors.white,
-                      ),
-                      Text(
-                        "+৪১°সে - ২৯°সে",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: themeController.themeMode.value == ThemeMode.light
-                              ? Colors.black
-                              : Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Container(
-                        height: 16,
-                        width: 1,
-                        color: themeController.themeMode.value == ThemeMode.light
-                            ? Colors.black
-                            : Colors.white,
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.cloudy_snowing,
-                            size: 16,
-                            color: themeController.themeMode.value == ThemeMode.light
-                                ? Colors.black
-                                : Colors.white,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            "৩১%",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: themeController.themeMode.value == ThemeMode.light
-                                  ? Colors.black
-                                  : Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               Container(
                 height: 45,
                 color: Colors.orange,
@@ -427,4 +255,109 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       ],
     );
   }
+
+  Widget _buildWeatherCardDemo() {
+    final isBangla = Get.locale?.languageCode == 'bn';
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 32.h, 16.w, 12.h),
+      width: double.infinity,
+      height: 200.h,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 15.h),
+          SizedBox(height: 12.h),
+          Column(
+            children: [
+              Text(isBangla?'🚫 ইন্টারনেট নাই':'🚫 No Internet',
+                style: GoogleFonts.notoSansBengali(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 25.sp,
+                  letterSpacing: 1.0.sp,
+                  color: Colors.white,
+                ),
+              ),
+              Text(isBangla?'   ইন্টারনেট সংযোগ দিন':'Please Connect to Internet',
+                style: GoogleFonts.notoSansBengali(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.sp,
+                  letterSpacing: 1.0.sp,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWeatherCard() {
+    return Obx(() {
+      print('checkBool: ${controller.isForecastFetched.value}');
+      if (!controller.isForecastFetched.value) {
+        return SizedBox(
+          height: 200.h,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              lottie.Lottie.asset(
+                'assets/json/server_issue.json',
+                height: 100.h,
+              ),
+              Text(
+                'server_maintenance_msg'.tr,
+                style: TextStyle(
+                  color: AppColors().app_primary_bg,
+                  fontSize: 18.sp,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      final forecast = controller.forecast.value;
+      if (forecast == null || forecast.result?.current == null) {
+        return SizedBox(
+          height: 200.h,
+          child: Center(
+            child: Text(
+              'data_load_indicator'.tr,
+              style: TextStyle(color: Colors.white, fontSize: 16.sp),
+            ),
+          ),
+        );
+      }
+
+      final current = controller.forecast.value?.result?.current;
+
+      print('checkCurrentTemp: ${current?.temp?.valAvg}');
+      return BaseWeatherCard(
+        //iconUrl: "https://bamisapp.bdservers.site/assets/weather_icons/ic_sunny.png",
+        location: controller.currentLocationName.value,
+        date: "${current?.weekday}, ${current?.date}",
+        temp: current?.temp?.valAvg ?? '',
+        temp_unit: current?.tempUnit ?? '',
+        tempMax:
+        "${current?.temp?.valMax ?? ''}${current?.tempUnit ?? ''}",
+        tempMin:
+        "${current?.temp?.valMin ?? ''}${current?.tempUnit ?? ''}",
+        rain: current?.rf?.valAvg ?? '',
+        rain_unit: current?.rfUnit ?? '',
+        feels_like:
+        "${'feels_like'.tr} ${current?.temp?.valMax ?? ''}${current?.tempUnit ?? ''}",
+        type: current?.type ?? 'N/A',
+        humidity:
+        "${current?.rh?.valAvg ?? ''} ${current?.rhUnit ?? ''}",
+        wind:
+        "${current?.windspd?.valAvg ?? ''}${current?.windspdUnit ?? ''}",
+        loading: controller.isForecastLoading.value,
+        controller: controller,
+        onLocationTap: controller.openLocationSelector,
+      );
+    });
+  }
+
 }

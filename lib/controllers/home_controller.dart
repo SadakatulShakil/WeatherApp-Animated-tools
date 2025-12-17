@@ -1,11 +1,22 @@
 import 'dart:convert';
 
+import 'package:bmd_weather_app/core/widgets/forecast_widget/weekly_forecast_widget.dart';
+import 'package:bmd_weather_app/models/forecast_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/widgets/custom_location_selection_page.dart';
+import '../models/hourly_weather_model.dart';
+import '../models/saved_location_model.dart';
+import '../models/upazila_list_model.dart';
 import '../models/user_survey_model.dart';
+import '../models/weekly_forecast_model.dart';
+import '../services/api_urls.dart';
+import '../services/user_pref_service.dart';
+import '../utills/app_color.dart';
 
 enum HomeSection {
   weather_Forecast,
@@ -19,6 +30,7 @@ enum HomeSection {
 }
 
 class HomeController extends GetxController {
+  var selectedLocation = 'Current Location'.obs;
   var sectionOrder = <HomeSection>[].obs;
   var sectionVisibility = <HomeSection, bool>{}.obs;
   var isLoaded = false.obs;
@@ -29,10 +41,22 @@ class HomeController extends GetxController {
   RxMap<int, String> answers = <int, String>{}.obs;
   final RxInt currentIndex = 0.obs;
 
+  final currentLocationId = ''.obs;
+  final currentLocationName = ''.obs;
+  final cLocationUpazila = ''.obs;
+  final cLocationDistrict = ''.obs;
+  var lat = ''.obs;
+  var lon = ''.obs;
+  final RxBool isForecastFetched = false.obs;
+  final RxBool isForecastLoading = false.obs;
+  final Rxn<WeatherForecastModel> forecast = Rxn<WeatherForecastModel>();
+  final savedLocations = <SavedLocation>[].obs;
+
+  final userService = UserPrefService();
+
   @override
   void onInit() {
     super.onInit();
-
     initData();
   }
 
@@ -40,9 +64,184 @@ class HomeController extends GetxController {
     await loadSectionOrder();
     await loadVisibilitySettings();
     await loadQuestions();
+    await getSharedPrefData();
 
     isLoaded.value = true;  // IMPORTANT
   }
+
+  Future<void> getSharedPrefData() async {
+    currentLocationId.value = userService.locationId ?? '';
+    currentLocationName.value = userService.locationName ?? 'Current Location';
+    cLocationDistrict.value = userService.locationDistrict ?? '';
+    cLocationUpazila.value = userService.locationUpazila ?? '';
+    lat.value = userService.lat ?? '';
+    lon.value = userService.lon ?? '';
+
+    selectedLocation.value = currentLocationName.value;
+
+    print('🔥Pref Loaded Location: ${currentLocationName.value}');
+    print('🔥Pref Loaded LocationID: ${currentLocationId.value}');
+
+    if (currentLocationId.value.isNotEmpty) {
+      await getForecast(lat.value, lon.value);
+    } else {
+      await getForecast(lat.value, lon.value);
+      // If no locationId, you may still want to call forecast by lat/lon; that depends on your API
+      //await getForecastByLatLon(lat.value, lon.value);
+    }
+  }
+
+  Future<void> getForecast(String lat, String lon) async {
+    isForecastLoading.value = true;
+
+    try {
+      final lang = userService.appLanguage;
+      print('getLanguageCode: $lang');
+
+      final response = await http.get(
+        Uri.parse("${ApiURL.CURRENT_FORECAST}lat=$lat&lon=$lon"),
+        headers: {'Accept-Language': lang},
+      );
+
+      print('🔥 Forecast API Url : ${ApiURL.CURRENT_FORECAST}lat=$lat&lon=$lon');
+      print('🔥 Forecast API Response Code : ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        print('🔥 Forecast fetched for location: ${json.toString()}');
+        forecast.value = WeatherForecastModel.fromJson(json);
+        print('🔥 Forecast fetched for location: ${forecast.value?.result?.location?.locationName}');
+        isForecastFetched.value = true;
+      } else {
+        isForecastFetched.value = false;
+        Get.snackbar("error".tr, "error_msg1".tr);
+      }
+    } catch (e) {
+      print("🔥 Error Parsing JSON: $e");
+      isForecastFetched.value = false;
+      Get.snackbar("error".tr, "error_msg2".tr);
+    } finally {
+      isForecastLoading.value = false;
+    }
+  }
+
+// In controllers/home_controller.dart
+
+  List<HourlyWeatherModel> getHourlyFromSteps() {
+    final result = forecast.value?.result;
+    final steps = result?.steps;
+    // Access the chart data we defined in the model
+    final chart = result?.stepsChart;
+
+    if (steps == null || steps.isEmpty) return [];
+
+    return List.generate(steps.length, (index) {
+      final step = steps[index];
+
+      // Safely get values from the chart arrays
+      // We check if 'chart' exists and if the index is valid for each array
+      double temp = 0.0;
+      double rain = 0.0;
+      double wind = 0.0;
+
+      if (chart != null) {
+        if (chart.tempValAvg != null && index < chart.tempValAvg!.length) {
+          temp = chart.tempValAvg![index];
+        }
+        if (chart.rfValAvg != null && index < chart.rfValAvg!.length) {
+          rain = chart.rfValAvg![index];
+        }
+        if (chart.windValAvg != null && index < chart.windValAvg!.length) {
+          wind = chart.windValAvg![index];
+        }
+      } else {
+        // Fallback to the individual step object if chart data is missing
+        temp = 0.0;
+        rain = 0.0;
+        wind = 0.0;
+      }
+
+      return HourlyWeatherModel(
+        time: _formatHour(step.stepStart),
+        iconKey: step.icon ?? 'ic_sunny_cloud.png',
+        temp: temp,
+        rainAmount: rain,
+        windSpeed: wind,
+        index: index,
+      );
+    });
+  }
+
+  String _formatHour(String? raw) {
+    if (raw == null || raw.isEmpty) return '--:--';
+    try {
+      // Example: "2025-12-17 06:00:00" -> "06:00"
+      return raw.split(' ').last.substring(0, 5);
+    } catch (e) {
+      return raw;
+    }
+  }
+
+  // inside HomeController
+
+  List<WeeklyForecastItem> getWeeklyForecast() {
+    final result = forecast.value?.result;
+    final dailys = result?.daily;
+    final chart = result?.dailyChart; // Access the chart data model
+
+    if (dailys == null || dailys.isEmpty) return [];
+
+    return List.generate(dailys.length, (index) {
+      final daily = dailys[index];
+
+      // // 1. Initialize with values from the standard daily object
+      double minTemp =  0.0;
+      double maxTemp =  0.0;
+
+      // 2. Override with precise Chart Data if available
+      if (chart != null) {
+        if (chart.tempValMin != null && index < chart.tempValMin!.length) {
+          minTemp = chart.tempValMin![index];
+        }
+        if (chart.tempValMax != null && index < chart.tempValMax!.length) {
+          maxTemp = chart.tempValMax![index];
+        }
+      }
+
+      return WeeklyForecastItem(
+        _formatDate(daily.date), // e.g., "17 Dec, 2025"
+        daily.weekday ?? '', // e.g., "Wednesday"
+        minTemp,
+        maxTemp,
+        daily.icon ?? 'ic_sunny.png',
+      );
+    });
+  }
+
+  String _formatDate(String? raw) {
+    if (raw == null || raw.isEmpty) return '--:--';
+    try {
+      // Example: "2025-12-17 06:00:00" -> "17 Dec, 2025"
+      final parts = raw.split(' ');
+      final datePart = parts[0]; // "2025-12-17"
+      final dateComponents = datePart.split('-');
+      final year = dateComponents[0];
+      final month = int.parse(dateComponents[1]);
+      final day = dateComponents[2];
+
+      const monthNames = [
+        '', // Placeholder for 0 index
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ];
+
+
+
+      return '$day ${monthNames[month]}, $year';
+    } catch (e) {
+      return raw;
+    }
+  }
+
   /// This method is called when the user reorders the sections in the dashboard.
   void updateSectionOrder(List<HomeSection> newOrder) async {
     sectionOrder.value = newOrder;
@@ -117,7 +316,6 @@ class HomeController extends GetxController {
   HomeSection _stringToHomeSection(String name) {
     return HomeSection.values.firstWhere((e) => e.name == name, orElse: () => HomeSection.weather_Forecast);
   }
-
 
   /// Load data from API (your static JSON for now)
 
@@ -218,5 +416,222 @@ class HomeController extends GetxController {
       margin: const EdgeInsets.only(top: 10, left: 12, right: 12),
       borderRadius: 8,
     );
+  }
+
+
+  /// Load saved locations from UserPrefService
+  Future<void> loadSavedLocations() async {
+    try {
+      final list = await userService.getSavedLocations();
+      savedLocations.assignAll(list);
+
+      // Ensure selectedLocation reflects the current saved/current
+      selectedLocation.value = currentLocationName.value.isNotEmpty
+          ? currentLocationName.value
+          : (savedLocations.isNotEmpty ? savedLocations.first.displayName : 'Current Location');
+
+    } catch (e) {
+      debugPrint("Error loading saved locations: $e");
+    }
+  }
+
+  /// Call this to open the bottom-sheet selector (used by the UI)
+  Future<void> openLocationSelector() async {
+    // refresh the saved list before showing
+    await loadSavedLocations();
+
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: AppColors().app_secondary,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        ),
+        height: MediaQuery.of(Get.context!).size.height * 0.6,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  Text("location_list".tr, style: TextStyle(fontWeight: FontWeight.bold, color: AppColors().black_font_color, fontSize: 16)),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.black),
+                    onPressed: () => Get.back(),
+                  )
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: Obx(() {
+                if (savedLocations.isEmpty) {
+                  return Center(child: Text("empty_data".tr, style: TextStyle(color: AppColors().black_font_color),));
+                }
+                return ListView.separated(
+                  itemCount: savedLocations.length + 1, // +1 for the "Add new" tile
+                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    if (index < savedLocations.length) {
+                      final loc = savedLocations[index];
+                      final isSelected =
+                          loc.displayName == currentLocationName.value || loc.isCurrent;
+                      return ListTile(
+                        leading: Icon(Icons.place, color: isSelected ? Colors.green : null),
+                        title: Text(loc.displayName, style: TextStyle(
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          color: AppColors().black_font_color,
+                        ),),
+                        subtitle: Text("${loc.upazila.isNotEmpty ? '${loc.upazila}, ' : ''}${loc.district}", style: TextStyle(color: AppColors().grey_font_color),),
+                        trailing: isSelected ? const Icon(Icons.check_circle, color: Colors.green) : null,
+                        onTap: () async {
+                          await selectSavedLocation(loc);
+                        },
+                        onLongPress: () async {
+                          // optional: delete on long press (ask for confirmation)
+                          if (loc.isCurrent) {
+                            Get.snackbar("Cannot delete".tr,
+                                "Current location cannot be deleted".tr);
+                          } else {
+                            final confirmed = await Get.defaultDialog<bool>(
+                              title: "delete".tr,
+                              middleText: '${"delete_hint".tr}"${loc.displayName}"',
+                              textConfirm: "delete".tr,
+                              textCancel: "cancel".tr,
+                              onConfirm: () {
+                                Get.back(result: true);
+                              },
+                              onCancel: () {
+                                Get.back(result: false);
+                              },
+                            );
+                            if (confirmed == true) {
+                              await userService.deleteSavedLocation(
+                                  loc.displayName);
+                              await loadSavedLocations();
+                            }
+                          }
+                        },
+                      );
+                    } else {
+                      // Add new location tile
+                      return ListTile(
+                        leading: Icon(Icons.add_location_alt_outlined, color: AppColors().app_primary),
+                        title: Text("add_location".tr, style: TextStyle(color: AppColors().app_primary),),
+                        onTap: () async {
+                          Get.back(); // close bottom sheet, then open map picker
+                          await openAddLocationFlow();
+                        },
+                      );
+                    }
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  /// When user taps a saved location in the selector
+  Future<void> selectSavedLocation(SavedLocation loc) async {
+    try {
+      // set in shared prefs (this will also update the saved-locations list internally in service)
+      final ok = await userService.setCurrentLocationByName(loc.displayName);
+      if (ok) {
+        // update controller's local fields and refresh weather
+        await getSharedPrefData();
+        await loadSavedLocations();
+      } else {
+        Get.snackbar("Error", "Unable to set current location".tr);
+      }
+      Get.back(); // close bottom sheet
+    } catch (e) {
+      debugPrint("Error selecting saved location: $e");
+      Get.snackbar("Error", "Could not select location".tr);
+    }
+  }
+
+  /// Flow: open map picker -> ask for name -> save location -> set as current -> refresh dashboard
+  Future<void> openAddLocationFlow() async {
+    try {
+      // Open the upazila list page and await Data result
+      final selected = await Get.to<Data?>(() => SelectLocationPage());
+      if (selected == null) return;
+
+      // Ask user for a custom display name (optional)
+      final name = await _showLocationNameDialog();
+      if (name == null || name.trim().isEmpty) {
+        Get.snackbar("canceled".tr, "canceled_hint".tr);
+        return;
+      }
+
+      final fetched = await userService.fetchLocationDetailsFromApi(
+        lat: double.parse(selected.lat?.toStringAsFixed(5) ?? ""),
+        lon: double.parse(selected.lng?.toStringAsFixed(5) ?? ""),
+        displayNameFallback: name,
+        setAsCurrent: true,
+      );
+
+      // Save the location details directly (since we already have them)
+      if (fetched != null) {
+        await userService.saveCustomLocation(
+          lat: fetched.lat,
+          lon: fetched.lon,
+          apiId: fetched.id,
+          apiName: fetched.apiName,
+          displayName: fetched.displayName,
+          upazila: fetched.upazila,
+          district: fetched.district,
+          setAsCurrent: true,
+        );
+      } else {
+        // fallback: save with minimal info
+        await userService.saveCustomLocation(
+          lat: selected.lat?.toStringAsFixed(5) ?? "",
+          lon: selected.lng?.toStringAsFixed(5) ?? "",
+          apiId: '',
+          apiName: name,
+          displayName: name,
+          upazila: '',
+          district: '',
+          setAsCurrent: true,
+        );
+      }
+
+      await loadSavedLocations();
+      await getSharedPrefData();
+      Get.snackbar("success_title".tr, "success_msg".tr);
+    } catch (e) {
+      debugPrint("Error adding new location: $e");
+      Get.snackbar("Error", "Failed to add location");
+    }
+  }
+
+  /// Dialog to collect user-given name for picked location
+  Future<String?> _showLocationNameDialog() async {
+    final textController = TextEditingController();
+    final result = await Get.dialog<String>(
+      AlertDialog(
+        title: Text("location_label".tr),
+        content: TextField(
+          controller: textController,
+          decoration: InputDecoration(hintText: "location_hint".tr),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: null),
+            child: Text("cancel".tr),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: textController.text.trim()),
+            child: Text("save_btn".tr),
+          ),
+        ],
+      ),
+    );
+    return result;
   }
 }

@@ -1,11 +1,18 @@
-import 'package:flutter/cupertino.dart';
-import 'package:weather_icons/weather_icons.dart';
+// models/hourly_weather_model.dart
 class HourlyWeatherModel {
   final String time;
   final String iconKey;
   final double temp;
-  final int rainChance;
+  final double rainAmount; // Changed from int rainChance to double
+  final double windSpeed;
   final int index;
 
-  HourlyWeatherModel(this.time, this.iconKey, this.temp, this.rainChance, this.index);
+  HourlyWeatherModel({
+    required this.time,
+    required this.iconKey,
+    required this.temp,
+    required this.rainAmount,
+    required this.windSpeed,
+    required this.index,
+  });
 }

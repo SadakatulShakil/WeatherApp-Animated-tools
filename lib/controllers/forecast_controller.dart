@@ -50,14 +50,14 @@ class ForecastController extends GetxController {
       'twoD': [
         WeatherIcon(iconKey: 'moon_cloud', iconUrl: 'assets/twoD/moon_cloud1.png'),
         WeatherIcon(iconKey: 'moon_rain', iconUrl: 'assets/twoD/moon_rain1.png'),
-        WeatherIcon(iconKey: 'sun_cloud', iconUrl: 'assets/twoD/sun_cloud1.png'),
+        WeatherIcon(iconKey: 'Sunny', iconUrl: 'assets/twoD/sun_cloud1.png'),
         WeatherIcon(iconKey: 'sun_rain', iconUrl: 'assets/twoD/sun_rain1.png'),
         WeatherIcon(iconKey: 'tornado', iconUrl: 'assets/twoD/tornado1.png'),
       ],
       'threeD': [
         WeatherIcon(iconKey: 'moon_cloud', iconUrl: 'assets/threeD/moon_cloud.png'),
         WeatherIcon(iconKey: 'moon_rain', iconUrl: 'assets/threeD/moon_rain.png'),
-        WeatherIcon(iconKey: 'sun_cloud', iconUrl: 'assets/threeD/sun_cloud.png'),
+        WeatherIcon(iconKey: 'Sunny', iconUrl: 'assets/threeD/sun_cloud.png'),
         WeatherIcon(iconKey: 'sun_rain', iconUrl: 'assets/threeD/sun_rain.png'),
         WeatherIcon(iconKey: 'tornado', iconUrl: 'assets/threeD/tornado.png'),
       ],
@@ -65,12 +65,12 @@ class ForecastController extends GetxController {
     });
 
     /// Mock data for forecast items
-    forecastList.assignAll([
-      WeeklyForecastItem(day: 'Mon', date: '05/22', minTemp: 15, maxTemp: 35, iconKey: 'moon_cloud'),
-      WeeklyForecastItem(day: 'Tues', date: '05/23', minTemp: 16, maxTemp: 33, iconKey: 'moon_rain'),
-      WeeklyForecastItem(day: 'Wed', date: '05/24', minTemp: 17, maxTemp: 34, iconKey: 'sun_cloud'),
-      WeeklyForecastItem(day: 'Thurs', date: '05/25', minTemp: 18, maxTemp: 32, iconKey: 'sun_rain'),
-      WeeklyForecastItem(day: 'Fri', date: '05/26', minTemp: 19, maxTemp: 31, iconKey: 'tornado'),
-    ]);
+    // forecastList.assignAll([
+    //   WeeklyForecastItem(day: 'Mon', date: '05/22', minTemp: 15, maxTemp: 35, iconKey: 'moon_cloud'),
+    //   WeeklyForecastItem(day: 'Tues', date: '05/23', minTemp: 16, maxTemp: 33, iconKey: 'moon_rain'),
+    //   WeeklyForecastItem(day: 'Wed', date: '05/24', minTemp: 17, maxTemp: 34, iconKey: 'sun_cloud'),
+    //   WeeklyForecastItem(day: 'Thurs', date: '05/25', minTemp: 18, maxTemp: 32, iconKey: 'sun_rain'),
+    //   WeeklyForecastItem(day: 'Fri', date: '05/26', minTemp: 19, maxTemp: 31, iconKey: 'tornado'),
+    // ]);
   }
 }

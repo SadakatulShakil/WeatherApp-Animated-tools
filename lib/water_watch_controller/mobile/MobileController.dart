@@ -5,12 +5,10 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import '../../water_watch_pages/home_page.dart';
-import '../../water_watch_pages/navigation_view.dart';
 import '../../water_watch_pages/otp.dart';
 import '../../services/api_urls.dart';
 import '../../services/location_service.dart';
 import '../../services/user_pref_service.dart';
-import '../navigation/navigation_binding.dart';
 
 class WaterWatchMobileController extends GetxController{
   final TextEditingController mobile = TextEditingController();

@@ -54,6 +54,7 @@ void main() async {
   }
   Get.put(SettingsController());
   final savedLang = UserPrefService().appLanguage;
+  print('DEBUG: 5. Saved Language: $savedLang');
 
   // --- Put Controllers ---
   Get.put(ThemeController());

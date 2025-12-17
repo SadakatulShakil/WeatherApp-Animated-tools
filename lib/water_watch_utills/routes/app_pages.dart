@@ -1,7 +1,7 @@
+import 'package:bmd_weather_app/water_watch_pages/station_page.dart';
 import 'package:get/get.dart';
 
 import '../../water_watch_controller/add_record/add_record_binding.dart';
-import '../../water_watch_pages/station_report_page.dart';
 
 part 'app_routes.dart';
 
@@ -11,7 +11,7 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.ADD_RECORD,
-      page: () => WaterWatchStationReportPage(),
+      page: () => StationPage(),
       binding: AddRecordBinding(),
     ),
     // GetPage(

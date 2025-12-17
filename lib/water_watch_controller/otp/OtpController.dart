@@ -9,8 +9,6 @@ import 'package:http/http.dart' as http;
 import '../../services/api_urls.dart';
 import '../../services/user_pref_service.dart';
 import '../../water_watch_pages/home_page.dart';
-import '../../water_watch_pages/navigation_view.dart';
-import '../navigation/navigation_binding.dart';
 
 class WaterWatchOtpController extends GetxController {
   final mobile = Get.arguments['mobile'] ?? "";

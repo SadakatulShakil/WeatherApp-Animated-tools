@@ -1,8 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:math';
 
 import '../../../controllers/forecast_controller.dart';
+import '../../../controllers/home_controller.dart';
 import '../../../controllers/theme_controller.dart';
 import '../../../models/hourly_weather_model.dart';
 import '../../screens/hourly_forecast_page.dart';
@@ -10,34 +12,37 @@ import '../../screens/hourly_forecast_page.dart';
 class WeatherForecastChart extends StatelessWidget {
   final ForecastController controller = Get.put(ForecastController());
   final ThemeController themeController = Get.find<ThemeController>();
-
-  final List<HourlyWeatherModel> demoData = [
-    HourlyWeatherModel("00:00", 'moon_cloud', 25.0, 10, 0),
-    HourlyWeatherModel("03:00", 'moon_rain', 30.0, 20, 1),
-    HourlyWeatherModel("06:00", 'sun_cloud', 38.0, 70, 2),
-    HourlyWeatherModel("09:00", 'sun_rain', 24.0, 15, 3),
-    HourlyWeatherModel("12:00", 'tornado', 32.0, 5, 4),
-    HourlyWeatherModel("15:00", 'moon_cloud', 30.0, 25, 5),
-    HourlyWeatherModel("18:00", 'moon_rain', 38.5, 60, 6),
-    HourlyWeatherModel("21:00", 'sun_cloud', 25.0, 10, 7),
-    HourlyWeatherModel("00:00", 'sun_rain', 32.5, 12, 8),
-    HourlyWeatherModel("03:00", 'tornado', 36.0, 30, 9),
-    HourlyWeatherModel("06:00", 'moon_cloud', 38.5, 80, 10),
-    HourlyWeatherModel("09:00", 'moon_rain', 25.0, 20, 11),
-    HourlyWeatherModel("12:00", 'sun_cloud', 28.0, 10, 12),
-    HourlyWeatherModel("15:00", 'sun_rain', 35.0, 40, 13),
-    HourlyWeatherModel("18:00", 'sun_cloud', 32.5, 55, 14),
-    HourlyWeatherModel("21:00", 'tornado', 30.0, 18, 15),
-  ];
+  final HomeController hController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
-    final double chartHeight = 200;
-    final double minY = 10;
-    final double maxY = 55;
+    List<HourlyWeatherModel> hourlyForecastData = hController.getHourlyFromSteps();
+
+    // 2. Handle Empty/Loading State
+    if (hourlyForecastData.isEmpty) {
+      return Container(
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+          ),
+          child: Center(child: Text("Waiting for forecast data...")));
+    }
+
+    // 3. Dynamic Y-Axis Calculation
+    double minTemp = hourlyForecastData.map((e) => e.temp).reduce(min);
+    double maxTemp = hourlyForecastData.map((e) => e.temp).reduce(max);
+
+    // FIXED: Increased buffer (+ 5) to ensure text labels don't get clipped at the top
+    double minY = minTemp - 2;
+    double maxY = maxTemp + 5;
+
+    // 4. Dimensions
+    final double itemWidth = 80.0;
+    final double chartHeight = 320.0;
 
     return Container(
-      height: 300,
+      height: chartHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
@@ -58,17 +63,15 @@ class WeatherForecastChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // --- HEADER ---
           GestureDetector(
-            onTap: () {
-              // Handle tap for details
-             Get.to(() => HourlyForecastDetailsPage());
-            },
+            onTap: () => Get.to(() => HourlyForecastDetailsPage()),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
                   Text(
-                    "পরবর্তী ৭২ ঘন্টার পূর্বাভাস",
+                    "পরবর্তী ৪৮ ঘন্টার পূর্বাভাস",
                     style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
@@ -88,48 +91,66 @@ class WeatherForecastChart extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  Icon(Icons.arrow_forward_ios,
+                      size: 12,
+                      color: themeController.themeMode.value == ThemeMode.light
+                          ? Colors.black
+                          : Color(0xFF00E5CA))
                 ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Divider(
-              color: themeController.themeMode.value == ThemeMode.light
-                  ? Colors.grey.shade300
-                  : Colors.grey.shade500,
-              height: 1,
-            ),
+          Divider(
+            color: themeController.themeMode.value == ThemeMode.light
+                ? Colors.grey.shade300
+                : Colors.grey.shade500,
+            height: 1,
           ),
-          SizedBox(height: 5),
+
+          // --- CHART AREA ---
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12.0,bottom: 12.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  width: demoData.length * 80,
-                  child: Stack(
-                    children: [
-                      LineChart(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: hourlyForecastData.length * itemWidth,
+                child: Stack(
+                  children: [
+                    // LAYER 1: The Line Chart
+                    Padding(
+                      padding: const EdgeInsets.only(top: 60, bottom: 60),
+                      child: LineChart(
                         LineChartData(
                           gridData: FlGridData(show: false),
                           titlesData: FlTitlesData(show: false),
                           borderData: FlBorderData(show: false),
-                          minX: -.25,
-                          maxX: demoData.length.toDouble() - .5,
+                          minX: -0.5,
+                          maxX: hourlyForecastData.length.toDouble() - 0.5,
                           minY: minY,
                           maxY: maxY,
+                          // FIXED: Properly mapping indicators to show labels
+                          showingTooltipIndicators: hourlyForecastData.map((e) {
+                            return ShowingTooltipIndicators([
+                              LineBarSpot(
+                                LineChartBarData(spots: [
+                                  FlSpot(e.index.toDouble(), e.temp)///Temperature value
+                                ]),
+                                0, // Bar Index
+                                FlSpot(e.index.toDouble(), e.temp), /// The actual Dot Spot
+                              ),
+                            ]);
+                          }).toList(),
                           lineBarsData: [
                             LineChartBarData(
-                              spots: demoData
-                                  .map((e) => FlSpot(
-                                e.index.toDouble(),
-                                e.temp,
-                              ))
+                              spots: hourlyForecastData
+                                  .map((e) => FlSpot(e.index.toDouble(), e.temp))
                                   .toList(),
                               isCurved: true,
+                              curveSmoothness: 0.35,
+                              color: Colors.transparent, // Hide the line itself if you want, or set a color
+                              barWidth: 2,
+                              isStrokeCapRound: true,
                               belowBarData: BarAreaData(
+                                show: true,
                                 gradient: LinearGradient(
                                   colors: themeController.themeMode.value == ThemeMode.light
                                       ? [Colors.grey.shade400, Colors.white]
@@ -137,9 +158,7 @@ class WeatherForecastChart extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 ),
-                                show: true,
                               ),
-                              color: Colors.transparent,
                               dotData: FlDotData(
                                 show: true,
                                 getDotPainter: (spot, percent, barData, index) =>
@@ -149,125 +168,119 @@ class WeatherForecastChart extends StatelessWidget {
                                       strokeColor: themeController.themeMode.value == ThemeMode.light
                                           ? Colors.blue
                                           : Colors.greenAccent,
-                                      strokeWidth: 2.5,
+                                      strokeWidth: 2,
                                     ),
                               ),
                             ),
                           ],
                           lineTouchData: LineTouchData(
+                            enabled: false,
                             touchTooltipData: LineTouchTooltipData(
-                              tooltipRoundedRadius: 8,
-                              fitInsideHorizontally: true,
-                              fitInsideVertically: true,
+                              getTooltipColor: (spot) => Colors.transparent, // No background box
+                              tooltipPadding: EdgeInsets.zero,
+                              tooltipMargin: 8, // FIXED: Push text up from the dot
                               getTooltipItems: (touchedSpots) {
                                 return touchedSpots.map((LineBarSpot spot) {
                                   return LineTooltipItem(
-                                    '${spot.y.toInt()}°C', // or '${spot.x}, ${spot.y}'
+                                    '${spot.y.toInt()}°C',
                                     TextStyle(
                                       color: themeController.themeMode.value == ThemeMode.light
                                           ? Colors.black
-                                          : Colors.white,       // Text color
+                                          : Colors.white,
                                       fontWeight: FontWeight.bold,
+                                      fontSize: 12,
                                     ),
-                                    children: [],
-                                    textAlign: TextAlign.center,
-                                    // 👇 Background now comes from the tooltip's paint configuration
                                   );
                                 }).toList();
                               },
-                              tooltipPadding: const EdgeInsets.all(8),
-                              tooltipMargin: 12,
-                              tooltipBorder: BorderSide.none,
                             ),
                           ),
                         ),
                       ),
-                      Positioned.fill(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: demoData.map((hour) {
-                            final iconUrl = controller.getIconUrl(hour.iconKey);
-                            final double y = chartHeight * (1 - (hour.temp - minY) / (maxY - minY));
+                    ),
 
-                            return Expanded(
-                              child: Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          hour.time,
-                                          style: TextStyle(
-                                            color: themeController.themeMode.value == ThemeMode.light
-                                                ? Colors.black
-                                                : Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Image.asset(iconUrl, width: 25, height: 25),
-                                      ],
-                                    ),
+                    // LAYER 2: Top Data (Time & Icon)
+                    Positioned(
+                      top: 10,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: hourlyForecastData.map((data) {
+                          return SizedBox(
+                            width: itemWidth,
+                            child: Column(
+                              children: [
+                                Text(
+                                  data.time,
+                                  style: TextStyle(
+                                    color: themeController.themeMode.value == ThemeMode.light
+                                        ? Colors.black87
+                                        : Colors.white70,
+                                    fontSize: 12,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '${hour.rainChance}% ',
-                                          style: TextStyle(
-                                            color: themeController.themeMode.value == ThemeMode.light
-                                                ? Colors.blue
-                                                : Colors.greenAccent,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '${(hour.temp * 0.5).toStringAsFixed(1)} km/h',
-                                          style: TextStyle(
-                                            color: themeController.themeMode.value == ThemeMode.light
-                                                ? Colors.black
-                                                : Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: y - 35,
-                                    left: 0,
-                                    right: 20,
-                                    child: Center(
-                                      child: Text(
-                                        '${hour.temp.toInt()}°C',
-                                        style: TextStyle(
-                                          color: themeController.themeMode.value == ThemeMode.light
-                                              ? Colors.black
-                                              : Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                        ),
+                                ),
+                                SizedBox(height: 5),
+                                Image.asset(
+                                  controller.getIconUrl(data.iconKey),
+                                  width: 30,
+                                  height: 30,
+                                  errorBuilder: (c, e, s) =>
+                                      Icon(Icons.sunny, color: Color(0xFF00E5CA)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    ],
-                  ),
+                    ),
+
+                    // LAYER 3: Bottom Data (Rain & Wind)
+                    Positioned(
+                      bottom: 5,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: hourlyForecastData.map((data) {
+                          return SizedBox(
+                            width: itemWidth,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "${data.rainAmount} mm",
+                                  style: TextStyle(
+                                    color: themeController.themeMode.value == ThemeMode.light
+                                        ? Colors.blue
+                                        : Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  "${data.windSpeed.toStringAsFixed(1)} km/h",
+                                  style: TextStyle(
+                                    color: themeController.themeMode.value == ThemeMode.light
+                                        ? Colors.black87
+                                        : Colors.white70,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+
+          // ... Footer Code ...
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Divider(
@@ -285,6 +298,7 @@ class WeatherForecastChart extends StatelessWidget {
                 style: TextStyle(
                   color: Color(0xFF00E5CA),
                   fontWeight: FontWeight.bold,
+                  fontSize: 12,
                 ),
               ),
             ),

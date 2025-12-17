@@ -5,6 +5,7 @@ class ApiURL {
   static const String BASE_ASSETS_URL = 'https://ffwc.gov.bd/assets';
   static const String BASE_WWW_URL = 'https://www.ffwc.gov.bd/assets';
   static const String BAMIS_URL = "https://bamisapp.bdservers.site";
+  static const String BASE_URL_WEATHER = "https://usf.bmd.gov.bd/api/app";
 
   // ===================================
   // FFWC APP
@@ -118,10 +119,10 @@ class ApiURL {
   static const String VERIFY_OTP = '$BASE_API3_URL/api/app_user_mobile/verify-otp/';
 
   /// Bamis App Url - Weather Locations
-  static String LOCATION_LATLON = '${BAMIS_URL}/api/weather/location_latlon';
+  static String LOCATION_LATLON = '${BASE_URL_WEATHER}/weather/location';
 
   /// Get Current Forecast
-  static String CURRENT_FORECAST = '${BAMIS_URL}/api/weather/currentforecast';
+  static String CURRENT_FORECAST = '${BASE_URL_WEATHER}/weather/forecast?type=point&';
 
   /// Refresh Token.
   static String REFRESH_TOKEN = '${BAMIS_URL}/api/auth/refresh';
