@@ -58,9 +58,9 @@ void main() async {
 
   // --- Put Controllers ---
   Get.put(ThemeController());
-  Get.put(WaterWatchDashboardController());
+  //Get.put(WaterWatchDashboardController());
   Get.put(ForecastController());
-  Get.put(HomeController(), permanent: true);
+  //Get.put(HomeController(), permanent: true);
 
   // --- System UI Settings ---
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

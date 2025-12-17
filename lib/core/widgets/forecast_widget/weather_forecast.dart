@@ -6,7 +6,6 @@ import 'dart:math';
 import '../../../controllers/forecast_controller.dart';
 import '../../../controllers/home_controller.dart';
 import '../../../controllers/theme_controller.dart';
-import '../../../models/hourly_weather_model.dart';
 import '../../screens/hourly_forecast_page.dart';
 
 class WeatherForecastChart extends StatelessWidget {
@@ -16,28 +15,7 @@ class WeatherForecastChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<HourlyWeatherModel> hourlyForecastData = hController.getHourlyFromSteps();
-
-    // 2. Handle Empty/Loading State
-    if (hourlyForecastData.isEmpty) {
-      return Container(
-          height: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Colors.white,
-          ),
-          child: Center(child: Text("Waiting for forecast data...")));
-    }
-
-    // 3. Dynamic Y-Axis Calculation
-    double minTemp = hourlyForecastData.map((e) => e.temp).reduce(min);
-    double maxTemp = hourlyForecastData.map((e) => e.temp).reduce(max);
-
-    // FIXED: Increased buffer (+ 5) to ensure text labels don't get clipped at the top
-    double minY = minTemp - 2;
-    double maxY = maxTemp + 5;
-
-    // 4. Dimensions
+    // Dimensions constant
     final double itemWidth = 80.0;
     final double chartHeight = 320.0;
 
@@ -107,180 +85,199 @@ class WeatherForecastChart extends StatelessWidget {
             height: 1,
           ),
 
-          // --- CHART AREA ---
+          // --- REACTIVE CHART AREA ---
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: hourlyForecastData.length * itemWidth,
-                child: Stack(
-                  children: [
-                    // LAYER 1: The Line Chart
-                    Padding(
-                      padding: const EdgeInsets.only(top: 60, bottom: 60),
-                      child: LineChart(
-                        LineChartData(
-                          gridData: FlGridData(show: false),
-                          titlesData: FlTitlesData(show: false),
-                          borderData: FlBorderData(show: false),
-                          minX: -0.5,
-                          maxX: hourlyForecastData.length.toDouble() - 0.5,
-                          minY: minY,
-                          maxY: maxY,
-                          // FIXED: Properly mapping indicators to show labels
-                          showingTooltipIndicators: hourlyForecastData.map((e) {
-                            return ShowingTooltipIndicators([
-                              LineBarSpot(
-                                LineChartBarData(spots: [
-                                  FlSpot(e.index.toDouble(), e.temp)///Temperature value
-                                ]),
-                                0, // Bar Index
-                                FlSpot(e.index.toDouble(), e.temp), /// The actual Dot Spot
-                              ),
-                            ]);
-                          }).toList(),
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: hourlyForecastData
-                                  .map((e) => FlSpot(e.index.toDouble(), e.temp))
-                                  .toList(),
-                              isCurved: true,
-                              curveSmoothness: 0.35,
-                              color: Colors.transparent, // Hide the line itself if you want, or set a color
-                              barWidth: 2,
-                              isStrokeCapRound: true,
-                              belowBarData: BarAreaData(
-                                show: true,
-                                gradient: LinearGradient(
-                                  colors: themeController.themeMode.value == ThemeMode.light
-                                      ? [Colors.grey.shade400, Colors.white]
-                                      : [Colors.blue.shade200, Color(0xFF3986DD)],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
+            child: Obx(() {
+              // 1. Fetch Data Reactively
+              final hourlyForecastData = hController.getHourlyFromSteps();
+
+              // 2. Handle Empty/Loading State
+              if (hourlyForecastData.isEmpty) {
+                return Center(child: Text("Waiting for forecast data..."));
+              }
+
+              // 3. Dynamic Y-Axis Calculation (Recalculated on update)
+              double minTemp = hourlyForecastData.map((e) => e.temp).reduce(min);
+              double maxTemp = hourlyForecastData.map((e) => e.temp).reduce(max);
+
+              // Buffer to prevent clipping
+              double minY = minTemp - 2;
+              double maxY = maxTemp + 5;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+                child: SizedBox(
+                  width: hourlyForecastData.length * itemWidth,
+                  child: Stack(
+                    children: [
+                      // LAYER 1: The Line Chart
+                      Padding(
+                        padding: const EdgeInsets.only(top: 60, bottom: 60),
+                        child: LineChart(
+                          LineChartData(
+                            gridData: FlGridData(show: false),
+                            titlesData: FlTitlesData(show: false),
+                            borderData: FlBorderData(show: false),
+                            minX: -0.5,
+                            maxX: hourlyForecastData.length.toDouble() - 0.5,
+                            minY: minY,
+                            maxY: maxY,
+                            // Tooltip Indicators
+                            showingTooltipIndicators: hourlyForecastData.map((e) {
+                              return ShowingTooltipIndicators([
+                                LineBarSpot(
+                                  LineChartBarData(spots: [
+                                    FlSpot(e.index.toDouble(), e.temp)
+                                  ]),
+                                  0, // Bar Index
+                                  FlSpot(e.index.toDouble(), e.temp),
+                                ),
+                              ]);
+                            }).toList(),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: hourlyForecastData
+                                    .map((e) => FlSpot(e.index.toDouble(), e.temp))
+                                    .toList(),
+                                isCurved: true,
+                                curveSmoothness: 0.35,
+                                color: Colors.transparent,
+                                barWidth: 2,
+                                isStrokeCapRound: true,
+                                belowBarData: BarAreaData(
+                                  show: true,
+                                  gradient: LinearGradient(
+                                    colors: themeController.themeMode.value == ThemeMode.light
+                                        ? [Colors.grey.shade400, Colors.white]
+                                        : [Colors.blue.shade200, Color(0xFF3986DD)],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                ),
+                                dotData: FlDotData(
+                                  show: true,
+                                  getDotPainter: (spot, percent, barData, index) =>
+                                      FlDotCirclePainter(
+                                        radius: 2,
+                                        color: Colors.transparent,
+                                        strokeColor: themeController.themeMode.value == ThemeMode.light
+                                            ? Colors.blue
+                                            : Colors.greenAccent,
+                                        strokeWidth: 2,
+                                      ),
                                 ),
                               ),
-                              dotData: FlDotData(
-                                show: true,
-                                getDotPainter: (spot, percent, barData, index) =>
-                                    FlDotCirclePainter(
-                                      radius: 2,
-                                      color: Colors.transparent,
-                                      strokeColor: themeController.themeMode.value == ThemeMode.light
-                                          ? Colors.blue
-                                          : Colors.greenAccent,
-                                      strokeWidth: 2,
-                                    ),
+                            ],
+                            lineTouchData: LineTouchData(
+                              enabled: false,
+                              touchTooltipData: LineTouchTooltipData(
+                                getTooltipColor: (spot) => Colors.transparent,
+                                tooltipPadding: EdgeInsets.zero,
+                                tooltipMargin: 8,
+                                getTooltipItems: (touchedSpots) {
+                                  return touchedSpots.map((LineBarSpot spot) {
+                                    return LineTooltipItem(
+                                      '${spot.y.toInt()}°C',
+                                      TextStyle(
+                                        color: themeController.themeMode.value == ThemeMode.light
+                                            ? Colors.black
+                                            : Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    );
+                                  }).toList();
+                                },
                               ),
-                            ),
-                          ],
-                          lineTouchData: LineTouchData(
-                            enabled: false,
-                            touchTooltipData: LineTouchTooltipData(
-                              getTooltipColor: (spot) => Colors.transparent, // No background box
-                              tooltipPadding: EdgeInsets.zero,
-                              tooltipMargin: 8, // FIXED: Push text up from the dot
-                              getTooltipItems: (touchedSpots) {
-                                return touchedSpots.map((LineBarSpot spot) {
-                                  return LineTooltipItem(
-                                    '${spot.y.toInt()}°C',
-                                    TextStyle(
-                                      color: themeController.themeMode.value == ThemeMode.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  );
-                                }).toList();
-                              },
                             ),
                           ),
                         ),
                       ),
-                    ),
 
-                    // LAYER 2: Top Data (Time & Icon)
-                    Positioned(
-                      top: 10,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: hourlyForecastData.map((data) {
-                          return SizedBox(
-                            width: itemWidth,
-                            child: Column(
-                              children: [
-                                Text(
-                                  data.time,
-                                  style: TextStyle(
-                                    color: themeController.themeMode.value == ThemeMode.light
-                                        ? Colors.black87
-                                        : Colors.white70,
-                                    fontSize: 12,
+                      // LAYER 2: Top Data (Time & Icon)
+                      Positioned(
+                        top: 10,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: hourlyForecastData.map((data) {
+                            return SizedBox(
+                              width: itemWidth,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    data.time,
+                                    style: TextStyle(
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.black87
+                                          : Colors.white70,
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 5),
-                                Image.asset(
-                                  controller.getIconUrl(data.iconKey),
-                                  width: 30,
-                                  height: 30,
-                                  errorBuilder: (c, e, s) =>
-                                      Icon(Icons.sunny, color: Color(0xFF00E5CA)),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
+                                  SizedBox(height: 5),
+                                  Image.asset(
+                                    controller.getIconUrl(data.iconKey),
+                                    width: 30,
+                                    height: 30,
+                                    errorBuilder: (c, e, s) =>
+                                        Icon(Icons.sunny, color: Color(0xFF00E5CA)),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                    ),
 
-                    // LAYER 3: Bottom Data (Rain & Wind)
-                    Positioned(
-                      bottom: 5,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: hourlyForecastData.map((data) {
-                          return SizedBox(
-                            width: itemWidth,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "${data.rainAmount} mm",
-                                  style: TextStyle(
-                                    color: themeController.themeMode.value == ThemeMode.light
-                                        ? Colors.blue
-                                        : Colors.white,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
+                      // LAYER 3: Bottom Data (Rain & Wind)
+                      Positioned(
+                        bottom: 5,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: hourlyForecastData.map((data) {
+                            return SizedBox(
+                              width: itemWidth,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "${data.rainAmount} mm",
+                                    style: TextStyle(
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.blue
+                                          : Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  "${data.windSpeed.toStringAsFixed(1)} km/h",
-                                  style: TextStyle(
-                                    color: themeController.themeMode.value == ThemeMode.light
-                                        ? Colors.black87
-                                        : Colors.white70,
-                                    fontSize: 11,
+                                  SizedBox(height: 4),
+                                  Text(
+                                    "${data.windSpeed.toStringAsFixed(1)} km/h",
+                                    style: TextStyle(
+                                      color: themeController.themeMode.value == ThemeMode.light
+                                          ? Colors.black87
+                                          : Colors.white70,
+                                      fontSize: 11,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ),
 
-          // ... Footer Code ...
+          // --- FOOTER ---
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Divider(

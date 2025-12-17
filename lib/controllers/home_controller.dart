@@ -71,13 +71,13 @@ class HomeController extends GetxController {
 
   Future<void> getSharedPrefData() async {
     currentLocationId.value = userService.locationId ?? '';
-    currentLocationName.value = userService.locationName ?? 'Current Location';
+    //currentLocationName.value = userService.locationName ?? 'Current Location';
     cLocationDistrict.value = userService.locationDistrict ?? '';
     cLocationUpazila.value = userService.locationUpazila ?? '';
     lat.value = userService.lat ?? '';
     lon.value = userService.lon ?? '';
 
-    selectedLocation.value = currentLocationName.value;
+    //selectedLocation.value = currentLocationName.value;
 
     print('🔥Pref Loaded Location: ${currentLocationName.value}');
     print('🔥Pref Loaded LocationID: ${currentLocationId.value}');
@@ -92,6 +92,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> getForecast(String lat, String lon) async {
+    print('location changeed @@@@@@');
     isForecastLoading.value = true;
 
     try {
@@ -109,7 +110,10 @@ class HomeController extends GetxController {
         final json = jsonDecode(response.body);
         print('🔥 Forecast fetched for location: ${json.toString()}');
         forecast.value = WeatherForecastModel.fromJson(json);
+        currentLocationName.value = forecast.value?.result?.location?.locationName ?? currentLocationName.value;
+        selectedLocation.value = currentLocationName.value;
         print('🔥 Forecast fetched for location: ${forecast.value?.result?.location?.locationName}');
+
         isForecastFetched.value = true;
       } else {
         isForecastFetched.value = false;
@@ -127,6 +131,7 @@ class HomeController extends GetxController {
 // In controllers/home_controller.dart
 
   List<HourlyWeatherModel> getHourlyFromSteps() {
+    print('location changeed ###');
     final result = forecast.value?.result;
     final steps = result?.steps;
     // Access the chart data we defined in the model
@@ -184,6 +189,7 @@ class HomeController extends GetxController {
   // inside HomeController
 
   List<WeeklyForecastItem> getWeeklyForecast() {
+    print('location changeed %%%%%%');
     final result = forecast.value?.result;
     final dailys = result?.daily;
     final chart = result?.dailyChart; // Access the chart data model
