@@ -1,3 +1,4 @@
+import 'package:bmd_weather_app/controllers/home_controller.dart';
 import 'package:bmd_weather_app/controllers/settings_controller.dart';
 import 'package:bmd_weather_app/core/widgets/under_development/under_development_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   final ThemeController themeController = Get.find<ThemeController>();
   final SettingsController settingsController = Get.find<SettingsController>();
+  final HomeController homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +38,11 @@ class _AppDrawerState extends State<AppDrawer> {
 
           SizedBox(height: 12.h),
 
-          _buildSectionTitle("Preferences"),
+          _buildSectionTitle("preferences".tr),
 
           _drawerItem(
             icon: Icons.room_preferences,
-            title: "Dashboard Preference",
+            title: "dashboard_preference".tr,
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
@@ -53,7 +55,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
           _drawerItem(
             icon: Icons.file_present_outlined,
-            title: "Icon Preference",
+            title: "icon_preference".tr,
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
@@ -66,7 +68,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
           _drawerItem(
             icon: Icons.satellite_alt,
-            title: "Satellite Image",
+            title: "satellite_image".tr,
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
@@ -79,7 +81,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
           _drawerItem(
             icon: Icons.crisis_alert_sharp,
-            title: "Radder Image",
+            title: "radar_image".tr,
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
@@ -92,7 +94,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
           _drawerItem(
             icon: Icons.notification_important,
-            title: "Notification",
+            title: "notification".tr,
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
@@ -105,7 +107,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
           _drawerItem(
             icon: Icons.warning_amber,
-            title: "Weather Alerts",
+            title: "weather_alerts".tr,
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
@@ -118,7 +120,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
           _drawerItem(
             icon: Icons.connect_without_contact,
-            title: "Emergency Contacts",
+            title: "emergency_contacts".tr,
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
@@ -132,7 +134,7 @@ class _AppDrawerState extends State<AppDrawer> {
           _drawerItem(
             icon: Icons.science_outlined,
             isLight: isLight,
-            title: "Citizen Scientist",
+            title: "citizen_science".tr,
             onTap: () {
               Get.to(() => WaterWatchMobile(),
                   transition: Transition.rightToLeft,
@@ -151,7 +153,7 @@ class _AppDrawerState extends State<AppDrawer> {
           _drawerItem(
             icon: Icons.dark_mode,
             isLight: isLight,
-            title: "Theme Preference",
+            title: "theme_select".tr,
             trailing: _buildThemeSwitch(),
             onTap: () {
               themeController.toggleTheme(
@@ -198,7 +200,7 @@ class _AppDrawerState extends State<AppDrawer> {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  "Mirpur DOHS, Dhaka",
+                  homeController.selectedLocation.value,
                   style: TextStyle(color: Colors.white, fontSize: 18.sp),
                 ),
               ),
@@ -206,7 +208,8 @@ class _AppDrawerState extends State<AppDrawer> {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  "Fri 5.00 PM",
+                    '${homeController.forecast.value?.result!.current!.weekday}, '
+                        '${homeController.forecast.value?.result!.current!.date}',
                   style: TextStyle(color: Colors.white, fontSize: 14.sp),
                 ),
               ),

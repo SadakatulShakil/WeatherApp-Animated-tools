@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:math';
 
 import '../../../controllers/forecast_controller.dart';
@@ -12,6 +13,17 @@ class WeatherForecastChart extends StatelessWidget {
   final ForecastController controller = Get.put(ForecastController());
   final ThemeController themeController = Get.find<ThemeController>();
   final HomeController hController = Get.find<HomeController>();
+  var isBangla =  Get.locale?.languageCode == 'bn';
+  String englishToBanglaNumber(String input) {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const bangla  = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+    String output = input;
+    for (int i = 0; i < english.length; i++) {
+      output = output.replaceAll(english[i], bangla[i]);
+    }
+    return output;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +61,7 @@ class WeatherForecastChart extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "পরবর্তী ৪৮ ঘন্টার পূর্বাভাস",
+                    "next_72_hours_forecast".tr,
                     style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
@@ -60,7 +72,7 @@ class WeatherForecastChart extends StatelessWidget {
                   ),
                   Spacer(),
                   Text(
-                    "বিস্তারিত",
+                    "details".tr,
                     style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
@@ -93,7 +105,7 @@ class WeatherForecastChart extends StatelessWidget {
 
               // 2. Handle Empty/Loading State
               if (hourlyForecastData.isEmpty) {
-                return Center(child: Text("Waiting for forecast data..."));
+                return Center(child: Text("data_load_indicator".tr));
               }
 
               // 3. Dynamic Y-Axis Calculation (Recalculated on update)
@@ -178,7 +190,9 @@ class WeatherForecastChart extends StatelessWidget {
                                 getTooltipItems: (touchedSpots) {
                                   return touchedSpots.map((LineBarSpot spot) {
                                     return LineTooltipItem(
-                                      '${spot.y.toInt()}°C',
+                                      isBangla?
+                                      '${englishToBanglaNumber(spot.y.toInt().toString())}°সে'
+                                          :'${spot.y.toInt()}°C',
                                       TextStyle(
                                         color: themeController.themeMode.value == ThemeMode.light
                                             ? Colors.black
@@ -208,7 +222,9 @@ class WeatherForecastChart extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Text(
-                                    data.time,
+                                    isBangla
+                                        ?englishToBanglaNumber(data.time)
+                                        :data.time,
                                     style: TextStyle(
                                       color: themeController.themeMode.value == ThemeMode.light
                                           ? Colors.black87
@@ -244,9 +260,10 @@ class WeatherForecastChart extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    "${data.rainAmount} mm",
-                                    style: TextStyle(
+                                  Text( isBangla
+                                      ?"${englishToBanglaNumber(data.rainAmount.toString())} মিমি"
+                                      : "${data.rainAmount} mm",
+                                    style: GoogleFonts.anekBangla(
                                       color: themeController.themeMode.value == ThemeMode.light
                                           ? Colors.blue
                                           : Colors.white,
@@ -255,8 +272,9 @@ class WeatherForecastChart extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(height: 4),
-                                  Text(
-                                    "${data.windSpeed.toStringAsFixed(1)} km/h",
+                                  Text(isBangla
+                                      ?"${englishToBanglaNumber(data.windSpeed.toStringAsFixed(1))} কিমি/ঘণ্টা"
+                                      : "${data.windSpeed.toStringAsFixed(1)} km/h",
                                     style: TextStyle(
                                       color: themeController.themeMode.value == ThemeMode.light
                                           ? Colors.black87

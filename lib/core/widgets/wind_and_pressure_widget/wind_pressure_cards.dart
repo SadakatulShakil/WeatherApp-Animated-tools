@@ -57,7 +57,7 @@ class WindAndPressureCards extends StatelessWidget {
                         : Colors.white, size: 22),
                     Expanded(
                       child: Text(
-                        'বাতাস',
+                        'wind_title'.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
@@ -116,7 +116,7 @@ class WindAndPressureCards extends StatelessWidget {
                         : Colors.white, size: 22),
                     Expanded(
                       child: Text(
-                        'চাপ',
+                        'pressure_title'.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light

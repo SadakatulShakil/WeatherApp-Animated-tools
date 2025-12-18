@@ -14,12 +14,16 @@ class ActivityIndicatorWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(icon, color: Colors.white, size: 24),
+          Icon(icon, color: themeController.themeMode.value == ThemeMode.light
+              ? Colors.black
+              : Colors.white, size: 24),
           const SizedBox(width: 15),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style:  TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.black
+                  : Colors.white, fontSize: 16),
             ),
           ),
         ],
@@ -54,15 +58,21 @@ class ActivityIndicatorWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               // --- Header: Indicators ---
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.info_outline, color: Colors.white),
+                  Icon(Icons.info_outline, color: themeController.themeMode.value == ThemeMode.light
+                      ? Colors.black
+                      : Colors.white,),
                   SizedBox(width: 8),
                   Text(
-                    'সূচকসমূহ',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    'index'.tr,
+                    style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white, fontSize: 18),
                   ),
-                  Icon(Icons.arrow_drop_down, color: Colors.white),
+                  Icon(Icons.arrow_drop_down, color: themeController.themeMode.value == ThemeMode.light
+                      ? Colors.black
+                      : Colors.white,),
                 ],
               ),
               const SizedBox(height: 10),

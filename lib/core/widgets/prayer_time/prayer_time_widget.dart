@@ -21,8 +21,8 @@ class PrayerTimeWidget extends StatelessWidget {
           children: <Widget>[
             SvgPicture.asset(
               icon,
-              width: 50,
-              height: 50,
+              width: 40,
+              height: 40,
             ),
             const SizedBox(width: 10),
             Column(
@@ -30,17 +30,21 @@ class PrayerTimeWidget extends StatelessWidget {
               children: [
                 Text(
                   time,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   label, // সেহরির সময় or ইফতারের সময়
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
+                  style: TextStyle(
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -57,7 +61,9 @@ class PrayerTimeWidget extends StatelessWidget {
       children: <Widget>[
         Text(
           name, // ফজর, যোহর, আসর, মাগরিব, এশা
-          style: const TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+              ? Colors.black
+              : Colors.white, fontSize: 16),
         ),
         const SizedBox(height: 5),
         Container(
@@ -68,7 +74,9 @@ class PrayerTimeWidget extends StatelessWidget {
         const SizedBox(height: 5),
         Text(
           time, // 05.34 am, 01.30 pm, etc.
-          style: const TextStyle(color: Colors.white70, fontSize: 14),
+          style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+              ? Colors.black54
+              : Colors.white70, fontSize: 14),
         ),
       ],
     );
@@ -107,14 +115,20 @@ class PrayerTimeWidget extends StatelessWidget {
                     'assets/svg/prayer_time_icon.svg',
                     width: 24,
                     height: 24,
-                    color: Colors.white,
+                    color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
                   ),
                   const SizedBox(width: 8),
-                  const Text(
-                    'নামাজের সময়',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  Text(
+                    'prayer_times_title'.tr,
+                    style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white, fontSize: 18),
                   ),
-                  const Icon(Icons.arrow_drop_down, color: Colors.white),
+                  Icon(Icons.arrow_drop_down, color: themeController.themeMode.value == ThemeMode.light
+                      ? Colors.black
+                      : Colors.white,),
                 ],
               ),
               const SizedBox(height: 10),

@@ -50,7 +50,7 @@ class SunAndMoonWidget extends StatelessWidget {
                       ),
                       SizedBox(width: 16,),
                       Text(
-                        'সূর্য ও চাঁদ',
+                        'sun_moon_title'.tr, // "Sun & Moon"
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
@@ -64,7 +64,7 @@ class SunAndMoonWidget extends StatelessWidget {
                   const Icon(Icons.arrow_drop_down, color: Colors.white),
                   Spacer(),
                   Text(
-                    "বিস্তারিত",
+                    "details".tr, // "Details"
                     style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
@@ -106,7 +106,7 @@ class SunAndMoonWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('ওয়াক্সিং গিব্বাস', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                        Text('waxing_gibbous'.tr, style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                             ? Colors.black
                             : Colors.white, fontSize: 24),),
                         Text('চন্দ্রের অবস্থান', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light

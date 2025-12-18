@@ -64,7 +64,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                         ),
                         SizedBox(width: 8),
                         Text(
-                          'বাতাসের মান',
+                          'air_quality_title'.tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: themeController.themeMode.value == ThemeMode.light

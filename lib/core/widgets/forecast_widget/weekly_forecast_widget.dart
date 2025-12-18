@@ -13,6 +13,18 @@ class WeeklyForecastView extends StatelessWidget {
   final ThemeController themeController = Get.find<ThemeController>();
   final HomeController hController = Get.find<HomeController>();
 
+  var isBangla =  Get.locale?.languageCode == 'bn';
+  String englishToBanglaNumber(String input) {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const bangla  = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+    String output = input;
+    for (int i = 0; i < english.length; i++) {
+      output = output.replaceAll(english[i], bangla[i]);
+    }
+    return output;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,7 +59,7 @@ class WeeklyForecastView extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "পরবর্তী ১৫ দিন", // "Next 15 Days"
+                    "next_15_days_forecast".tr, // "Next 15 Days"
                     style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
@@ -58,7 +70,7 @@ class WeeklyForecastView extends StatelessWidget {
                   ),
                   Spacer(),
                   Text(
-                    "বিস্তারিত", // "Details"
+                    "details".tr, // "Details"
                     style: TextStyle(
                       color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
@@ -89,7 +101,7 @@ class WeeklyForecastView extends StatelessWidget {
             if (weeklyData.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Center(child: Text("Loading forecast...")),
+                child: Center(child: Text("data_load_indicator".tr)),
               );
             }
 
@@ -145,13 +157,13 @@ class WeeklyForecastView extends StatelessWidget {
                       ),
 
                       // Min Temp Text
-                      Text(
+                      Text( isBangla ? englishToBanglaNumber('${item.minTemp.toInt()}°') :
                         '${item.minTemp.toInt()}°',
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black
                               : Colors.white,
-                          fontSize: 14,
+                          fontSize: 15,
                         ),
                       ),
 
@@ -179,13 +191,13 @@ class WeeklyForecastView extends StatelessWidget {
                       ),
 
                       // Max Temp Text
-                      Text(
+                      Text( isBangla ? englishToBanglaNumber('${item.maxTemp.toInt()}°') :
                         '${item.maxTemp.toInt()}°',
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black
                               : Colors.white,
-                          fontSize: 14,
+                          fontSize: 15,
                         ),
                       ),
 

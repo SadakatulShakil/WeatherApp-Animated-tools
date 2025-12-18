@@ -2,6 +2,7 @@ import 'package:bmd_weather_app/core/widgets/other_info_widget/precipitation_car
 import 'package:bmd_weather_app/core/widgets/other_info_widget/uv_index_card.dart';
 import 'package:bmd_weather_app/core/widgets/other_info_widget/visibility_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'humidity_card.dart';
 
@@ -20,28 +21,28 @@ class OtherInfoCards extends StatelessWidget {
       childAspectRatio: 0.70, // <<< Important! Adjust card height!
       children: [
         PrecipitationCard(
-          title: 'বৃষ্টির পরিমাণ',
+          title: 'rainfall_title'.tr,
           value: '০',
           unit: 'মিমি.',
           subtitle: 'আগামী ২৪ ঘন্টায় ০ মিমি বৃষ্টিপাতের সম্ভাবনা রয়েছে।',
           icon: Icons.grain,
         ),
         UvIndexCard(
-          title: 'অতিবেগুনী রে',
+          title: 'uv_index_title'.tr,
           value: '৪',
           unit: '',
           subtitle: '১৫:০০ টায় সূর্য সুরক্ষার দিকে মনোযোগ দিন',
           icon: Icons.wb_sunny,
         ),
         HumidityCard(
-          title: 'আর্দ্রতা',
+          title: 'humidity_title'.tr,
           value: '৩৭',
           unit: '%',
           subtitle: 'শিশির বিন্দু এখন ১৭.৮° সেলসিয়াস।',
           icon: Icons.water_drop,
         ),
         VisibilityCard(
-          title: 'দৃশ্যমানতা',
+          title: 'visibility_title'.tr,
           value: '৯.৮',
           unit: 'কি.মি',
           subtitle: 'দৃশ্যমানতার পরিমাণ কম, দৃষ্টি স্পষ্ট নয়।',
