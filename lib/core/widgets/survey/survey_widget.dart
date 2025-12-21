@@ -250,6 +250,7 @@
 import 'dart:ui';
 import 'package:bmd_weather_app/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../models/user_survey_model.dart';
 
@@ -341,28 +342,25 @@ Future<void> showTopSurveyDialog({
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
-                            vertical: 8,
+                            vertical: 4,
                           ),
                           child: Wrap(
-                            spacing: 8,
+                            spacing: 4,
                             runSpacing: 8,
                             children: q.options.map((opt) {
                               final isSelected = opt == selected;
 
                               return ChoiceChip(
-                                labelPadding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 0,
-                                ),
                                 label: Text(
                                   opt,
                                   style: TextStyle(
                                     color: isSelected
                                         ? Colors.white
-                                        : Colors.white70,
+                                        : Colors.blueAccent.shade100,
                                     fontWeight: isSelected
                                         ? FontWeight.w700
                                         : FontWeight.w500,
+                                    fontSize: 14.sp
                                   ),
                                 ),
                                 selected: isSelected,

@@ -182,6 +182,16 @@ class LocalizationString extends Translations {
       'emergency_contacts': 'Emergency Contacts',
       'citizen_science': 'Citizen Science',
 
+      ///Prayer Time
+      'seheri_time': 'Seheri Time',
+      'ifter_time': 'Iftar Time',
+      'fajr_time': 'Fajor',
+      'juhr_time': 'Juhor',
+      'asr_time': 'Asar',
+      'magrib_time': 'Magrib',
+      'isha_time': 'Isha',
+
+
     },
     'bn_BD': {
 
@@ -360,6 +370,15 @@ class LocalizationString extends Translations {
       'weather_alerts': 'আবহাওয়া সতর্কতা',
       'emergency_contacts': 'জরুরি যোগাযোগ',
       'citizen_science': 'নাগরিক বিজ্ঞান',
+
+      ///Prayer Time
+      'seheri_time': 'সেহরির সময়',
+      'ifter_time': 'ইফতারের সময়',
+      'fajr_time': 'ফজর',
+      'juhr_time': 'যোহর',
+      'asr_time': 'আসর',
+      'magrib_time': 'মাগরিব',
+      'isha_time': 'এশা',
 
     }
   };

@@ -12,8 +12,19 @@ class PrayerTimeWidget extends StatelessWidget {
 
   final ThemeController themeController = Get.find<ThemeController>();
   final PrayerTimeController controller = Get.put(PrayerTimeController());
-
+  var isBangla =  Get.locale?.languageCode == 'bn';
   final Color greenAccent = const Color(0xFF23FF90);
+
+  String englishToBanglaNumber(String input) {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const bangla  = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+    String output = input;
+    for (int i = 0; i < english.length; i++) {
+      output = output.replaceAll(english[i], bangla[i]);
+    }
+    return output;
+  }
 
   Widget _buildTimeCard(String icon, String? time, String label, bool isDark) {
     return Expanded(
@@ -35,7 +46,7 @@ class PrayerTimeWidget extends StatelessWidget {
                   time ?? "--:--",
                   style: TextStyle(
                     color: isDark ? Colors.white : Colors.black,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -154,15 +165,19 @@ class PrayerTimeWidget extends StatelessWidget {
                     children: <Widget>[
                       _buildTimeCard(
                           'assets/svg/seheri_icon.svg',
-                          controller.formatTime(data.sehri),
-                          'সেহরির সময়',
+                          isBangla
+                              ? englishToBanglaNumber(controller.formatTime(data.sehri) ?? "--:--")
+                              : controller.formatTime(data.sehri),
+                          'seheri_time'.tr,
                           isDark
                       ),
                       Container(width: 1, height: 40, color: Colors.grey.withOpacity(0.3)),
                       _buildTimeCard(
                           'assets/svg/ifter_icon.svg',
-                          controller.formatTime(data.iftar),
-                          'ইফতারের সময়',
+                          isBangla
+                              ? englishToBanglaNumber(controller.formatTime(data.iftar) ?? "--:--")
+                              : controller.formatTime(data.iftar),
+                          'ifter_time'.tr,
                           isDark
                       ),
                     ],
@@ -172,11 +187,21 @@ class PrayerTimeWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      _buildDailyPrayerTime('ফজর', controller.formatTime(data.fajr), isDark),
-                      _buildDailyPrayerTime('যোহর', controller.formatTime(data.juhr), isDark),
-                      _buildDailyPrayerTime('আসর', controller.formatTime(data.asr), isDark),
-                      _buildDailyPrayerTime('মাগরিব', controller.formatTime(data.magrib), isDark),
-                      _buildDailyPrayerTime('এশা', controller.formatTime(data.isha), isDark),
+                      _buildDailyPrayerTime('fajr_time'.tr, isBangla
+                        ? englishToBanglaNumber(controller.formatTime(data.fajr) ?? '--:--')
+                        : controller.formatTime(data.fajr), isDark),
+                      _buildDailyPrayerTime('juhr_time'.tr, isBangla
+                          ? englishToBanglaNumber(controller.formatTime(data.juhr) ?? '--:--')
+                          : controller.formatTime(data.juhr), isDark),
+                      _buildDailyPrayerTime('asr_time'.tr, isBangla
+                          ? englishToBanglaNumber(controller.formatTime(data.asr) ?? '--:--')
+                          : controller.formatTime(data.asr), isDark),
+                      _buildDailyPrayerTime('magrib_time'.tr, isBangla
+                          ? englishToBanglaNumber(controller.formatTime(data.magrib) ?? '--:--')
+                          : controller.formatTime(data.magrib), isDark),
+                      _buildDailyPrayerTime('isha_time'.tr, isBangla
+                          ? englishToBanglaNumber(controller.formatTime(data.isha) ?? '--:--')
+                          : controller.formatTime(data.isha), isDark),
                     ],
                   ),
                 ],
@@ -184,10 +209,21 @@ class PrayerTimeWidget extends StatelessWidget {
             },
 
             onLoading: Center(
-              child: Lottie.asset(
-                  'assets/json/loading_anim.json',
-                  width: 80,
-                  height: 80
+              child: Column(
+                children: [
+                  Lottie.asset(
+                      'assets/json/loading_anim.json',
+                      width: 80,
+                      height: 80
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    "data_load_indicator".tr,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -212,8 +248,8 @@ class PrayerTimeWidget extends StatelessWidget {
 
             onEmpty: Center(
               child: Text(
-                "No data available",
-                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                "empty_data".tr,
+                style: TextStyle(color: isDark ? Colors.blue : Colors.black),
               ),
             ),
           ),

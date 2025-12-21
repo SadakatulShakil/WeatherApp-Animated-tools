@@ -297,23 +297,25 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     return Obx(() {
       print('checkBool: ${controller.isForecastFetched.value}');
       if (!controller.isForecastFetched.value) {
-        return SizedBox(
-          height: 200.h,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              lottie.Lottie.asset(
-                'assets/json/server_issue.json',
-                height: 100.h,
-              ),
-              Text(
-                'server_maintenance_msg'.tr,
-                style: TextStyle(
-                  color: AppColors().app_primary_bg,
-                  fontSize: 18.sp,
+        return Center(
+          child: SizedBox(
+            height: 200.h,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                lottie.Lottie.asset(
+                  'assets/json/server_issue.json',
+                  height: 100.h,
                 ),
-              ),
-            ],
+                Text(
+                  'server_maintenance_msg'.tr,
+                  style: TextStyle(
+                    color: AppColors().app_primary_bg,
+                    fontSize: 18.sp,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       }

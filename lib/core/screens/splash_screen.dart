@@ -100,9 +100,9 @@ class _SplashScreenState extends State with WidgetsBindingObserver {
               "Powered by RIMES",
               style: TextStyle(fontSize: 16.sp, color: Colors.grey, fontWeight: FontWeight.w500),
             ),
+            // SizedBox(height: 24.h),
+            // Lottie.asset('assets/json/loading_anim.json', width: 80.w, height: 80.h),
             SizedBox(height: 24.h),
-            Lottie.asset('assets/json/loading_anim.json', width: 80.w, height: 80.h),
-            SizedBox(height: 16.h),
             Text(
               _initialized ? "Ready! Launching App..." : "Initializing Services...",
               style: TextStyle(fontSize: 14.sp, color: Colors.grey),
