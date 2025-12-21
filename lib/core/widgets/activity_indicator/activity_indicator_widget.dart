@@ -51,62 +51,60 @@ class ActivityIndicatorWidget extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // --- Header: Indicators ---
-              Row(
-                children: [
-                  Icon(Icons.info_outline, color: themeController.themeMode.value == ThemeMode.light
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // --- Header: Indicators ---
+            Row(
+              children: [
+                Icon(Icons.info_outline, color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white,),
+                SizedBox(width: 8),
+                Text(
+                  'index'.tr,
+                  style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                       ? Colors.black
-                      : Colors.white,),
-                  SizedBox(width: 8),
-                  Text(
-                    'index'.tr,
-                    style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
-                        ? Colors.black
-                        : Colors.white, fontSize: 18),
-                  ),
-                  Icon(Icons.arrow_drop_down, color: themeController.themeMode.value == ThemeMode.light
-                      ? Colors.black
-                      : Colors.white,),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Divider(
-                color: themeController.themeMode.value == ThemeMode.light
-                    ? Colors.grey.shade300
-                    : Colors.grey.shade500,
-                height: 1,
-              ),
-              const SizedBox(height: 10),
+                      : Colors.white, fontSize: 18),
+                ),
+                Icon(Icons.arrow_drop_down, color: themeController.themeMode.value == ThemeMode.light
+                    ? Colors.black
+                    : Colors.white,),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Divider(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.grey.shade300
+                  : Colors.grey.shade500,
+              height: 1,
+            ),
+            const SizedBox(height: 10),
 
-              // --- Indicator List ---
-              _buildIndicatorItem(
-                Icons.schedule,
-                'বাইরের কার্যকলাপের জন্য পরিস্থিতি ভালো থাকবে।',
-              ),
-              _buildIndicatorItem(
-                Icons.directions_run,
-                'বাইরে দৌড়ানোর জন্য অবস্থা অবশ্যই ভালো।',
-              ),
-              _buildIndicatorItem(
-                Icons.medical_services_outlined, // DNA/Health icon placeholder
-                'আবহাওয়া অবস্থার ঠান্ডা লাগার ঝুঁকি কম করে এবং জমাট বাঁধার তীব্রতা কমাতে এবং সময়কাল কমাতে সাহায্য করবে।',
-              ),
-              _buildIndicatorItem(
-                Icons.airplanemode_active,
-                'উড়ানের জন্য অবস্থা চমৎকার!',
-              ),
-              _buildIndicatorItem(
-                Icons.drive_eta,
-                'গাড়ি চালানোর অবস্থা মোটামুটি ভালো।',
-              ),
-            ],
-          ),
+            // --- Indicator List ---
+            _buildIndicatorItem(
+              Icons.schedule,
+              'বাইরের কার্যকলাপের জন্য পরিস্থিতি ভালো থাকবে।',
+            ),
+            _buildIndicatorItem(
+              Icons.directions_run,
+              'বাইরে দৌড়ানোর জন্য অবস্থা অবশ্যই ভালো।',
+            ),
+            _buildIndicatorItem(
+              Icons.medical_services_outlined, // DNA/Health icon placeholder
+              'আবহাওয়া অবস্থার ঠান্ডা লাগার ঝুঁকি কম করে এবং জমাট বাঁধার তীব্রতা কমাতে এবং সময়কাল কমাতে সাহায্য করবে।',
+            ),
+            _buildIndicatorItem(
+              Icons.airplanemode_active,
+              'উড়ানের জন্য অবস্থা চমৎকার!',
+            ),
+            _buildIndicatorItem(
+              Icons.drive_eta,
+              'গাড়ি চালানোর অবস্থা মোটামুটি ভালো।',
+            ),
+          ],
         ),
       ),
     );

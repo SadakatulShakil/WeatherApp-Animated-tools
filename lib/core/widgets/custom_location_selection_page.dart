@@ -203,6 +203,7 @@ class SelectLocationPage extends StatelessWidget {
                                         style: GoogleFonts.notoSansBengali(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16.sp,
+                                          color: Colors.black87
                                         ),
                                       ),
                                       subtitle: Column(

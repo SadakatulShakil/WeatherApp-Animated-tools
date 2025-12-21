@@ -118,11 +118,22 @@ class ApiURL {
   /// Verifies a mobile OTP.
   static const String VERIFY_OTP = '$BASE_API3_URL/api/app_user_mobile/verify-otp/';
 
-  /// Bamis App Url - Weather Locations
-  static String LOCATION_LATLON = '${BASE_URL_WEATHER}/weather/location';
+  // ===================================
+  // BMD_Weather APIs
+  // ===================================
+
+  //static String LOCATION_LATLON = '${BASE_URL_WEATHER}/weather/location';
+  static String LOCATION_LATLON = '${BASE_URL_WEATHER}/weather/forecast';
 
   /// Get Current Forecast
   static String CURRENT_FORECAST = '${BASE_URL_WEATHER}/weather/forecast?type=point&';
+
+  /// Get Current Prayer Time
+  static String PRAYER_TIME = '${BASE_URL_WEATHER}/weather/prayer';
+
+  // ===================================
+  // BMD_Weather APIs
+  // ===================================
 
   /// Refresh Token.
   static String REFRESH_TOKEN = '${BAMIS_URL}/api/auth/refresh';

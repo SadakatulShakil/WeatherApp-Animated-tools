@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
+import '../models/forecast_model.dart';
 import 'api_urls.dart';
 import 'user_pref_service.dart';
 
@@ -18,19 +19,20 @@ class LocationService {
 
       // Call your API with the coordinates
       final response = await http.get(
-        Uri.parse("${ApiURL.LOCATION_LATLON}?lat=${position.latitude}&lon=${position.longitude}"),
+        Uri.parse("${ApiURL.LOCATION_LATLON}?type=point&lat=${position.latitude}&lon=${position.longitude}"),
         headers: {'Accept-Language': Get.locale?.languageCode ?? 'bn'},
       ).timeout(Duration(seconds: timeoutSeconds));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        final forecast = WeatherForecastModel.fromJson(data);
         await UserPrefService().saveLocationData(
           position.latitude.toStringAsFixed(5),
           position.longitude.toStringAsFixed(5),
-          data['result']['id'],
-          data['result']['name'],
-          data['result']['upazila'],
-          data['result']['district'],
+          forecast.result?.location?.id ?? 'Unknown',
+          forecast.result?.location?.locationName ?? 'Unknown',
+          forecast.result?.location?.districtBn ?? 'Unknown',
+          forecast.result?.location?.upazilaBn ?? 'Unknown',
         );
         print("✅ Location data saved with name: ${data['result']['name']}");
       } else {
