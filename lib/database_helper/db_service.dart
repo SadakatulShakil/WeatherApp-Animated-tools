@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../database_helper/database.dart';
-import 'entity/local_location_entity.dart';
-import 'entity/local_parameter_entity.dart';
 import 'entity/record_entity.dart';
 
 class DBService extends GetxService {
@@ -17,7 +15,7 @@ class DBService extends GetxService {
 
       // Add timeout to prevent hanging
       _database = await $FloorAppDatabase
-          .databaseBuilder('offline.db')
+          .databaseBuilder('offline_bmd.db')
           .build()
           .timeout(const Duration(seconds: 10), onTimeout: () {
         throw TimeoutException('Database initialization timed out');
@@ -41,22 +39,6 @@ class DBService extends GetxService {
         rethrow;
       }
     }
-  }
-
-  Future<void> saveLocations(List<LocationEntity> locations) async {
-    await _database.locationDao.insertLocations(locations);
-  }
-
-  Future<List<LocationEntity>> loadLocations() async {
-    return await _database.locationDao.findAllLocations();
-  }
-
-  Future<void> saveParameters(List<ParameterEntity> params) async {
-    await _database.parameterDao.insertParameters(params);
-  }
-
-  Future<List<ParameterEntity>> loadParameters() async {
-    return await _database.parameterDao.findAllParameters();
   }
 
   Future<void> saveRecord(RecordEntity record) async {

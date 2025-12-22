@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../models/forecast_model.dart';
 import '../models/saved_location_model.dart';
 import 'api_urls.dart';
 
@@ -122,20 +123,22 @@ class UserPrefService {
 
   // ===== Profile Data =====
   Future<void> saveProfileData(
-      String firstName,
-      String lastName,
       String fullName,
+      String email,
+      String mobile,
       String address,
       String lat,
       String lon,
+      String status,
       String photo
       ) async {
-    await _prefs?.setString(_keyFirstName, firstName);
-    await _prefs?.setString(_keyLastName, lastName);
     await _prefs?.setString(_keyUserName, fullName);
+    await _prefs?.setString(_keyUserEmail, email);
+    await _prefs?.setString(_keyUserMobile, mobile);
     await _prefs?.setString(_keyUserAddress, address);
     await _prefs?.setString(_keyLat, lat);
     await _prefs?.setString(_keyLon, lon);
+    await _prefs?.setString(_keyUserType, status);
     await _prefs?.setString(_keyUserPhoto, photo);
   }
 
@@ -328,31 +331,29 @@ class UserPrefService {
   }) async {
     try {
       final resp = await http.get(
-        Uri.parse("${ApiURL.LOCATION_LATLON}?lat=$lat&lon=$lon"),
+        Uri.parse("${ApiURL.LOCATION_LATLON}?type=point&lat=$lat&lon=$lon"),
         headers: {'Accept-Language': 'bn'}, // or Get.locale?.languageCode if Get is available in this file
       );
 
       if (resp.statusCode == 200) {
-        final decode = jsonDecode(resp.body);
-        final r = decode['result'] ?? {};
-        final apiId = r['id']?.toString() ?? '';
-        final apiName = r['name']?.toString() ?? '';
-        final upazila = r['upazila']?.toString() ?? '';
-        final district = r['district']?.toString() ?? '';
+        final data = jsonDecode(resp.body);
+        final forecast = WeatherForecastModel.fromJson(data);
+        final apiName = forecast.result?.location?.locationName ?? 'Unknown';
         final displayName = displayNameFallback.isNotEmpty ? displayNameFallback : apiName;
 
         final sl = SavedLocation(
           lat: lat.toStringAsFixed(5),
           lon: lon.toStringAsFixed(5),
-          id: apiId,
+          id: forecast.result?.location?.id ?? 'Unknown',
           apiName: apiName,
           displayName: displayName,
-          upazila: upazila,
-          district: district,
+          upazila: forecast.result?.location?.upazilaBn ?? 'Unknown',
+          district: forecast.result?.location?.districtBn ?? 'Unknown',
           isCurrent: setAsCurrent,
           createdAt: DateTime.now().toIso8601String(),
         );
         return sl;
+
       }
       return null;
     } catch (e) {

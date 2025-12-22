@@ -1,5 +1,5 @@
-import 'package:bmd_weather_app/core/widgets/activity_indicator/activity_indicator_widget.dart';
-import 'package:bmd_weather_app/core/widgets/prayer_time/prayer_time_widget.dart';
+import 'package:bmd_weather_app/core/widgets/others/activity_indicator_widget.dart';
+import 'package:bmd_weather_app/core/widgets/others/prayer_time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,12 +16,12 @@ import '../../services/api_urls.dart';
 import '../../utills/app_color.dart';
 import '../../utills/app_drawer.dart';
 import '../widgets/air_widget/air_quality_widget.dart';
-import '../widgets/base_weather_card.dart';
+import '../widgets/others/base_weather_card.dart';
 import '../widgets/forecast_widget/weather_forecast.dart';
 import '../widgets/forecast_widget/weekly_forecast_widget.dart';
 import '../widgets/other_info_widget/other_info_card.dart';
 import '../widgets/sun_and_moon_widget/sun_and_moon_widget.dart';
-import '../widgets/survey/survey_widget.dart';
+import '../widgets/others/survey_widget.dart';
 import '../widgets/wind_and_pressure_widget/wind_pressure_cards.dart';
 
 class WeatherHomePage extends StatefulWidget {

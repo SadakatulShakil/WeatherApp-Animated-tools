@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/widgets/custom_location_selection_page.dart';
+import '../core/widgets/others/custom_location_selection_page.dart';
 import '../models/hourly_weather_model.dart';
 import '../models/saved_location_model.dart';
 import '../models/upazila_list_model.dart';

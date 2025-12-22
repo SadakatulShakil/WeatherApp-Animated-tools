@@ -1,6 +1,6 @@
 import 'package:bmd_weather_app/controllers/home_controller.dart';
 import 'package:bmd_weather_app/controllers/settings_controller.dart';
-import 'package:bmd_weather_app/core/widgets/under_development/under_development_widget.dart';
+import 'package:bmd_weather_app/core/widgets/others/under_development_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/theme_controller.dart';
 import '../core/screens/dashboard_preference.dart';
 import '../core/screens/icon_preference.dart';
-import '../water_watch_pages/mobile.dart';
+import '../w_citizen_science_pages/mobile.dart';
 import 'app_color.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -136,7 +136,7 @@ class _AppDrawerState extends State<AppDrawer> {
             isLight: isLight,
             title: "citizen_science".tr,
             onTap: () {
-              Get.to(() => WaterWatchMobile(),
+              Get.to(() => CitizenScienceMobile(),
                   transition: Transition.rightToLeft,
                   duration: Duration(milliseconds: 300));
             },

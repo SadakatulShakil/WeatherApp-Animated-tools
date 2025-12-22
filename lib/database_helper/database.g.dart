@@ -72,10 +72,6 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
-  LocationDao? _locationDaoInstance;
-
-  ParameterDao? _parameterDaoInstance;
-
   RecordDao? _recordDaoInstance;
 
   Future<sqflite.Database> open(
@@ -100,10 +96,6 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `LocationEntity` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `titleBn` TEXT NOT NULL, `subtitle` TEXT NOT NULL, `subtitleBn` TEXT NOT NULL, PRIMARY KEY (`id`))');
-        await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ParameterEntity` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `titleBn` TEXT NOT NULL, PRIMARY KEY (`id`))');
-        await database.execute(
             'CREATE TABLE IF NOT EXISTS `record_entity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` TEXT NOT NULL, `time` TEXT NOT NULL, `locationId` TEXT NOT NULL, `locationName` TEXT NOT NULL, `parameterId` TEXT NOT NULL, `parameterName` TEXT NOT NULL, `measurement` TEXT NOT NULL, `image1Path` TEXT, `image2Path` TEXT, `image3Path` TEXT, `isSynced` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
@@ -113,98 +105,8 @@ class _$AppDatabase extends AppDatabase {
   }
 
   @override
-  LocationDao get locationDao {
-    return _locationDaoInstance ??= _$LocationDao(database, changeListener);
-  }
-
-  @override
-  ParameterDao get parameterDao {
-    return _parameterDaoInstance ??= _$ParameterDao(database, changeListener);
-  }
-
-  @override
   RecordDao get recordDao {
     return _recordDaoInstance ??= _$RecordDao(database, changeListener);
-  }
-}
-
-class _$LocationDao extends LocationDao {
-  _$LocationDao(
-    this.database,
-    this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
-        _locationEntityInsertionAdapter = InsertionAdapter(
-            database,
-            'LocationEntity',
-            (LocationEntity item) => <String, Object?>{
-                  'id': item.id,
-                  'title': item.title,
-                  'titleBn': item.titleBn,
-                  'subtitle': item.subtitle,
-                  'subtitleBn': item.subtitleBn
-                });
-
-  final sqflite.DatabaseExecutor database;
-
-  final StreamController<String> changeListener;
-
-  final QueryAdapter _queryAdapter;
-
-  final InsertionAdapter<LocationEntity> _locationEntityInsertionAdapter;
-
-  @override
-  Future<List<LocationEntity>> findAllLocations() async {
-    return _queryAdapter.queryList('SELECT * FROM LocationEntity',
-        mapper: (Map<String, Object?> row) => LocationEntity(
-            id: row['id'] as String,
-            title: row['title'] as String,
-            titleBn: row['titleBn'] as String,
-            subtitle: row['subtitle'] as String,
-            subtitleBn: row['subtitleBn'] as String));
-  }
-
-  @override
-  Future<void> insertLocations(List<LocationEntity> locations) async {
-    await _locationEntityInsertionAdapter.insertList(
-        locations, OnConflictStrategy.replace);
-  }
-}
-
-class _$ParameterDao extends ParameterDao {
-  _$ParameterDao(
-    this.database,
-    this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
-        _parameterEntityInsertionAdapter = InsertionAdapter(
-            database,
-            'ParameterEntity',
-            (ParameterEntity item) => <String, Object?>{
-                  'id': item.id,
-                  'title': item.title,
-                  'titleBn': item.titleBn
-                });
-
-  final sqflite.DatabaseExecutor database;
-
-  final StreamController<String> changeListener;
-
-  final QueryAdapter _queryAdapter;
-
-  final InsertionAdapter<ParameterEntity> _parameterEntityInsertionAdapter;
-
-  @override
-  Future<List<ParameterEntity>> findAllParameters() async {
-    return _queryAdapter.queryList('SELECT * FROM ParameterEntity',
-        mapper: (Map<String, Object?> row) => ParameterEntity(
-            id: row['id'] as String,
-            title: row['title'] as String,
-            titleBn: row['titleBn'] as String));
-  }
-
-  @override
-  Future<void> insertParameters(List<ParameterEntity> parameters) async {
-    await _parameterEntityInsertionAdapter.insertList(
-        parameters, OnConflictStrategy.replace);
   }
 }
 
