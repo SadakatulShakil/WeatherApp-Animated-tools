@@ -6,6 +6,7 @@ import '../../services/api_urls.dart';
 import '../../services/user_pref_service.dart';
 import '../../w_citizen_science_models/dashboard_model.dart';
 import '../../w_citizen_science_models/profile_model.dart';
+import '../../w_citizen_science_pages/mobile.dart';
 
 
 class CitizenScienceDashboardController extends GetxController {
@@ -89,6 +90,26 @@ class CitizenScienceDashboardController extends GetxController {
         );
 
         print("Fetched profile: ${profileDecode.toJson()}");
+      }else if (response.statusCode == 401) {
+        print('Unauthorized! Possible expired token.');
+
+        bool refreshed = await userService.refreshAccessToken();
+        if (refreshed) {
+          return fetchProfileData(); // Retry after refreshing the token
+        } else {
+          return Get.defaultDialog(
+            title: "Session Expired",
+            middleText: "Please log in again.",
+            textCancel: 'Ok',
+            onCancel: () {
+              userService.clearUserData();
+              Get.offUntil(
+                GetPageRoute(page: () => CitizenScienceMobile(), transition: Transition.upToDown),
+                    (route) => route.isFirst,
+              );
+            },
+          );
+        }
       } else {
         print("Failed to fetch locations, status code: ${response.statusCode}");
       }
@@ -126,6 +147,26 @@ class CitizenScienceDashboardController extends GetxController {
           print("Fetched ${dashboardModules.length} modules");
         } else {
           print("API returned status false: ${data.message}");
+        }
+      }else if (response.statusCode == 401) {
+        print('Unauthorized! Possible expired token.');
+
+        bool refreshed = await userService.refreshAccessToken();
+        if (refreshed) {
+          return fetchDashboardData(); // Retry after refreshing the token
+        } else {
+          return Get.defaultDialog(
+            title: "Session Expired",
+            middleText: "Please log in again.",
+            textCancel: 'Ok',
+            onCancel: () {
+              userService.clearUserData();
+              Get.offUntil(
+                GetPageRoute(page: () => CitizenScienceMobile(), transition: Transition.upToDown),
+                    (route) => route.isFirst,
+              );
+            },
+          );
         }
       } else {
         print("Failed to fetch dashboard data, status code: ${response.statusCode}");

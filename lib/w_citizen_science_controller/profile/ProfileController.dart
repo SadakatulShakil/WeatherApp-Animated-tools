@@ -194,12 +194,24 @@ class CitizenScienceProfileController extends GetxController with GetSingleTicke
       }
       // 4. Handle Token Expiry
       else if (response.statusCode == 401) {
+        print('Unauthorized! Possible expired token.');
+
         bool refreshed = await userService.refreshAccessToken();
         if (refreshed) {
-          return updateProfile(); // Recursively retry
+          return updateProfile(); // Retry after refreshing the token
         } else {
-          await userService.clearUserData();
-          Get.offAll(() => CitizenScienceMobile(), transition: Transition.upToDown);
+          return Get.defaultDialog(
+            title: "Session Expired",
+            middleText: "Please log in again.",
+            textCancel: 'Ok',
+            onCancel: () {
+              userService.clearUserData();
+              Get.offUntil(
+                GetPageRoute(page: () => CitizenScienceMobile(), transition: Transition.upToDown),
+                    (route) => route.isFirst,
+              );
+            },
+          );
         }
       }
       // 5. Handle Other Errors

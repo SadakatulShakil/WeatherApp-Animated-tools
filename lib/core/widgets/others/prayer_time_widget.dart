@@ -12,7 +12,7 @@ class PrayerTimeWidget extends StatelessWidget {
 
   final ThemeController themeController = Get.find<ThemeController>();
   final PrayerTimeController controller = Get.put(PrayerTimeController());
-  var isBangla =  Get.locale?.languageCode == 'bn';
+  final isBangla =  Get.locale?.languageCode == 'bn';
   final Color greenAccent = const Color(0xFF23FF90);
 
   String englishToBanglaNumber(String input) {
