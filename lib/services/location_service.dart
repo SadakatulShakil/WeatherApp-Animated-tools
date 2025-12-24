@@ -71,6 +71,7 @@ class LocationService {
 
 // Step 2: Check permissions
     LocationPermission permission = await Geolocator.checkPermission();
+    print("DEBUG: Permission status is: $permission");
 
     if (permission == LocationPermission.deniedForever) {
       await _showModernDialog(

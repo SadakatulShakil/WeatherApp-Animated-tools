@@ -50,12 +50,13 @@ class BaseWeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double topPadding = MediaQuery.of(context).padding.top;
     return Container(
       // Adjusted padding to match the visual spacing in the design
-      padding: EdgeInsets.fromLTRB(16.w, 32.h, 16.w, 10.h),
+      padding: EdgeInsets.fromLTRB(16.w, topPadding + 16.h, 16.w, 10.h),
       width: double.infinity,
       // Removed fixed height to allow content to size naturally, or keep roughly 250
-       height: 240.h,
+       height: 250.h+topPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

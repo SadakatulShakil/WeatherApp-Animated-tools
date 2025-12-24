@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '12.0'
+platform :ios, '15.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -36,8 +36,34 @@ target 'Runner' do
   end
 end
 
+# --- FIXED POST_INSTALL BLOCK ---
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+
+    target.build_configurations.each do |config|
+      # 1. Enforce Deployment Target (Match your Platform :ios, '15.0')
+      # This prevents "version mismatch" warnings between pods
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+
+      # 2. Permission Handler Setup
+      # Enable only what you need. 1 = On, 0 = Off.
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] += [
+        'PERMISSION_LOCATION=1',
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_PHOTOS=1',
+
+        # Disabled Permissions (Keep these 0 to avoid Apple Review rejection)
+        'PERMISSION_CONTACTS=0',
+        'PERMISSION_BLUETOOTH=0',
+        'PERMISSION_MICROPHONE=0',
+        'PERMISSION_SPEECH_RECOGNIZER=0',
+        'PERMISSION_SENSORS=0',
+        'PERMISSION_CALENDAR=0',
+        'PERMISSION_REMINDERS=0',
+        'PERMISSION_MEDIA_LIBRARY=0'
+      ]
+    end
   end
 end

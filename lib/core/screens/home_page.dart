@@ -141,12 +141,132 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     });
   }
 
+  // Widget _buildFixedHeader(bool isNight) {
+  //   return Stack(
+  //     children: [
+  //       // Background image
+  //       Container(
+  //         height: 280,
+  //         width: double.infinity,
+  //         decoration: BoxDecoration(
+  //           image: DecorationImage(
+  //             image: isNight
+  //                 ? const AssetImage('assets/night.jpg')
+  //                 : const AssetImage('assets/day.jpg'),
+  //             fit: BoxFit.cover,
+  //           ),
+  //         ),
+  //       ),
+  //       // Gradient overlay
+  //       Container(
+  //         height: 300,
+  //         width: double.infinity,
+  //         decoration: BoxDecoration(
+  //           gradient: LinearGradient(
+  //             colors: themeController.themeMode.value == ThemeMode.light
+  //                 ?[Colors.black26, Colors.grey.shade300]
+  //                 :[Colors.blue.withValues(alpha: 0.4), Color(0xFF165ABC)]
+  //             ,
+  //             begin: Alignment.topCenter,
+  //             end: Alignment.bottomCenter,
+  //           ),
+  //         ),
+  //       ),
+  //       // Location and time
+  //       Align(
+  //         alignment: Alignment.topRight,
+  //         child: Padding(
+  //           padding: const EdgeInsets.only(top: 30, left: 8, right: 8),
+  //           child: IconButton(
+  //             icon: SvgPicture.asset(
+  //               'assets/svg/menu_icon.svg',
+  //               width: 40,
+  //               height: 40,
+  //             ),
+  //             onPressed: () {
+  //               _scaffoldKey.currentState!.openEndDrawer();
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //       // Temperature and weather info
+  //       Positioned(
+  //         left: 0,
+  //         right: 0,
+  //         bottom: 5,
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             ///------- Added Logic Here ------//
+  //             Obx(() {
+  //               print('check_state_dashboard: ${internetController.networkState.value}');
+  //               switch (internetController.networkState.value) {
+  //                 case NetworkState.loading:
+  //                   return SizedBox(
+  //                     height: 220.h,
+  //                     child: Center(
+  //                       child: Text(
+  //                         'data_load_indicator'.tr,
+  //                         style: TextStyle(
+  //                           color: Colors.white,
+  //                           fontSize: 16.sp,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   );
+  //                 case NetworkState.online:
+  //                   return _buildWeatherCard();
+  //                 case NetworkState.offline:
+  //                   return _buildWeatherCardDemo();
+  //               }
+  //             }),
+  //             ///-------add here ------//
+  //             SizedBox(height: 12),
+  //             Container(
+  //               height: 45,
+  //               color: Colors.orange,
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   lottie.Lottie.asset(
+  //                     'assets/json/alert.json',
+  //                     width: 30,
+  //                     height: 30,
+  //                     repeat: true,
+  //                   ),
+  //                   SizedBox(width: 8.0,),
+  //                   Text('২ ঘন্টার মধ্যে ঘূর্ণিঝড়ের সম্ভাবনা রয়েছে',
+  //                       style: TextStyle(
+  //                         color: Colors.white,
+  //                         fontSize: 15,
+  //                       )),
+  //                   lottie.Lottie.asset(
+  //                     'assets/json/arrow_forward.json',
+  //                     width: 40,
+  //                     height: 40,
+  //                     repeat: true,
+  //                   ),
+  //                 ],
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
   Widget _buildFixedHeader(bool isNight) {
+    // 1. Get the device's top safe area (notch height)
+    final double topPadding = MediaQuery.of(context).padding.top;
+
+    final double baseImageHeight = 280.0.h;
+    final double baseGradientHeight = 300.0.h;
+
     return Stack(
       children: [
-        // Background image
         Container(
-          height: 280,
+          height: baseImageHeight + topPadding,
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -157,26 +277,27 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
             ),
           ),
         ),
+
         // Gradient overlay
         Container(
-          height: 300,
+          height: baseGradientHeight + topPadding,
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: themeController.themeMode.value == ThemeMode.light
-                  ?[Colors.black26, Colors.grey.shade300]
-                  :[Colors.blue.withValues(alpha: 0.4), Color(0xFF165ABC)]
-              ,
+                  ? [Colors.black26, Colors.grey.shade300]
+                  : [Colors.blue.withValues(alpha: 0.4), Color(0xFF165ABC)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
           ),
         ),
-        // Location and time
+
+        // Location and time (Menu Icon)
         Align(
           alignment: Alignment.topRight,
           child: Padding(
-            padding: const EdgeInsets.only(top: 30, left: 8, right: 8),
+            padding: EdgeInsets.only(top: topPadding, left: 8.w, right: 8.w),
             child: IconButton(
               icon: SvgPicture.asset(
                 'assets/svg/menu_icon.svg',
@@ -189,6 +310,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
             ),
           ),
         ),
+
         // Temperature and weather info
         Positioned(
           left: 0,
@@ -234,7 +356,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                       height: 30,
                       repeat: true,
                     ),
-                    SizedBox(width: 8.0,),
+                    SizedBox(width: 8.0),
                     Text('২ ঘন্টার মধ্যে ঘূর্ণিঝড়ের সম্ভাবনা রয়েছে',
                         style: TextStyle(
                           color: Colors.white,

@@ -8,7 +8,7 @@
 PRODUCT_NAME = package_connector
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.galaxy.packageConnector
+PRODUCT_BUNDLE_IDENTIFIER = com.rimes.bmd-weather-app
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2025 com.galaxy. All rights reserved.
