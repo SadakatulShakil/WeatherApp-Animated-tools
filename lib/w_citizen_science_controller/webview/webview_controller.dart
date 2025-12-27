@@ -2,6 +2,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../services/user_pref_service.dart';
+
 class WebviewController extends GetxController {
   final title = "".obs;
   final isPageLoading = 0.obs;
@@ -10,6 +12,7 @@ class WebviewController extends GetxController {
   final WebViewController webViewController = WebViewController();
 
   final Connectivity _connectivity = Connectivity();
+  final userService = UserPrefService();
 
   @override
   void onInit() {
@@ -18,7 +21,10 @@ class WebviewController extends GetxController {
     final decode = Get.arguments;
     title.value = decode['title'] ?? 'Web View';
     final url = decode['url'] ?? '';
-
+    String? token = userService.userToken;
+    final lang = userService.appLanguage;
+    final mainUrl = '$url?token=$token&lang=$lang';
+    print("WebView URL: $mainUrl");
     _checkInitialConnection();
     _listenToConnectivity();
 
@@ -40,7 +46,7 @@ class WebviewController extends GetxController {
           },
         ),
       )
-      ..loadRequest(Uri.parse(url));
+      ..loadRequest(Uri.parse(mainUrl));
   }
 
   void _checkInitialConnection() async {
@@ -57,5 +63,20 @@ class WebviewController extends GetxController {
   // Optional: Retry manually from view
   void reloadPage() {
     webViewController.reload();
+  }
+
+  // Inside WebviewController
+
+  // ... existing code ...
+
+  /// Handle back navigation logic
+  Future<void> handleBackNavigation() async {
+    // Check if WebView has history to go back to
+    if (await webViewController.canGoBack()) {
+      webViewController.goBack();
+    } else {
+      // No history, close the screen
+      Get.back();
+    }
   }
 }
