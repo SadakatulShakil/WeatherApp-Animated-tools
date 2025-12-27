@@ -14,7 +14,7 @@ class WebviewView extends GetView<WebviewController> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false, // Prevent default close
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         controller.handleBackNavigation();
@@ -25,16 +25,15 @@ class WebviewView extends GetView<WebviewController> {
           child: AppBar(
             backgroundColor: AppColors().app_secondary,
             elevation: 0,
-            automaticallyImplyLeading: false, // remove default back
+            automaticallyImplyLeading: false,
             titleSpacing: 0,
-
             title: Row(
               children: [
-                // iOS back button
+                // Back button (Navigates WebView history)
                 IconButton(
                   onPressed: () => controller.handleBackNavigation(),
                   padding: EdgeInsets.only(left: 8.w),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios_new,
                     color: Colors.cyan,
                     size: 22,
@@ -45,16 +44,31 @@ class WebviewView extends GetView<WebviewController> {
                 Obx(() => Text(
                   controller.title.value,
                   style: GoogleFonts.notoSansBengali(
-                    color: Color(0xFF0D6EA8),
+                    color: const Color(0xFF0D6EA8),
                     fontWeight: FontWeight.w600,
                     fontSize: 18.sp,
                   ),
                 )),
               ],
             ),
+            // --- ADDED ACTIONS HERE ---
+            actions: [
+              IconButton(
+                // Direct exit: Close the WebView page immediately
+                onPressed: () => Get.back(),
+                icon: const Icon(
+                  Icons.home_outlined, // Or Icons.close / Icons.exit_to_app
+                  color: Colors.cyan,
+                  size: 26,
+                ),
+                tooltip: "Close WebView",
+              ),
+              SizedBox(width: 8.w), // Right padding
+            ],
           ),
         ),
         body: Obx(() {
+          // ... (Your existing body code remains exactly the same)
           if (!controller.hasInternet.value) {
             return Center(
               child: Padding(

@@ -442,12 +442,6 @@ class UserPrefService {
       _keyUserAddress,
       _keyUserType,
       _keyUserPhoto,
-      _keyLat,
-      _keyLon,
-      _keyLocationId,
-      _keyLocationName,
-      _keyLocationUpazila,
-      _keyLocationDistrict,
     ];
     for (var key in keys) {
       await _prefs?.remove(key);

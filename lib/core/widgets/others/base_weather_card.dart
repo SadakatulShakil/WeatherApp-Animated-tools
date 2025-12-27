@@ -53,7 +53,7 @@ class BaseWeatherCard extends StatelessWidget {
     double topPadding = MediaQuery.of(context).padding.top;
     return Container(
       // Adjusted padding to match the visual spacing in the design
-      padding: EdgeInsets.fromLTRB(16.w, topPadding + 16.h, 16.w, 10.h),
+      padding: EdgeInsets.fromLTRB(16.w, topPadding + 28.h, 16.w, 10.h),
       width: double.infinity,
       // Removed fixed height to allow content to size naturally, or keep roughly 250
        height: 250.h+topPadding,
@@ -73,7 +73,7 @@ class BaseWeatherCard extends StatelessWidget {
                       location,
                       style: GoogleFonts.notoSansBengali(
                         fontWeight: FontWeight.w400,
-                        fontSize: 18.sp,
+                        fontSize: 16.sp,
                         color: Colors.white, // Changed to white for visibility on sky bg
                       ),
                     ),

@@ -193,6 +193,8 @@ class LocalizationString extends Translations {
       'magrib_time': 'Magrib',
       'isha_time': 'Isha',
 
+      'empty_marque': 'No weather warnings at this time. Have a safe day!'
+
 
     },
     'bn_BD': {
@@ -383,6 +385,8 @@ class LocalizationString extends Translations {
       'asr_time': 'আসর',
       'magrib_time': 'মাগরিব',
       'isha_time': 'এশা',
+
+      'empty_marque': 'বর্তমানে কোনো আবহাওয়া সতর্কবার্তা নেই। নিরাপদে থাকুন!'
 
     }
   };

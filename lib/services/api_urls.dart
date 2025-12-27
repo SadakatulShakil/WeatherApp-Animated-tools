@@ -47,5 +47,7 @@ class ApiURL {
 
   /// Get Current Prayer Time
   static String PRAYER_TIME = '${BASE_URL_WEATHER}/weather/prayer';
+  /// Get Notification List
+  static String NOTIFICATION_LIST = '${BASE_URL_WEATHER}/notification/list';
 
 }

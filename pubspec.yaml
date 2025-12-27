@@ -45,6 +45,7 @@ dependencies:
   lottie: ^3.3.1
   image_picker: ^1.1.2
   url_launcher: ^6.2.5
+  marquee: ^2.3.0
   flutter_screenutil: ^5.9.3
   connectivity_plus: ^7.0.0
   floor: ^1.5.0

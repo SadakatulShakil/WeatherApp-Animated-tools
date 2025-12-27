@@ -1,3 +1,4 @@
+import 'package:bmd_weather_app/core/screens/notification_page.dart';
 import 'package:bmd_weather_app/core/widgets/others/activity_indicator_widget.dart';
 import 'package:bmd_weather_app/core/widgets/others/prayer_time_widget.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart' as lottie;
+import 'package:marquee/marquee.dart';
 
 import '../../controllers/forecast_controller.dart';
 import '../../controllers/home_controller.dart';
@@ -83,54 +85,59 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
                 /// Scrollable Dynamic widgets
                 Expanded(
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: controller.sectionOrder
-                        .where((section) => controller.sectionVisibility[section] ?? true)
-                        .map((section) {
-                      switch (section) {
-                        case HomeSection.weather_Forecast:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: WeatherForecastChart(),
-                          );
-                        case HomeSection.weekly_Forecast:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: WeeklyForecastView(),
-                          );
-                        case HomeSection.wind_Pressure:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: WindAndPressureCards(),
-                          );
-                        case HomeSection.other_Info:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: OtherInfoCards(),
-                          );
-                        case HomeSection.sun_Moon:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: SunAndMoonWidget(),
-                          );
-                        case HomeSection.air_Quality:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: AirQualityWidget(currentValue: 42.0),
-                          );
-                        case HomeSection.activity_Indicator:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: ActivityIndicatorWidget(),
-                          );
-                        case HomeSection.prayer_Time:
-                          return Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: PrayerTimeWidget(),
-                          );
-                      }
-                    }).toList(),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await controller.onRefresh();
+                    },
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: controller.sectionOrder
+                          .where((section) => controller.sectionVisibility[section] ?? true)
+                          .map((section) {
+                        switch (section) {
+                          case HomeSection.weather_Forecast:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: WeatherForecastChart(),
+                            );
+                          case HomeSection.weekly_Forecast:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: WeeklyForecastView(),
+                            );
+                          case HomeSection.wind_Pressure:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: WindAndPressureCards(),
+                            );
+                          case HomeSection.other_Info:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: OtherInfoCards(),
+                            );
+                          case HomeSection.sun_Moon:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SunAndMoonWidget(),
+                            );
+                          case HomeSection.air_Quality:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: AirQualityWidget(currentValue: 42.0),
+                            );
+                          case HomeSection.activity_Indicator:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: ActivityIndicatorWidget(),
+                            );
+                          case HomeSection.prayer_Time:
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: PrayerTimeWidget(),
+                            );
+                        }
+                      }).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -342,35 +349,58 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                     return _buildWeatherCardDemo();
                 }
               }),
-              ///-------add here ------//
+              ///-------Marquee add here ------//
               SizedBox(height: 12),
-              Container(
-                height: 45,
-                color: Colors.orange,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    lottie.Lottie.asset(
-                      'assets/json/alert.json',
-                      width: 30,
-                      height: 30,
-                      repeat: true,
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('২ ঘন্টার মধ্যে ঘূর্ণিঝড়ের সম্ভাবনা রয়েছে',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        )),
-                    lottie.Lottie.asset(
-                      'assets/json/arrow_forward.json',
-                      width: 40,
-                      height: 40,
-                      repeat: true,
-                    ),
-                  ],
+              controller.dashboardAlertMessage.value.isEmpty
+                  ? Container(
+                height: 50.h,
+                color: AppColors().app_alert_mild,
+                child: Marquee(
+                  text: 'empty_marque'.tr,
+                  style: GoogleFonts.notoSansBengali(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                  ),
+                  scrollAxis: Axis.horizontal,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  blankSpace: 20.0.w,
+                  velocity: 100.0,
+                  pauseAfterRound: const Duration(seconds: 1),
+                  startPadding: 5.0.w,
+                  accelerationDuration: const Duration(seconds: 1),
+                  accelerationCurve: Curves.linear,
+                  decelerationDuration: const Duration(milliseconds: 500),
+                  decelerationCurve: Curves.easeOut,
                 ),
               )
+                  : GestureDetector(
+                      onTap: () {
+                        Get.to(NotificationPage(), transition: Transition.rightToLeft);
+                      },
+                    child: Container(
+                      height: 50.h,
+                      color: AppColors().app_alert_severe,
+                      child: Marquee(
+                    text: controller.dashboardAlertMessage.value,
+                    style: GoogleFonts.notoSansBengali(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                    ),
+                    scrollAxis: Axis.horizontal,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    blankSpace: 20.0.w,
+                    velocity: 100.0,
+                    pauseAfterRound: const Duration(seconds: 1),
+                    startPadding: 5.0.w,
+                    accelerationDuration: const Duration(seconds: 1),
+                    accelerationCurve: Curves.linear,
+                    decelerationDuration: const Duration(milliseconds: 500),
+                    decelerationCurve: Curves.easeOut,
+                                    ),
+                                  ),
+                  ),
             ],
           ),
         ),

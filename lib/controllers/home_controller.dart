@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/widgets/others/custom_location_selection_page.dart';
 import '../models/hourly_weather_model.dart';
+import '../models/notification_model.dart';
 import '../models/saved_location_model.dart';
 import '../models/upazila_list_model.dart';
 import '../models/user_survey_model.dart';
@@ -17,6 +18,7 @@ import '../models/weekly_forecast_model.dart';
 import '../services/api_urls.dart';
 import '../services/user_pref_service.dart';
 import '../utills/app_color.dart';
+import 'package:intl/intl.dart';
 
 enum HomeSection {
   weather_Forecast,
@@ -52,6 +54,11 @@ class HomeController extends GetxController {
   final Rxn<WeatherForecastModel> forecast = Rxn<WeatherForecastModel>();
   final savedLocations = <SavedLocation>[].obs;
 
+  var dashboardAlertMessage = "".obs; // For Home Page Marquee
+  var notificationList = <NotificationItem>[].obs;
+  var isNotificationLoading = false.obs;
+  var isNotificationError = false.obs;
+
   final userService = UserPrefService();
 
   @override
@@ -62,6 +69,7 @@ class HomeController extends GetxController {
 
   Future<void> initData() async {
     await loadSectionOrder();
+    await fetchNotifications();
     await loadVisibilitySettings();
     await loadQuestions();
     await getSharedPrefData();
@@ -245,6 +253,55 @@ class HomeController extends GetxController {
       return '$day ${monthNames[month]}, $year';
     } catch (e) {
       return raw;
+    }
+  }
+
+  Future<void> fetchNotifications() async {
+    String? token = userService.userToken;
+    isNotificationLoading.value = true;
+    isNotificationError.value = false;
+
+    try {
+      final lang = userService.appLanguage;
+
+      final response = await http.get(
+        Uri.parse(ApiURL.NOTIFICATION_LIST),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept-Language': lang
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = notificationModelFromJson(response.body);
+
+        if (data.status == true && data.result != null) {
+          // 1. Set Dashboard Message
+          dashboardAlertMessage.value = data.result?.dashboardNotification ?? "";
+
+          // 2. Set List
+          notificationList.assignAll(data.result?.notification ?? []);
+        }
+      } else {
+        print("Error fetching notifications: ${response.statusCode}");
+        isNotificationError.value = true;
+      }
+    } catch (e) {
+      print("Exception fetching notifications: $e");
+      isNotificationError.value = true;
+    } finally {
+      isNotificationLoading.value = false;
+    }
+  }
+
+  // Helper for Date Formatting (e.g., "27 Dec, 07:45 PM")
+  String formatNotificationDate(String? rawDate) {
+    if (rawDate == null || rawDate.isEmpty) return "";
+    try {
+      DateTime dt = DateTime.parse(rawDate);
+      return DateFormat("dd MMM, hh:mm a").format(dt);
+    } catch (e) {
+      return rawDate;
     }
   }
 
@@ -639,5 +696,28 @@ class HomeController extends GetxController {
       ),
     );
     return result;
+  }
+
+  /// This function is called by the RefreshIndicator in the UI
+  Future<void> onRefresh() async {
+    print("🔄 Pull to refresh triggered");
+
+    // 1. Reload configuration (in case section order changed externally)
+    await loadSectionOrder();
+    await loadVisibilitySettings();
+
+    await fetchNotifications();
+
+    // 2. Reload saved locations (to keep the drawer list in sync)
+    await loadSavedLocations();
+
+    // 3. The most important part: Reload location data & Fetch Forecast
+    // This method gets the lat/lon and calls getForecast() internally
+    await getSharedPrefData();
+
+    // 4. Reload survey questions (optional, but good practice)
+    await loadQuestions();
+
+    print("✅ Refresh complete");
   }
 }
