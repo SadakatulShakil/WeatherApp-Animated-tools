@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/theme_controller.dart';
 import '../core/screens/dashboard_preference.dart';
 import '../core/screens/icon_preference.dart';
+import '../core/screens/notification_page.dart';
 import '../w_citizen_science_pages/mobile.dart';
 import 'app_color.dart';
 
@@ -98,10 +99,7 @@ class _AppDrawerState extends State<AppDrawer> {
             isLight: isLight,
             onTap: () {
               Navigator.of(context).pop();
-              Get.to(
-                    () => UnderDevelopmentScreen(),
-                transition: Transition.rightToLeft,
-              );
+              Get.to(NotificationPage(), transition: Transition.rightToLeft);
             },
           ),
 
