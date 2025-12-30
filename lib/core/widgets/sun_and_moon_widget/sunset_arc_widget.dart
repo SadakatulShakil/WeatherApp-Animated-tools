@@ -50,6 +50,18 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
     }
   }
 
+  final bool isBangla = Get.locale?.languageCode == 'bn';
+
+  String englishNumberToBangla(String input) {
+    const bangla = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    for (int i = 0; i < english.length; i++) {
+      input = input.replaceAll(english[i], bangla[i]);
+    }
+    return input;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -103,13 +115,13 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${widget.moonrise.format(context)}',
+              isBangla? englishNumberToBangla(widget.moonrise.format(context)) : widget.moonrise.format(context),
               style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                   ? Colors.black
                   : Colors.white),
             ),
             Text(
-              '${widget.moonset.format(context)}',
+              isBangla? englishNumberToBangla(widget.moonset.format(context)) : widget.moonset.format(context),
               style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                   ? Colors.black
                   : Colors.white),

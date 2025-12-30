@@ -55,7 +55,7 @@ class WeatherForecastChart extends StatelessWidget {
         children: [
           // --- HEADER ---
           GestureDetector(
-            onTap: () => Get.to(() => HourlyForecastDetailsPage()),
+            //onTap: () => Get.to(() => HourlyForecastDetailsPage()),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
@@ -295,29 +295,30 @@ class WeatherForecastChart extends StatelessWidget {
             }),
           ),
 
-          // --- FOOTER ---
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Divider(
-              color: themeController.themeMode.value == ThemeMode.light
-                  ? Colors.grey.shade300
-                  : Color(0xFF00E5CA),
-              height: 1,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                "প্রধানত মেঘলা আকাশসহ হাল্কা বৃষ্টির সম্ভাবনা আছে",
-                style: TextStyle(
-                  color: Color(0xFF00E5CA),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          )
+          Padding(padding: EdgeInsets.all(10)),
+          /// --- FOOTER ---
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Divider(
+          //     color: themeController.themeMode.value == ThemeMode.light
+          //         ? Colors.grey.shade300
+          //         : Color(0xFF00E5CA),
+          //     height: 1,
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Center(
+          //     child: Text(
+          //       "",
+          //       style: TextStyle(
+          //         color: Color(0xFF00E5CA),
+          //         fontWeight: FontWeight.bold,
+          //         fontSize: 12,
+          //       ),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

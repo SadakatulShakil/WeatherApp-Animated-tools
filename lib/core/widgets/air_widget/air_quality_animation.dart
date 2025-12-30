@@ -22,7 +22,7 @@ class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTick
 
   void _startAnimation() {
     _controller.reset();
-    _position = Tween<double>(begin: 0, end: widget.currentValue / 100).animate(
+    _position = Tween<double>(begin: 0, end: widget.currentValue / 200).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     )..addListener(() {
       setState(() {});
@@ -120,10 +120,10 @@ class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTick
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('ভাল', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text('good'.tr, style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white,)),
-            Text('বিপজ্জনক', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text('unhealthy'.tr, style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white,)),
           ],

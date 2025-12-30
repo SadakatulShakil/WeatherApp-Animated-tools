@@ -1,23 +1,59 @@
+import 'package:bmd_weather_app/controllers/prayer_controller.dart';
 import 'package:bmd_weather_app/core/widgets/sun_and_moon_widget/sunrise_arc_widget.dart';
 import 'package:bmd_weather_app/core/widgets/sun_and_moon_widget/sunset_arc_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart'; // Import for DateFormat
 
 import '../../../controllers/theme_controller.dart';
 
 class SunAndMoonWidget extends StatelessWidget {
+  final PrayerTimeController controller = Get.put(PrayerTimeController());
+  final ThemeController themeController = Get.find<ThemeController>();
+
+  final bool isBangla = Get.locale?.languageCode == 'bn';
+
+  String englishNumberToBangla(String input) {
+    const bangla = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    for (int i = 0; i < english.length; i++) {
+      input = input.replaceAll(english[i], bangla[i]);
+    }
+    return input;
+  }
+
+  /// Helper to convert API time string (HH:mm or HH:mm:ss) to TimeOfDay
+  TimeOfDay _parseTime(String? timeString) {
+    if (timeString == null || timeString.isEmpty) {
+      return TimeOfDay(hour: 6, minute: 0); // Default fallback
+    }
+    try {
+      // Handles "18:30" or "18:30:00"
+      DateTime date = DateFormat(timeString.split(":").length == 3 ? "HH:mm:ss" : "HH:mm").parse(timeString);
+      return TimeOfDay(hour: date.hour, minute: date.minute);
+    } catch (e) {
+      return TimeOfDay(hour: 6, minute: 0);
+    }
+  }
+
+  /// Helper to add minutes to a TimeOfDay
+  TimeOfDay _addMinutes(TimeOfDay time, int minutes) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    final newDt = dt.add(Duration(minutes: minutes));
+    return TimeOfDay(hour: newDt.hour, minute: newDt.minute);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeController themeController = Get.find<ThemeController>();
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
           colors: themeController.themeMode.value == ThemeMode.light
-          ? [Colors.white, Colors.white]
-              :[Color(0xFF3986DD), Color(0xFF3986DD)],
+              ? [Colors.white, Colors.white]
+              : [Color(0xFF3986DD), Color(0xFF3986DD)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -35,6 +71,7 @@ class SunAndMoonWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- Header Section ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -47,9 +84,9 @@ class SunAndMoonWidget extends StatelessWidget {
                           : Colors.white,
                       size: 22,
                     ),
-                    SizedBox(width: 16,),
+                    SizedBox(width: 16),
                     Text(
-                      'sun_moon_title'.tr, // "Sun & Moon"
+                      'sun_moon_title'.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: themeController.themeMode.value == ThemeMode.light
@@ -63,7 +100,7 @@ class SunAndMoonWidget extends StatelessWidget {
                 const Icon(Icons.arrow_drop_down, color: Colors.white),
                 Spacer(),
                 Text(
-                  "details".tr, // "Details"
+                  "details".tr,
                   style: TextStyle(
                     color: themeController.themeMode.value == ThemeMode.light
                         ? Colors.black
@@ -82,6 +119,8 @@ class SunAndMoonWidget extends StatelessWidget {
               height: 1,
             ),
             SizedBox(height: 8),
+
+            // --- Phase Info (Static for now, can be dynamic later) ---
             Row(
               children: [
                 Padding(
@@ -97,7 +136,7 @@ class SunAndMoonWidget extends StatelessWidget {
                         end: Alignment.bottomCenter,
                       ),
                     ),
-                    child: Image.asset('assets/sun_moon.png', width: 70, height: 75,),
+                    child: Image.asset('assets/sun_moon.png', width: 70, height: 75),
                   ),
                 ),
                 Padding(
@@ -107,16 +146,18 @@ class SunAndMoonWidget extends StatelessWidget {
                     children: [
                       Text('waxing_gibbous'.tr, style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
-                          : Colors.white, fontSize: 24),),
-                      Text('চন্দ্রের অবস্থান', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                          : Colors.white, fontSize: 24)),
+                      Text('moon_position'.tr, style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                           ? Colors.black
-                          : Colors.white, fontSize: 16),),
+                          : Colors.white, fontSize: 16)),
                     ],
                   ),
                 )
               ],
             ),
             SizedBox(height: 8),
+
+            // --- Moon Dates Info ---
             Row(
               children: [
                 Row(
@@ -124,20 +165,20 @@ class SunAndMoonWidget extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          gradient: LinearGradient(
-                            colors: themeController.themeMode.value == ThemeMode.light
-                                ? [Colors.blue.withValues(alpha: 0.5), Colors.blue.withOpacity(.5)]
-                                : [Colors.white.withValues(alpha: 0.5), Colors.white.withOpacity(.5)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: LinearGradient(
+                              colors: themeController.themeMode.value == ThemeMode.light
+                                  ? [Colors.blue.withValues(alpha: 0.5), Colors.blue.withOpacity(.5)]
+                                  : [Colors.white.withValues(alpha: 0.5), Colors.white.withOpacity(.5)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
                           ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Image.asset('assets/full_moon.png', width: 45, height: 45,),
-                        )
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Image.asset('assets/full_moon.png', width: 45, height: 45),
+                          )
                       ),
                     ),
                     Padding(
@@ -145,12 +186,12 @@ class SunAndMoonWidget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('০৪/১৩', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                          Text(isBangla ? '০৪/১৩' : '04/13', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black
-                              : Colors.white, fontSize: 22),),
-                          Text('পূর্ণিমা', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                              : Colors.white, fontSize: 22)),
+                          Text(isBangla ? 'পূর্ণিমা' : 'Full Moon', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black
-                              : Colors.white, fontSize: 14),),
+                              : Colors.white, fontSize: 14)),
                         ],
                       ),
                     )
@@ -161,20 +202,20 @@ class SunAndMoonWidget extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          gradient: LinearGradient(
-                            colors: themeController.themeMode.value == ThemeMode.light
-                                ? [Colors.blue.withValues(alpha: 0.5), Colors.blue.withOpacity(.5)]
-                                : [Colors.white.withValues(alpha: 0.5), Colors.white.withOpacity(.5)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: LinearGradient(
+                              colors: themeController.themeMode.value == ThemeMode.light
+                                  ? [Colors.blue.withValues(alpha: 0.5), Colors.blue.withOpacity(.5)]
+                                  : [Colors.white.withValues(alpha: 0.5), Colors.white.withOpacity(.5)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
                           ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Image.asset('assets/last_quarter.png', width: 40, height: 40,),
-                        )
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Image.asset('assets/last_quarter.png', width: 40, height: 40),
+                          )
                       ),
                     ),
                     Padding(
@@ -182,12 +223,12 @@ class SunAndMoonWidget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('০৪/২১', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                          Text(isBangla ? '০৪/২১' : '04/21', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black
-                              : Colors.white, fontSize: 22),),
-                          Text('কৃষ্ণপক্ষ', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                              : Colors.white, fontSize: 22)),
+                          Text(isBangla ? 'কৃষ্ণপক্ষ' : 'Waxing', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black
-                              : Colors.white, fontSize: 14),),
+                              : Colors.white, fontSize: 14)),
                         ],
                       ),
                     )
@@ -196,35 +237,58 @@ class SunAndMoonWidget extends StatelessWidget {
               ],
             ),
             SizedBox(height: 8),
+
+            // --- Sunrise / Moonrise Arcs (Dynamic) ---
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: controller.obx(
+                    (state) {
+                  // 1. Get String data from controller state
+                  // Assuming your PrayerModel has 'sunrise' and 'sunset' fields in 'result'
+                  // Adjust field names (e.g., state?.result?.sunrise) based on your actual Model
+                  final String? sunriseStr = state?.result?.sunrise;
+                  final String? sunsetStr = state?.result?.sunset;
+
+                  // 2. Parse to TimeOfDay
+                  final TimeOfDay sunriseTime = _parseTime(sunriseStr);
+                  final TimeOfDay sunsetTime = _parseTime(sunsetStr);
+
+                  // 3. Calculate Moonrise (Sunset + 1 min) & Moonset (Sunrise - 1 min)
+                  final TimeOfDay moonriseTime = _addMinutes(sunsetTime, 1);
+                  final TimeOfDay moonsetTime = _addMinutes(sunriseTime, -1);
+
+                  return Column(
                     children: [
-                      Expanded(
-                        child: SunriseArcWidget(
-                          sunrise: TimeOfDay(hour: 5, minute: 30),
-                          sunset: TimeOfDay(hour: 18, minute: 45),
-                          currentTime: TimeOfDay.now(),
-                        ),
-                      ),
-                      const SizedBox(width: 16), // Space between two widgets
-                      Expanded(
-                        child: SunsetArcWidget(
-                          moonrise: TimeOfDay(hour: 18, minute: 46),
-                          moonset: TimeOfDay(hour: 5, minute: 29),
-                          currentTime: TimeOfDay.now(),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: SunriseArcWidget(
+                              sunrise: sunriseTime,
+                              sunset: sunsetTime,
+                              currentTime: TimeOfDay.now(),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: SunsetArcWidget(
+                              moonrise: moonriseTime,
+                              moonset: moonsetTime,
+                              currentTime: TimeOfDay.now(),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
+                  );
+                },
+                // Fallback while loading or if error
+                onLoading: Center(child: CircularProgressIndicator()),
+                onError: (err) => Center(child: Text("Unable to load times")),
+                onEmpty: Center(child: Text("No data available")),
               ),
             ),
             SizedBox(height: 8),
-            // Sun and Moon icons
           ],
         ),
       ),

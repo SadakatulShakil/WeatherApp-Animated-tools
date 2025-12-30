@@ -156,7 +156,7 @@ class LocalizationString extends Translations {
 
       ///weather app
       'next_72_hours_forecast': 'Next 72 Hours Forecast',
-      'next_15_days_forecast': 'Next 15 Days Forecast',
+      'next_15_days_forecast': 'Next 10 Days Forecast',
       'wind_title': 'Wind',
       'pressure_title': 'Pressure',
       'humidity_title': 'Humidity',
@@ -166,6 +166,7 @@ class LocalizationString extends Translations {
       'sunset_title': 'Sunset',
       'visibility_title': 'Visibility',
       'sun_moon_title': 'Sun & Moon',
+      'moon_position': 'Moon Position',
       'air_quality_title': 'Air Quality',
       'index': 'Indexes',
       'prayer_times_title': 'Prayer Times',
@@ -173,6 +174,16 @@ class LocalizationString extends Translations {
       'my_feedback': 'My Feedback',
       'waxing_gibbous': 'Waxing Gibbous',
       'feels_like': 'Feels Like ',
+      'rainfall_subtitle': 'In last 24 hours',
+      'uv_index_subtitle': 'Pay attention to sun protection at 3:00 PM',
+      'visibility_subtitle': 'Low visibility, vision is not clear.',
+      'air_quality_subtitle': 'Air quality is unhealthy, and air pollution poses high or risky.',
+      'low': 'Low',
+      'medium': 'Medium',
+      'high': 'High',
+      'good': 'Good',
+      'unhealthy': 'Unhealthy',
+
 
       ///Side menu item
       'preferences': 'Preferences',
@@ -193,6 +204,14 @@ class LocalizationString extends Translations {
       'magrib_time': 'Magrib',
       'isha_time': 'Isha',
 
+      ///unit
+
+      'wind_speed_unit': 'km/h',
+      'pressure_unit': 'hPa',
+      'rainfall_subtitle_prefix': 'There is a possibility of ',
+      'rainfall_subtitle_suffix': ' mm rainfall in next 24 hours.',
+      'humidity_subtitle_prefix': 'Current Humidity is at ',
+      ''
       'empty_marque': 'No weather warnings at this time. Have a safe day!'
 
 
@@ -351,7 +370,7 @@ class LocalizationString extends Translations {
       ///weather app
       'feels_like': 'মনে হচ্ছে ',
       'next_72_hours_forecast': 'পরবর্তী ৭২ ঘন্টার পূর্বাভাস',
-      'next_15_days_forecast': 'পরবর্তী ১৫ দিনের পূর্বাভাস',
+      'next_15_days_forecast': 'পরবর্তী ১০ দিনের পূর্বাভাস',
       'wind_title': 'বাতাস',
       'pressure_title': 'চাপ',
       'humidity_title': 'আর্দ্রতা',
@@ -361,11 +380,13 @@ class LocalizationString extends Translations {
       'sunset_title': 'সূর্যাস্ত',
       'visibility_title': 'দৃশ্যমানতা',
       'sun_moon_title': 'সূর্য ও চাঁদ',
+      'moon_position': 'চন্দ্রের অবস্থান',
       'air_quality_title': 'বাতাসের গুণমান',
       'index': 'সূচকসমূহ',
       'prayer_times_title': 'নামাজের সময়',
       'details': 'বিস্তারিত',
       'my_feedback': 'আমার প্রতিক্রিয়া',
+      'rainfall_subtitle': 'গত ২৪ ঘন্টায় ',
 
       ///Side menu item
       'preferences': 'পছন্দসমূহ',
@@ -376,6 +397,15 @@ class LocalizationString extends Translations {
       'weather_alerts': 'আবহাওয়া সতর্কতা',
       'emergency_contacts': 'জরুরি যোগাযোগ',
       'citizen_science': 'নাগরিক বিজ্ঞান',
+      'waxing_gibbous': 'ওয়াক্সিং গিবাস',
+      'uv_index_subtitle': '৩:০০ টায় সূর্য সুরক্ষার দিকে মনোযোগ দিন',
+      'visibility_subtitle': 'দৃশ্যমানতার পরিমাণ কম, দৃষ্টি স্পষ্ট নয়।',
+      'air_quality_subtitle': 'বায়ুর গুণমান অস্বাস্থ্যকর, এবং বায়ু দূষণ উচ্চ বা ঝুঁকিপূর্ণ।',
+      'low': 'কম',
+      'medium': 'মধ্যম',
+      'high': 'উচ্চ',
+      'good': 'ভালো',
+      'unhealthy': 'অস্বাস্থ্যকর',
 
       ///Prayer Time
       'seheri_time': 'সেহরির সময়',
@@ -386,6 +416,13 @@ class LocalizationString extends Translations {
       'magrib_time': 'মাগরিব',
       'isha_time': 'এশা',
 
+      ///unit
+
+      'wind_speed_unit': 'কিমি/ঘণ্টা',
+      'pressure_unit': 'hPa',
+      'rainfall_subtitle_prefix': 'পরবর্তী ২৪ ঘন্টায় ',
+      'rainfall_subtitle_suffix': ' মিমি বৃষ্টিপাতের সম্ভাবনা রয়েছে।',
+      'humidity_subtitle_prefix': 'এই মুহূর্তে বাতাসে আর্দ্রতার মাত্রা ',
       'empty_marque': 'বর্তমানে কোনো আবহাওয়া সতর্কবার্তা নেই। নিরাপদে থাকুন!'
 
     }

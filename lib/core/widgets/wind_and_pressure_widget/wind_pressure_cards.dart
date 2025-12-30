@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bmd_weather_app/core/screens/pressure_details_page.dart';
 import 'package:bmd_weather_app/core/widgets/wind_and_pressure_widget/pressure_meter.dart';
 import 'package:bmd_weather_app/core/widgets/wind_and_pressure_widget/wind_meter.dart';
@@ -11,12 +13,29 @@ import '../../screens/icon_preference.dart';
 import '../../screens/wind_details_page.dart';
 
 class WindAndPressureCards extends StatelessWidget {
+
+  String windSpeedValue;
+  String windDirValue;
+  double pressureValue;
+  WindAndPressureCards(this.windSpeedValue, this.pressureValue, this.windDirValue);
+
   final ForecastController controller = Get.put(ForecastController());
   final ThemeController themeController = Get.find<ThemeController>();
-  double windSpeed = 16.8;
-  double pressure = 1002.0;
+
+  String banglaToEnglishNumber(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < bangla.length; i++) {
+      input = input.replaceAll(bangla[i], english[i]);
+    }
+    return input;
+  }
+  final isBangla = Get.locale?.languageCode == 'bn';
+
   @override
   Widget build(BuildContext context) {
+
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -29,7 +48,7 @@ class WindAndPressureCards extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            Get.to(() => WindDetailsPage());
+            //Get.to(() => WindDetailsPage());
           },
           child: Container(
             padding: const EdgeInsets.all(12),
@@ -78,8 +97,8 @@ class WindAndPressureCards extends StatelessWidget {
                 ),
                 Expanded(
                   child: WindCompass(
-                    windSpeed: windSpeed,
-                    windDirection: 0, // North
+                    windSpeed: isBangla ? double.tryParse(banglaToEnglishNumber(windSpeedValue)) ?? 0.0 : double.tryParse(windSpeedValue) ?? 0.0,
+                    windDirection: isBangla ? double.tryParse(banglaToEnglishNumber(windDirValue)) ?? 0.0 : double.tryParse(windDirValue) ?? 0.0, // North
                   ),
                 ),
               ],
@@ -88,7 +107,7 @@ class WindAndPressureCards extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => PressureDetailsPage());
+            //Get.to(() => PressureDetailsPage());
           },
           child: Container(
             padding: const EdgeInsets.all(12),
@@ -135,7 +154,7 @@ class WindAndPressureCards extends StatelessWidget {
                     ),
                   ],
                 ),
-                Expanded(child: PressureMeter(pressureValue: pressure)),
+                Expanded(child: PressureMeter(pressureValue: pressureValue)),
               ],
             ),
           ),

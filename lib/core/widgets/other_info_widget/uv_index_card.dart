@@ -27,7 +27,7 @@ class UvIndexCard extends StatelessWidget {
     final ThemeController themeController = Get.find<ThemeController>();
     return GestureDetector(
       onTap: () {
-        Get.to(() => UltraviolateDetailsPage(), transition: Transition.rightToLeft);
+        //Get.to(() => UltraviolateDetailsPage(), transition: Transition.rightToLeft);
       },
       child: Container(
         padding: const EdgeInsets.all(12),

@@ -2,6 +2,7 @@ import 'package:bmd_weather_app/core/screens/rainy_day_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../controllers/theme_controller.dart';
 
@@ -26,7 +27,7 @@ class PrecipitationCard extends StatelessWidget {
     final ThemeController themeController = Get.find<ThemeController>();
     return GestureDetector(
       onTap: () {
-        Get.to(() => RainyDayDetailsPage(), transition: Transition.rightToLeft);
+        //Get.to(() => RainyDayDetailsPage(), transition: Transition.rightToLeft);
       },
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -92,7 +93,7 @@ class PrecipitationCard extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         child: Text(
                           value,
-                          style: TextStyle(
+                          style: GoogleFonts.anekBangla(
                             color: themeController.themeMode.value == ThemeMode.light
                                 ? Colors.black.withValues(alpha: 0.7)
                                 : Colors.white,
@@ -121,7 +122,7 @@ class PrecipitationCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                'গত ২৪ ঘন্টায়',
+                'rainfall_subtitle'.tr,
                 style: TextStyle(
                   color: themeController.themeMode.value == ThemeMode.light
                       ? Colors.black

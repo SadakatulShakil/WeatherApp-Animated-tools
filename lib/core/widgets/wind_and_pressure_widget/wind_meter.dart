@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -34,7 +35,7 @@ class _WindCompassState extends State<WindCompass>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _needleAnimation = Tween<double>(begin: 0, end: widget.windSpeed).animate(
+    _needleAnimation = Tween<double>(begin: 0, end: widget.windDirection).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
   }
@@ -43,7 +44,7 @@ class _WindCompassState extends State<WindCompass>
     _controller.reset();
     _needleAnimation = Tween<double>(
       begin: 0,
-      end: widget.windSpeed,
+      end: widget.windDirection,
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
@@ -181,16 +182,30 @@ class _WindCompassState extends State<WindCompass>
                         annotations: <GaugeAnnotation>[
                           GaugeAnnotation(
                             angle: 90,
-                            positionFactor: 0.1,
-                            widget: Text(
-                              '90 mps',
-                              style: TextStyle(
-                                color: themeController.themeMode.value == ThemeMode.light
-                                    ?Colors.black
-                                    :Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
+                            positionFactor: 2.5,
+                            widget: Column(
+                              children: [
+                                Text(
+                                  widget.windSpeed.toStringAsFixed(1),
+                                  style: TextStyle(
+                                    color: themeController.themeMode.value == ThemeMode.light
+                                        ?Colors.black
+                                        :Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                Text(
+                                  'wind_speed_unit'.tr,
+                                  style: TextStyle(
+                                    color: themeController.themeMode.value == ThemeMode.light
+                                        ? Colors.black
+                                        : Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10.sp,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

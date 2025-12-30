@@ -1,3 +1,4 @@
+import 'package:bmd_weather_app/controllers/home_controller.dart';
 import 'package:bmd_weather_app/core/widgets/other_info_widget/precipitation_card.dart';
 import 'package:bmd_weather_app/core/widgets/other_info_widget/uv_index_card.dart';
 import 'package:bmd_weather_app/core/widgets/other_info_widget/visibility_card.dart';
@@ -7,10 +8,14 @@ import 'package:get/get.dart';
 import 'humidity_card.dart';
 
 class OtherInfoCards extends StatelessWidget {
-  const OtherInfoCards({super.key});
+  OtherInfoCards({super.key});
+
+  final HomeController controller = Get.find<HomeController>();
+  final isBangla = Get.locale?.languageCode == 'bn';
 
   @override
   Widget build(BuildContext context) {
+    final current = controller.forecast.value?.result?.current;
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -22,30 +27,30 @@ class OtherInfoCards extends StatelessWidget {
       children: [
         PrecipitationCard(
           title: 'rainfall_title'.tr,
-          value: '০',
-          unit: 'মিমি.',
-          subtitle: 'আগামী ২৪ ঘন্টায় ০ মিমি বৃষ্টিপাতের সম্ভাবনা রয়েছে।',
+          value: current?.rf?.valAvg ?? '0',
+          unit: current?.rfUnit ?? 'মিমি.',
+          subtitle: '${'rainfall_subtitle_prefix'.tr} ${current?.rf?.valAvg ?? '0'} ${'rainfall_subtitle_suffix'.tr}',
           icon: Icons.grain,
         ),
         UvIndexCard(
           title: 'uv_index_title'.tr,
-          value: '৪',
+          value: isBangla? '৫' : '5',
           unit: '',
-          subtitle: '১৫:০০ টায় সূর্য সুরক্ষার দিকে মনোযোগ দিন',
+          subtitle: 'uv_index_subtitle'.tr,
           icon: Icons.wb_sunny,
         ),
         HumidityCard(
           title: 'humidity_title'.tr,
-          value: '৩৭',
-          unit: '%',
-          subtitle: 'শিশির বিন্দু এখন ১৭.৮° সেলসিয়াস।',
+          value: current?.rh?.valAvg ?? '0',
+          unit: current?.rhUnit ?? '%.',
+          subtitle: '${'humidity_subtitle_prefix'.tr} ${current?.rh?.valAvg ?? '0'}',
           icon: Icons.water_drop,
         ),
         VisibilityCard(
           title: 'visibility_title'.tr,
-          value: '৯.৮',
-          unit: 'কি.মি',
-          subtitle: 'দৃশ্যমানতার পরিমাণ কম, দৃষ্টি স্পষ্ট নয়।',
+          value: isBangla? '৩' : '3',
+          unit: isBangla? 'কিমি.' : 'km',
+          subtitle: 'visibility_subtitle'.tr,
           icon: Icons.visibility,
         ),
       ],

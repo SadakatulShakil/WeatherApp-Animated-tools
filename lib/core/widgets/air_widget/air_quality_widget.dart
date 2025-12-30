@@ -9,7 +9,7 @@ import 'air_quality_animation.dart';
 class AirQualityWidget extends StatefulWidget {
 
   final double currentValue;// Expected between 0-100
-  const AirQualityWidget({
+  AirQualityWidget({
     super.key,
     required this.currentValue,
   });
@@ -19,11 +19,12 @@ class AirQualityWidget extends StatefulWidget {
 
 class _AirQualityWidgetState extends State<AirQualityWidget> {
   final ThemeController themeController = Get.find<ThemeController>();
+  final isBangla = Get.locale?.languageCode == 'bn';
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Get.to(()=>AirQualityDetailsWidget());
+        //Get.to(()=>AirQualityDetailsWidget());
       },
       child: Container(
         decoration: BoxDecoration(
@@ -89,7 +90,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      '৪২',
+                        isBangla? '১৫০' : '150',
                       //widget.currentValue.toStringAsFixed(0),
                       style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
@@ -101,7 +102,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('ভাল', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                    child: Text(isBangla? 'অস্বাস্থ্যকর' : 'Unhealthy', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                         ? Colors.black
                         : Colors.white, fontSize: 16),),
                   )
@@ -110,7 +111,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
               SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('বাতাসের মান সন্তোষজনক বলে মনে করা হয়, এবং বায়ু দূষণ খুব কম বা কোনও ঝুঁকি তৈরি করে না',
+                child: Text('air_quality_subtitle'.tr,
                   style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                       ? Colors.black
                       : Colors.white, fontSize: 16),),

@@ -52,7 +52,7 @@ class WeeklyForecastView extends StatelessWidget {
           // --- Header ---
           GestureDetector(
             onTap: () {
-              Get.to(() => FifteenDaysForecastPage());
+              //Get.to(() => FifteenDaysForecastPage());
             },
             child: Padding(
               padding: const EdgeInsets.all(12.0),

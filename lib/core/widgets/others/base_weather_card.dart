@@ -48,8 +48,30 @@ class BaseWeatherCard extends StatelessWidget {
     this.onLocationTap,
   }) : super(key: key);
 
+  String banglaToEnglishNumber(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < bangla.length; i++) {
+      input = input.replaceAll(bangla[i], english[i]);
+    }
+    return input;
+  }
+
+  String englishNumberToBangla(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < english.length; i++) {
+      input = input.replaceAll(english[i], bangla[i]);
+    }
+    return input;
+  }
+  final isBangla = Get.locale?.languageCode == 'bn';
+
   @override
   Widget build(BuildContext context) {
+    print('checkTempUnit: $temp_unit');
     double topPadding = MediaQuery.of(context).padding.top;
     return Container(
       // Adjusted padding to match the visual spacing in the design
@@ -131,7 +153,7 @@ class BaseWeatherCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        temp,
+                        isBangla ? englishNumberToBangla(banglaToEnglishNumber(temp).split('.')[0]) : temp.split('.')[0],
                         style: GoogleFonts.anekBangla(
                           fontSize: 60.sp,
                           fontWeight: FontWeight.w700,
@@ -201,9 +223,9 @@ class BaseWeatherCard extends StatelessWidget {
           // --- 3. Bottom Section: Details Row ---
           SizedBox(
             width: double.infinity,
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runSpacing: 3.h, // vertical space if wrapped
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              //runSpacing: 3.h, // vertical space if wrapped
               children: [
                 Text(
                   feels_like,
@@ -225,7 +247,7 @@ class BaseWeatherCard extends StatelessWidget {
                     SvgPicture.asset('assets/svg/high_temp.svg', height: 20.h, width: 20.w),
                     SizedBox(width: 3.w),
                     Text(
-                      tempMax,
+                      isBangla ? englishNumberToBangla(banglaToEnglishNumber(tempMax).split('.')[0]) + temp_unit : tempMax.split('.')[0] + temp_unit,
                       style: GoogleFonts.notoSansBengali(
                         fontSize: 14.sp,
                         color: AppColors().app_primary_bg,
@@ -240,7 +262,7 @@ class BaseWeatherCard extends StatelessWidget {
                     SvgPicture.asset('assets/svg/low_temp.svg', height: 20.h, width: 20.w),
                     SizedBox(width: 3.w),
                     Text(
-                      tempMin,
+                      isBangla ? englishNumberToBangla(banglaToEnglishNumber(tempMin).split('.')[0]) + temp_unit: tempMin.split('.')[0] + temp_unit,
                       style: GoogleFonts.notoSansBengali(
                         fontSize: 14.sp,
                         color: AppColors().app_primary_bg,

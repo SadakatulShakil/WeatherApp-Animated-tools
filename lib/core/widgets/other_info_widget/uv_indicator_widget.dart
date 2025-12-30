@@ -119,11 +119,11 @@ class _UvIndicatorWidgetState extends State<UvIndicatorWidget>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('কম', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text('low'.tr, style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white, fontSize: 10)),
             Text(
-              'মাঝারি',
+              'medium'.tr,
               style: TextStyle(
                 color: themeController.themeMode.value == ThemeMode.light
                     ? Colors.black
@@ -132,7 +132,7 @@ class _UvIndicatorWidgetState extends State<UvIndicatorWidget>
                 fontWeight: FontWeight.w600,
               ),
             ),
-            Text('বেশি', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text('high'.tr, style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white, fontSize: 10)),
           ],

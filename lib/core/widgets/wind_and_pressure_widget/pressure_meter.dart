@@ -172,7 +172,7 @@ class _PressureMeterState extends State<PressureMeter>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '1002',
+                            widget.pressureValue.toStringAsFixed(0),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: themeController.themeMode.value == ThemeMode.light

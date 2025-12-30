@@ -40,8 +40,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   final ThemeController themeController = Get.find<ThemeController>();
   final internetController = Get.put(NetworkController(), permanent: true);
   // Dummy weather data
-  double windSpeed = 16.8;
-  double pressure = 1002.0;
   TimeOfDay sunrise = const TimeOfDay(hour: 5, minute: 42);
   TimeOfDay sunset = const TimeOfDay(hour: 18, minute: 25);
 
@@ -55,6 +53,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       if (!controller.isLoaded.value) {
         return Center(child: lottie.Lottie.asset('assets/json/loading_anim.json', width: 80.w, height: 80.h),);
       }
+
+      final current = controller.forecast.value?.result?.current;
+      //print('checkCurrentWeather: ${current?.windspd?.valAvg}');
 
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
@@ -108,7 +109,11 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                           case HomeSection.wind_Pressure:
                             return Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: WindAndPressureCards(),
+                              child: WindAndPressureCards(
+                                current?.windspd?.valAvg ?? '0.0',
+                                1002.0,
+                                current?.winddir?.valAvg ?? '0.0',
+                              ),
                             );
                           case HomeSection.other_Info:
                             return Padding(
@@ -123,7 +128,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                           case HomeSection.air_Quality:
                             return Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: AirQualityWidget(currentValue: 42.0),
+                              child: AirQualityWidget(currentValue: 150.0),
                             );
                           case HomeSection.activity_Indicator:
                             return Padding(
@@ -147,121 +152,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       );
     });
   }
-
-  // Widget _buildFixedHeader(bool isNight) {
-  //   return Stack(
-  //     children: [
-  //       // Background image
-  //       Container(
-  //         height: 280,
-  //         width: double.infinity,
-  //         decoration: BoxDecoration(
-  //           image: DecorationImage(
-  //             image: isNight
-  //                 ? const AssetImage('assets/night.jpg')
-  //                 : const AssetImage('assets/day.jpg'),
-  //             fit: BoxFit.cover,
-  //           ),
-  //         ),
-  //       ),
-  //       // Gradient overlay
-  //       Container(
-  //         height: 300,
-  //         width: double.infinity,
-  //         decoration: BoxDecoration(
-  //           gradient: LinearGradient(
-  //             colors: themeController.themeMode.value == ThemeMode.light
-  //                 ?[Colors.black26, Colors.grey.shade300]
-  //                 :[Colors.blue.withValues(alpha: 0.4), Color(0xFF165ABC)]
-  //             ,
-  //             begin: Alignment.topCenter,
-  //             end: Alignment.bottomCenter,
-  //           ),
-  //         ),
-  //       ),
-  //       // Location and time
-  //       Align(
-  //         alignment: Alignment.topRight,
-  //         child: Padding(
-  //           padding: const EdgeInsets.only(top: 30, left: 8, right: 8),
-  //           child: IconButton(
-  //             icon: SvgPicture.asset(
-  //               'assets/svg/menu_icon.svg',
-  //               width: 40,
-  //               height: 40,
-  //             ),
-  //             onPressed: () {
-  //               _scaffoldKey.currentState!.openEndDrawer();
-  //             },
-  //           ),
-  //         ),
-  //       ),
-  //       // Temperature and weather info
-  //       Positioned(
-  //         left: 0,
-  //         right: 0,
-  //         bottom: 5,
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             ///------- Added Logic Here ------//
-  //             Obx(() {
-  //               print('check_state_dashboard: ${internetController.networkState.value}');
-  //               switch (internetController.networkState.value) {
-  //                 case NetworkState.loading:
-  //                   return SizedBox(
-  //                     height: 220.h,
-  //                     child: Center(
-  //                       child: Text(
-  //                         'data_load_indicator'.tr,
-  //                         style: TextStyle(
-  //                           color: Colors.white,
-  //                           fontSize: 16.sp,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   );
-  //                 case NetworkState.online:
-  //                   return _buildWeatherCard();
-  //                 case NetworkState.offline:
-  //                   return _buildWeatherCardDemo();
-  //               }
-  //             }),
-  //             ///-------add here ------//
-  //             SizedBox(height: 12),
-  //             Container(
-  //               height: 45,
-  //               color: Colors.orange,
-  //               child: Row(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   lottie.Lottie.asset(
-  //                     'assets/json/alert.json',
-  //                     width: 30,
-  //                     height: 30,
-  //                     repeat: true,
-  //                   ),
-  //                   SizedBox(width: 8.0,),
-  //                   Text('২ ঘন্টার মধ্যে ঘূর্ণিঝড়ের সম্ভাবনা রয়েছে',
-  //                       style: TextStyle(
-  //                         color: Colors.white,
-  //                         fontSize: 15,
-  //                       )),
-  //                   lottie.Lottie.asset(
-  //                     'assets/json/arrow_forward.json',
-  //                     width: 40,
-  //                     height: 40,
-  //                     repeat: true,
-  //                   ),
-  //                 ],
-  //               ),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildFixedHeader(bool isNight) {
     // 1. Get the device's top safe area (notch height)
@@ -446,6 +336,28 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   }
 
   Widget _buildWeatherCard() {
+
+
+    String banglaToEnglishNumber(String input) {
+      const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+      const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+      for (int i = 0; i < bangla.length; i++) {
+        input = input.replaceAll(bangla[i], english[i]);
+      }
+      return input;
+    }
+    final isBangla = Get.locale?.languageCode == 'bn';
+    String englishNumberToBangla(String input) {
+      const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+      const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+      for (int i = 0; i < english.length; i++) {
+        input = input.replaceAll(english[i], bangla[i]);
+      }
+      return input;
+    }
+
     return Obx(() {
       print('checkBool: ${controller.isForecastFetched.value}');
       if (!controller.isForecastFetched.value) {
@@ -487,6 +399,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
       final current = controller.forecast.value?.result?.current;
 
+      final feelsTemp =  isBangla ? englishNumberToBangla(banglaToEnglishNumber(current?.temp?.valAvg ?? '').split('.')[0]) : (current?.temp?.valAvg ?? '').split('.')[0];
       print('checkCurrentTemp: ${current?.temp?.valAvg}');
       return BaseWeatherCard(
         //iconUrl: "https://bamisapp.bdservers.site/assets/weather_icons/ic_sunny.png",
@@ -501,7 +414,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
         rain: current?.rf?.valAvg ?? '',
         rain_unit: current?.rfUnit ?? '',
         feels_like:
-        "${'feels_like'.tr} ${current?.temp?.valMax ?? ''}${current?.tempUnit ?? ''}",
+        "${'feels_like'.tr} $feelsTemp ${current?.tempUnit ?? ''}",
         type: current?.type ?? 'N/A',
         humidity:
         "${current?.rh?.valAvg ?? ''} ${current?.rhUnit ?? ''}",

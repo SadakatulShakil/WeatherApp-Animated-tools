@@ -26,8 +26,8 @@ class HumidityCard extends StatelessWidget {
     final ThemeController themeController = Get.find<ThemeController>();
     return GestureDetector(
       onTap: () {
-        // Navigate to details page if needed
-        Get.to(() => HumidityDetailsPage(), transition: Transition.rightToLeft);
+        /// Navigate to details page if needed
+        //Get.to(() => HumidityDetailsPage(), transition: Transition.rightToLeft);
       },
       child: Container(
         padding: const EdgeInsets.all(12),
