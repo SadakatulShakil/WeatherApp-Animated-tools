@@ -34,7 +34,7 @@ class OtherInfoCards extends StatelessWidget {
         ),
         UvIndexCard(
           title: 'uv_index_title'.tr,
-          value: isBangla? '৫' : '5',
+          value: current?.uv ?? '0',
           unit: '',
           subtitle: 'uv_index_subtitle'.tr,
           icon: Icons.wb_sunny,
@@ -48,7 +48,7 @@ class OtherInfoCards extends StatelessWidget {
         ),
         VisibilityCard(
           title: 'visibility_title'.tr,
-          value: isBangla? '৩' : '3',
+          value: current?.vis ?? '0',
           unit: isBangla? 'কিমি.' : 'km',
           subtitle: 'visibility_subtitle'.tr,
           icon: Icons.visibility,

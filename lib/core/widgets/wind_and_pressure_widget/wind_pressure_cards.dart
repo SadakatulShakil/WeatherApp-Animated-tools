@@ -16,7 +16,7 @@ class WindAndPressureCards extends StatelessWidget {
 
   String windSpeedValue;
   String windDirValue;
-  double pressureValue;
+  String pressureValue;
   WindAndPressureCards(this.windSpeedValue, this.pressureValue, this.windDirValue);
 
   final ForecastController controller = Get.put(ForecastController());
@@ -154,7 +154,10 @@ class WindAndPressureCards extends StatelessWidget {
                     ),
                   ],
                 ),
-                Expanded(child: PressureMeter(pressureValue: pressureValue)),
+                Expanded(child:
+                PressureMeter(
+                    pressureValue: isBangla ? double.tryParse(banglaToEnglishNumber(pressureValue)) ?? 0.0 : double.tryParse(pressureValue) ?? 0.0,
+                )),
               ],
             ),
           ),

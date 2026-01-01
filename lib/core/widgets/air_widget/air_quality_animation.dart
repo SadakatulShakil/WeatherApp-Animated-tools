@@ -20,9 +20,11 @@ class _AirQualityAnimatedState extends State<AirQualityAnimated> with SingleTick
   late Animation<double> _position;
   final ThemeController themeController = Get.find<ThemeController>();
 
+
   void _startAnimation() {
+    //final value = widget.currentValue > 100 ? 100.0 : widget.currentValue < 0 ? 0.0 : widget.currentValue;
     _controller.reset();
-    _position = Tween<double>(begin: 0, end: widget.currentValue / 200).animate(
+    _position = Tween<double>(begin: 0, end: widget.currentValue / 250).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     )..addListener(() {
       setState(() {});

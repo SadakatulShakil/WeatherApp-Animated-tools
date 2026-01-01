@@ -98,34 +98,34 @@ class ActivityIndicatorWidget extends StatelessWidget {
 
             // 1. Outdoor Activities
             _buildIndicatorItem(
-              Icons.schedule,
+              Icons.medical_services_outlined,
               isBangla
-                  ? 'বাইরের কার্যকলাপের জন্য আবহাওয়া আরামদায়ক, তবে ধুলোবালি এড়িয়ে চলুন।'
-                  : 'Weather is comfortable for outdoor activities, but avoid dust.',
+                  ? 'শিশু ও বৃদ্ধদের জ্বর, সর্দি, কাশি ও শ্বাসকষ্টজনিত রোগ থেকে রক্ষার জন্য বিশেষ খেয়াল রাখুন।  গরম কাপড় পরিধান করুন। '
+                  : 'Take extra care of children and elderly to protect them from fever, cold, cough, and respiratory issues. Wear warm clothing.',
             ),
 
             // 2. Running / Exercise
             _buildIndicatorItem(
-              Icons.directions_run,
+              Icons.warning_amber,
               isBangla
-                  ? 'বাইরে দৌড়ানোর জন্য চমৎকার সময়, হালকা শীতের পোশাক পরুন।'
+                  ? 'রাত হতে ভোর পর্যন্ত সড়ক ও নৌপথে যানবাহন চালানোর সময় সাবধানতা অবলম্বন করুন।'
                   : 'Excellent time for running outside; wear light winter gear.',
             ),
 
             // 3. Health (Cold/Flu)
             _buildIndicatorItem(
-              Icons.medical_services_outlined,
+              Icons.agriculture,
               isBangla
-                  ? 'তাপমাত্রা কমায় ঠান্ডা বা ফ্লু হওয়ার ঝুঁকি থাকতে পারে, সতর্ক থাকুন।'
-                  : 'Risk of cold or flu due to temperature drop; stay cautious.',
+                  ? 'শীতকালীন আবহাওয়ায় ফসল রক্ষায় সেচ, আবরণ এবং নিয়মিত পর্যবেক্ষণ জরুরি।'
+                  : 'In winter weather, it is essential to irrigate, cover, and regularly monitor crops to protect them.',
             ),
 
             // 4. Flights
             _buildIndicatorItem(
-              Icons.airplanemode_active,
+              Icons.face_retouching_natural,
               isBangla
-                  ? 'উড়োজাহাজ চলাচলের জন্য আকাশ পরিষ্কার এবং পরিস্থিতি স্বাভাবিক।'
-                  : 'Sky is clear and conditions are normal for flights.',
+                  ? 'আবহাওয়ার কারণে চর্মরোগের ঝুঁকি বাড়ছে। ত্বকের যত্ন নিন।'
+                  : 'The risk of skin diseases is increasing due to the weather. Take care of your skin.',
             ),
 
             // 5. Driving (Fog Warning)

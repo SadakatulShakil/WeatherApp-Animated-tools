@@ -12,7 +12,7 @@ class VisibilityCard extends StatelessWidget {
   final String subtitle;
   final IconData icon;
 
-  const VisibilityCard({
+  VisibilityCard({
     super.key,
     required this.title,
     required this.value,
@@ -20,6 +20,26 @@ class VisibilityCard extends StatelessWidget {
     required this.subtitle,
     required this.icon,
   });
+
+  String banglaToEnglishNumber(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < bangla.length; i++) {
+      input = input.replaceAll(bangla[i], english[i]);
+    }
+    return input;
+  }
+  final isBangla = Get.locale?.languageCode == 'bn';
+  String englishNumberToBangla(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < english.length; i++) {
+      input = input.replaceAll(english[i], bangla[i]);
+    }
+    return input;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +112,7 @@ class VisibilityCard extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          value,
+                          isBangla ? englishNumberToBangla(banglaToEnglishNumber(value).split('.')[0]) : value.split('.')[0],
                           style: TextStyle(
                             color: themeController.themeMode.value == ThemeMode.light
                                 ? Colors.black.withValues(alpha: 0.7)

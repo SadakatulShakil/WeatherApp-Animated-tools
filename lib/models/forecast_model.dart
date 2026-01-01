@@ -169,6 +169,23 @@ class ForecastEntry {
   NumericRange? cldcvr;
   NumericRange? windgust;
 
+  // New Missing Fields from JSON
+  String? pressure;
+  String? feels;
+  String? utci;
+  String? uv;
+  String? uvDesc;
+  String? vis;
+  String? aqi;
+  String? aqiSeverity;
+  String? aqLevel;
+  String? primaryPollutant;
+  String? sunrise;
+  String? sunset;
+  String? moonrise;
+  String? moonset;
+  String? moonPhase;
+
   ForecastEntry({
     this.stepStart,
     this.stepEnd,
@@ -192,6 +209,22 @@ class ForecastEntry {
     this.winddir,
     this.cldcvr,
     this.windgust,
+    // Initialize new fields
+    this.pressure,
+    this.feels,
+    this.utci,
+    this.uv,
+    this.uvDesc,
+    this.vis,
+    this.aqi,
+    this.aqiSeverity,
+    this.aqLevel,
+    this.primaryPollutant,
+    this.sunrise,
+    this.sunset,
+    this.moonrise,
+    this.moonset,
+    this.moonPhase,
   });
 
   ForecastEntry.fromJson(Map<String, dynamic> json) {
@@ -213,15 +246,27 @@ class ForecastEntry {
     rf = json['rf'] != null ? NumericRange.fromJson(json['rf']) : null;
     temp = json['temp'] != null ? NumericRange.fromJson(json['temp']) : null;
     rh = json['rh'] != null ? NumericRange.fromJson(json['rh']) : null;
-    windspd =
-    json['windspd'] != null ? NumericRange.fromJson(json['windspd']) : null;
-    winddir =
-    json['winddir'] != null ? NumericRange.fromJson(json['winddir']) : null;
-    cldcvr =
-    json['cldcvr'] != null ? NumericRange.fromJson(json['cldcvr']) : null;
-    windgust = json['windgust'] != null
-        ? NumericRange.fromJson(json['windgust'])
-        : null;
+    windspd = json['windspd'] != null ? NumericRange.fromJson(json['windspd']) : null;
+    winddir = json['winddir'] != null ? NumericRange.fromJson(json['winddir']) : null;
+    cldcvr = json['cldcvr'] != null ? NumericRange.fromJson(json['cldcvr']) : null;
+    windgust = json['windgust'] != null ? NumericRange.fromJson(json['windgust']) : null;
+
+    // Parsing new fields
+    pressure = json['pressure']?.toString();
+    feels = json['feels']?.toString();
+    utci = json['utci']?.toString();
+    uv = json['uv']?.toString();
+    uvDesc = json['uvDesc'];
+    vis = json['vis']?.toString();
+    aqi = json['aqi']?.toString();
+    aqiSeverity = json['aqiSeverity'];
+    aqLevel = json['aqLevel']?.toString();
+    primaryPollutant = json['primaryPollutant'];
+    sunrise = json['sunrise'];
+    sunset = json['sunset'];
+    moonrise = json['moonrise'];
+    moonset = json['moonset'];
+    moonPhase = json['moonPhase'];
   }
 
   Map<String, dynamic> toJson() {
@@ -248,6 +293,23 @@ class ForecastEntry {
     if (winddir != null) data['winddir'] = winddir!.toJson();
     if (cldcvr != null) data['cldcvr'] = cldcvr!.toJson();
     if (windgust != null) data['windgust'] = windgust!.toJson();
+
+    // Serializing new fields
+    data['pressure'] = pressure;
+    data['feels'] = feels;
+    data['utci'] = utci;
+    data['uv'] = uv;
+    data['uvDesc'] = uvDesc;
+    data['vis'] = vis;
+    data['aqi'] = aqi;
+    data['aqiSeverity'] = aqiSeverity;
+    data['aqLevel'] = aqLevel;
+    data['primaryPollutant'] = primaryPollutant;
+    data['sunrise'] = sunrise;
+    data['sunset'] = sunset;
+    data['moonrise'] = moonrise;
+    data['moonset'] = moonset;
+    data['moonPhase'] = moonPhase;
     return data;
   }
 }

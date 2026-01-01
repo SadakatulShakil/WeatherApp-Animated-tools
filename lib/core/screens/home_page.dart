@@ -111,7 +111,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                               padding: const EdgeInsets.all(10.0),
                               child: WindAndPressureCards(
                                 current?.windspd?.valAvg ?? '0.0',
-                                1002.0,
+                                current?.pressure ?? '0.0',
                                 current?.winddir?.valAvg ?? '0.0',
                               ),
                             );
@@ -128,7 +128,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                           case HomeSection.air_Quality:
                             return Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: AirQualityWidget(currentValue: 150.0),
+                              child: AirQualityWidget(currentValue: current?.aqi ?? '0'),
                             );
                           case HomeSection.activity_Indicator:
                             return Padding(
@@ -336,7 +336,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   }
 
   Widget _buildWeatherCard() {
-
 
     String banglaToEnglishNumber(String input) {
       const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];

@@ -8,7 +8,7 @@ import 'air_quality_animation.dart';
 
 class AirQualityWidget extends StatefulWidget {
 
-  final double currentValue;// Expected between 0-100
+  final String currentValue;// Expected between 0-100
   AirQualityWidget({
     super.key,
     required this.currentValue,
@@ -19,7 +19,25 @@ class AirQualityWidget extends StatefulWidget {
 
 class _AirQualityWidgetState extends State<AirQualityWidget> {
   final ThemeController themeController = Get.find<ThemeController>();
+  String banglaToEnglishNumber(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < bangla.length; i++) {
+      input = input.replaceAll(bangla[i], english[i]);
+    }
+    return input;
+  }
   final isBangla = Get.locale?.languageCode == 'bn';
+  String englishNumberToBangla(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < english.length; i++) {
+      input = input.replaceAll(english[i], bangla[i]);
+    }
+    return input;
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -90,7 +108,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                        isBangla? '১৫০' : '150',
+                        isBangla ? englishNumberToBangla(banglaToEnglishNumber(widget.currentValue).split('.')[0]) : widget.currentValue.split('.')[0],
                       //widget.currentValue.toStringAsFixed(0),
                       style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
@@ -118,7 +136,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: AirQualityAnimated(currentValue: widget.currentValue),
+                child: AirQualityAnimated(currentValue: double.tryParse(isBangla ? banglaToEnglishNumber(widget.currentValue) : widget.currentValue) ?? 0.0,),
               )
               // Sun and Moon icons
             ],
