@@ -128,7 +128,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                           case HomeSection.air_Quality:
                             return Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: AirQualityWidget(currentValue: current?.aqi ?? '0'),
+                              child: AirQualityWidget(
+                                currentValue: current?.aqi ?? '0',
+                                currentAnimValue: current?.aqLevel ?? '0',),
                             );
                           case HomeSection.activity_Indicator:
                             return Padding(

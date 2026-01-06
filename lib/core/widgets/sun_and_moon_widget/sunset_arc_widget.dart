@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../controllers/theme_controller.dart';
@@ -39,17 +38,6 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
     _controller.forward();
   }
 
-  Duration _timeDiff(TimeOfDay start, TimeOfDay end) {
-    final startMinutes = start.hour * 60 + start.minute;
-    final endMinutes = end.hour * 60 + end.minute;
-
-    if (endMinutes < startMinutes) {
-      return Duration(minutes: (24 * 60 - startMinutes) + endMinutes);
-    } else {
-      return Duration(minutes: endMinutes - startMinutes);
-    }
-  }
-
   final bool isBangla = Get.locale?.languageCode == 'bn';
 
   String englishNumberToBangla(String input) {
@@ -65,19 +53,7 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
   @override
   void initState() {
     super.initState();
-    double totalMinutes = _timeDiff(widget.moonrise, widget.moonset).inMinutes.toDouble();
-
-    double currentMinutes;
-    final nowMinutes = widget.currentTime.hour * 60 + widget.currentTime.minute;
-    final riseMinutes = widget.moonrise.hour * 60 + widget.moonrise.minute;
-
-    if (nowMinutes < riseMinutes) {
-      currentMinutes = (24 * 60 - riseMinutes + nowMinutes).toDouble();
-    } else {
-      currentMinutes = (nowMinutes - riseMinutes).toDouble();
-    }
-
-    percent = (currentMinutes / totalMinutes).clamp(0, 1);
+    _calculatePercent();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
@@ -85,6 +61,51 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
     );
 
     _position = Tween<double>(begin: 0, end: 0).animate(_controller);
+  }
+
+  // Updated Logic to handle time calculation correctly
+  void _calculatePercent() {
+    int nowMin = widget.currentTime.hour * 60 + widget.currentTime.minute;
+    int riseMin = widget.moonrise.hour * 60 + widget.moonrise.minute;
+    int setMin = widget.moonset.hour * 60 + widget.moonset.minute;
+
+    double totalDuration;
+    double elapsed;
+
+    // Check if the event crosses midnight (e.g., Rise 18:00 -> Set 06:00)
+    if (riseMin < setMin) {
+      // Case 1: Same day event (e.g., Rise 09:00, Set 21:00)
+      totalDuration = (setMin - riseMin).toDouble();
+
+      if (nowMin < riseMin) {
+        // Before Rise -> Stay at Start (0%)
+        elapsed = 0;
+      } else if (nowMin > setMin) {
+        // After Set -> Stay at End (100%)
+        elapsed = totalDuration;
+      } else {
+        // Active Duration
+        elapsed = (nowMin - riseMin).toDouble();
+      }
+    } else {
+      // Case 2: Crosses midnight (e.g., Rise 18:00, Set 06:00)
+      totalDuration = ((24 * 60) - riseMin + setMin).toDouble();
+
+      if (nowMin >= riseMin) {
+        // Evening before midnight (e.g., Now 20:00 vs Rise 18:00) -> Active
+        elapsed = (nowMin - riseMin).toDouble();
+      } else if (nowMin <= setMin) {
+        // Morning after midnight (e.g., Now 04:00 vs Set 06:00) -> Active
+        elapsed = ((24 * 60) - riseMin + nowMin).toDouble();
+      } else {
+        // Time is between Set and Rise (e.g., Now 12:00) -> Moon is down
+        // Stay at Start (0%)
+        elapsed = 0;
+      }
+    }
+
+    // Ensure percent is between 0.0 and 1.0
+    percent = (elapsed / totalDuration).clamp(0.0, 1.0);
   }
 
   @override
@@ -106,7 +127,7 @@ class _SunsetArcWidgetState extends State<SunsetArcWidget>
             }
           },
           child: CustomPaint(
-            size: Size(140, 70), // Width and Height of the widget
+            size: Size(140, 70),
             painter: ArcPainter(controller: themeController, progress: _position.value),
           ),
         ),
@@ -148,45 +169,45 @@ class ArcPainter extends CustomPainter {
 
     // 1. Create Path
     final Path path =
-        Path()
-          ..moveTo(0, size.height)
-          ..arcTo(arcRect, math.pi, math.pi, false)
-          ..lineTo(size.width, size.height)
-          ..close();
+    Path()
+      ..moveTo(0, size.height)
+      ..arcTo(arcRect, math.pi, math.pi, false)
+      ..lineTo(size.width, size.height)
+      ..close();
 
     // 2. Fill Path with Gradient
     final Paint fillPaint =
-        Paint()
-          ..shader = LinearGradient(
-            colors: [
-              Color(0xFFD777FF).withValues(alpha: 0.7),
-              Color(0x000c2a96),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ).createShader(arcRect)
-          ..style = PaintingStyle.fill;
+    Paint()
+      ..shader = LinearGradient(
+        colors: [
+          Color(0xFFD777FF).withValues(alpha: 0.7),
+          Color(0x000c2a96),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(arcRect)
+      ..style = PaintingStyle.fill;
 
     canvas.drawPath(path, fillPaint);
 
     // 3. Draw the Arc Stroke
     final Paint arcPaint =
-        Paint()
-          ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black.withValues(alpha: 0.7)
-              : Color(0xFFD777FF)
-          ..strokeWidth = 1
-          ..style = PaintingStyle.stroke;
+    Paint()
+      ..color = controller.themeMode.value == ThemeMode.light
+          ? Colors.black.withValues(alpha: 0.7)
+          : Color(0xFFD777FF)
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke;
 
     canvas.drawArc(arcRect, math.pi, math.pi, false, arcPaint);
 
     // 4. Draw the Bottom Straight Line
     final Paint linePaint =
-        Paint()
-          ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black.withValues(alpha: 0.7)
-              : Colors.white
-          ..strokeWidth = 2;
+    Paint()
+      ..color = controller.themeMode.value == ThemeMode.light
+          ? Colors.black.withValues(alpha: 0.7)
+          : Colors.white
+      ..strokeWidth = 2;
     canvas.drawLine(
       Offset(-5, size.height),
       Offset(size.width + 5, size.height),
@@ -195,16 +216,18 @@ class ArcPainter extends CustomPainter {
 
     // 5. Draw the Dots
     final Paint dotPaint =
-        Paint()
-          ..color = controller.themeMode.value == ThemeMode.light
-              ? Colors.black.withValues(alpha: 0.7)
-              : Colors.white
-          ..style = PaintingStyle.fill;
+    Paint()
+      ..color = controller.themeMode.value == ThemeMode.light
+          ? Colors.black.withValues(alpha: 0.7)
+          : Colors.white
+      ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(6, size.height), 4, dotPaint);
     canvas.drawCircle(Offset(size.width-6, size.height), 4, dotPaint);
 
     // 6. Draw the Moon Icon
-    final angle = math.pi + (math.pi * progress);
+    // Clamp progress for safety in drawing
+    final safeProgress = progress.clamp(0.0, 1.0);
+    final angle = math.pi + (math.pi * safeProgress);
     final Offset sunOffset = Offset(
       center.dx + radius * math.cos(angle),
       center.dy + radius * math.sin(angle),
@@ -224,7 +247,7 @@ class ArcPainter extends CustomPainter {
     textPainter.paint(
       canvas,
       sunOffset - const Offset(10, 15),
-    ); // Centered nicely
+    );
   }
 
   @override

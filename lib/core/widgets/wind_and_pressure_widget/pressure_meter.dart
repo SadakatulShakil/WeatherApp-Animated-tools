@@ -21,6 +21,17 @@ class _PressureMeterState extends State<PressureMeter>
   late AnimationController _controller;
   late Animation<double> _animation;
 
+  final isBangla = Get.locale?.languageCode == 'bn';
+  String englishNumberToBangla(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < english.length; i++) {
+      input = input.replaceAll(english[i], bangla[i]);
+    }
+    return input;
+  }
+
   void _startAnimation() {
     _controller.reset();
     _animation = Tween<double>(begin: 0, end: widget.pressureValue/20).animate(
@@ -172,7 +183,8 @@ class _PressureMeterState extends State<PressureMeter>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            widget.pressureValue.toStringAsFixed(0),
+                            isBangla? englishNumberToBangla((widget.pressureValue).toStringAsFixed(0))
+                                : (widget.pressureValue).toStringAsFixed(0),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: themeController.themeMode.value == ThemeMode.light
@@ -196,7 +208,7 @@ class _PressureMeterState extends State<PressureMeter>
                     ),
                     GaugeAnnotation(
                       widget: Text(
-                        'Low',
+                        'low'.tr,
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black
@@ -210,7 +222,7 @@ class _PressureMeterState extends State<PressureMeter>
                     ),
                     GaugeAnnotation(
                       widget: Text(
-                        'High',
+                        'high'.tr,
                         style: TextStyle(
                           color: themeController.themeMode.value == ThemeMode.light
                               ? Colors.black

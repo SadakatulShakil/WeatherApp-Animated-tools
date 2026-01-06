@@ -27,6 +27,16 @@ class _WindCompassState extends State<WindCompass>
   double animatedValue = 0;
   late AnimationController _controller;
   late Animation<double> _needleAnimation;
+  final isBangla = Get.locale?.languageCode == 'bn';
+  String englishNumberToBangla(String input) {
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    for (int i = 0; i < english.length; i++) {
+      input = input.replaceAll(english[i], bangla[i]);
+    }
+    return input;
+  }
 
   @override
   void initState() {
@@ -186,7 +196,8 @@ class _WindCompassState extends State<WindCompass>
                             widget: Column(
                               children: [
                                 Text(
-                                  widget.windSpeed.toStringAsFixed(1),
+                                  isBangla? englishNumberToBangla(widget.windSpeed.toStringAsFixed(1))
+                                      :widget.windSpeed.toStringAsFixed(1),
                                   style: TextStyle(
                                     color: themeController.themeMode.value == ThemeMode.light
                                         ?Colors.black

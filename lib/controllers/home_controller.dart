@@ -154,6 +154,7 @@ class HomeController extends GetxController {
       // We check if 'chart' exists and if the index is valid for each array
       double temp = 0.0;
       double rain = 0.0;
+      double humidity = 0.0;
       double wind = 0.0;
 
       if (chart != null) {
@@ -163,6 +164,9 @@ class HomeController extends GetxController {
         if (chart.rfValAvg != null && index < chart.rfValAvg!.length) {
           rain = chart.rfValAvg![index];
         }
+        if (chart.rhValAvg != null && index < chart.rhValAvg!.length) {
+          humidity = chart.rhValAvg![index];
+        }
         if (chart.windValAvg != null && index < chart.windValAvg!.length) {
           wind = chart.windValAvg![index];
         }
@@ -170,6 +174,7 @@ class HomeController extends GetxController {
         // Fallback to the individual step object if chart data is missing
         temp = 0.0;
         rain = 0.0;
+        humidity = 0.0;
         wind = 0.0;
       }
 
@@ -178,6 +183,7 @@ class HomeController extends GetxController {
         iconKey: step.icon ?? 'ic_sunny_cloud.png',
         temp: temp,
         rainAmount: rain,
+        humidity: humidity,
         windSpeed: wind,
         index: index,
       );
@@ -392,17 +398,17 @@ class HomeController extends GetxController {
       {
         "id": 2,
         "question": "আজকের তাপমাত্রা কেমন মনে হচ্ছে?",
-        "options": ["ঠান্ডা", "গরম", "খুব গরম", "ঠান্ডা ও গরমের মধ্যে"]
+        "options": ["ঠান্ডা", "গরম", "খুব গরম", "ঠান্ডা ও গরমের মাঝামাঝি"]
       },
       {
         "id": 3,
         "question": "আপনার এলাকায় বন্যার পরিস্থিতি কেমন?",
-        "options": ["আগের থেকে অবস্থা উন্নত হয়েছে", "কোন পরিবর্তন নেই", "ভারি বৃষ্টি হচ্ছে"]
+        "options": ["আগের থেকে অবস্থার উন্নত হয়েছে", "কোন পরিবর্তন নেই", "আগের থেকে অবস্থার অবনতি হয়েছে"]
       },
       {
         "id": 4,
         "question": "আজকে আপনার এলাকায় বজ্রপাতের অবস্থা কেমন?",
-        "options": ["এক বা দুই বার দেখা গেছে", "আজকে একদমই নাই", "বদ্রপাতে সাথে ভারি বৃষ্টি হচ্ছে"]
+        "options": ["একবার বা দুইবার হয়েছে", "আজকে হয় নাই", "বজ্রপাতের সাথে ভারি বৃষ্টি হচ্ছে"]
       },
     ];
 

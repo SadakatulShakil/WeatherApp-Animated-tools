@@ -9,9 +9,11 @@ import 'air_quality_animation.dart';
 class AirQualityWidget extends StatefulWidget {
 
   final String currentValue;// Expected between 0-100
+  final String currentAnimValue;// Expected between 0-100
   AirQualityWidget({
     super.key,
     required this.currentValue,
+    required this.currentAnimValue,
   });
   @override
   State<AirQualityWidget> createState() => _AirQualityWidgetState();
@@ -118,12 +120,12 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                         fontWeight: FontWeight.bold
                       )),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(isBangla? 'অস্বাস্থ্যকর' : 'Unhealthy', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
-                        ? Colors.black
-                        : Colors.white, fontSize: 16),),
-                  )
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: Text(isBangla? 'অস্বাস্থ্যকর' : 'Unhealthy', style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
+                  //       ? Colors.black
+                  //       : Colors.white, fontSize: 16),),
+                  // )
                 ],
               ),
               SizedBox(height: 8),

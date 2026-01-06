@@ -53,7 +53,7 @@ class _CitizenSciencePageState extends State<CitizenSciencePage> {
               ),
               SizedBox(width: 8.w),
               Text(
-                "সিটিজেন সাইন্স",
+                "সিটিজেন সায়েন্স",
                 style: GoogleFonts.notoSansBengali(
                   color: Color(0xFF0D6EA8),
                   fontWeight: FontWeight.w600,

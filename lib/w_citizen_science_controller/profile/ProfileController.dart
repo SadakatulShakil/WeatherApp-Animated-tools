@@ -185,9 +185,9 @@ class CitizenScienceProfileController extends GetxController with GetSingleTicke
         await getSharedPrefData();
 
         Get.defaultDialog(
-          title: "Success",
-          middleText: 'Profile Updated Successfully',
-          textConfirm: 'Ok',
+          title: "success_title".tr,
+          middleText: 'profile_success_msg'.tr,
+          textConfirm: 'ok'.tr,
           onConfirm: () => Get.back(),
         );
 

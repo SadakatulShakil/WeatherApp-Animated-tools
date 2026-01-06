@@ -48,7 +48,7 @@ class _CitizenScienceOtpState extends State<CitizenScienceOtp> {
 
               // Custom title
               Text(
-                "সিটিজেন সেয়েন্স",
+                "সিটিজেন সায়েন্স",
                 style: GoogleFonts.notoSansBengali(
                   color: Colors.black87,
                   fontWeight: FontWeight.w600,
