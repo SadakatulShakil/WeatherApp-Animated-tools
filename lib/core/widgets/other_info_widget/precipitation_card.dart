@@ -47,7 +47,7 @@ class PrecipitationCard extends StatelessWidget {
     final ThemeController themeController = Get.find<ThemeController>();
     return GestureDetector(
       onTap: () {
-        //Get.to(() => RainyDayDetailsPage(), transition: Transition.rightToLeft);
+        Get.to(() => RainyDayDetailsPage(), transition: Transition.rightToLeft);
       },
       child: Container(
         padding: const EdgeInsets.all(12),

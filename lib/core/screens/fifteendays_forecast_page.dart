@@ -15,12 +15,31 @@ class _FifteenDaysForecastPageState extends State<FifteenDaysForecastPage> {
   final List<GlobalKey> _tabKeys = [];
 
   @override
+  void initState() {
+    super.initState();
+    // 1. Check if an index was passed via Get.arguments
+    if (Get.arguments != null && Get.arguments is int) {
+      final int initialIndex = Get.arguments;
+
+      // 2. Schedule the update after the first frame to ensure UI is ready
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.updateDailyView(initialIndex);
+
+        // 3. Small delay to ensure the ListView has built the keys before we try to scroll
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _scrollToIndex(initialIndex);
+        });
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: Text(controller.isBangla ? 'পরবর্তী ১০ দিন' : 'Next 10 Days'),
+        title: Text('next_15_days_forecast'.tr),
         elevation: 0,
         leading: GestureDetector(
             onTap: () => Get.back(),
@@ -158,13 +177,13 @@ class _FifteenDaysForecastPageState extends State<FifteenDaysForecastPage> {
                               runSpacing: 16,
                               alignment: WrapAlignment.start,
                               children: [
-                                _iconLabel(controller.isBangla ? 'বৃষ্টির সম্ভাবনা' : 'Rain Chance', item['rainChance'], icon: Icons.water_drop_outlined),
-                                _iconLabel(controller.isBangla ? 'বৃষ্টির পরিমাণ' : 'Rain Amount', item['rainAmount'], icon: Icons.grain),
-                                _iconLabel(controller.isBangla ? 'আর্দ্রতা' : 'Humidity', item['humidity'], icon: Icons.opacity),
-                                _iconLabel(controller.isBangla ? 'বাতাসের গতি' : 'Wind Speed', item['windSpeed'], icon: Icons.air),
-                                _iconLabel(controller.isBangla ? 'মেঘ' : 'Cloud', item['cloud'], icon: Icons.cloud_outlined),
-                                _iconLabel(controller.isBangla ? 'দৃষ্টিসীমা' : 'Visibility', item['visibility'], icon: Icons.visibility_outlined),
-                                _iconLabel(controller.isBangla ? 'বাতাসের দিক' : 'Wind Direction', item['windDirection'], icon: Icons.explore),
+                                _iconLabel('f_rainfall'.tr, item['rainAmount'], icon: Icons.grain),
+                                _iconLabel('f_humidity'.tr, item['humidity'], icon: Icons.opacity),
+                                _iconLabel('f_wind_speed'.tr, item['windSpeed'], icon: Icons.air),
+                                _iconLabel('f_cloud_cvr'.tr, item['cloud'], icon: Icons.cloud_outlined),
+                                _iconLabel('f_visibility'.tr, item['visibility'], icon: Icons.visibility_outlined),
+                                _iconLabel('f_uv_index'.tr, item['uvIndex'], icon: Icons.wb_sunny_outlined),
+                                _iconLabel('f_wind_dir'.tr, item['windDirection'], icon: Icons.explore_outlined),
                               ],
                             ),
                           )

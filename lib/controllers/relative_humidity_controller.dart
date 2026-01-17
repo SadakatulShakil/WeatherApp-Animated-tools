@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'home_controller.dart';
 import '../models/weather_ui_model.dart';
 
-class HumidityController extends GetxController {
+class RelativeHumidityController extends GetxController {
   final HomeController _homeController = Get.find<HomeController>();
 
   var humidityDays = <WeatherUiModel>[].obs;
@@ -16,8 +16,8 @@ class HumidityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    ever(_homeController.forecast, (_) => processRainData());
-    processRainData();
+    ever(_homeController.forecast, (_) => processHumidityData());
+    processHumidityData();
   }
 
   // --- NEW HELPER: Normalize Bangla Digits to English for Parsing ---
@@ -32,7 +32,7 @@ class HumidityController extends GetxController {
     return temp;
   }
 
-  void processRainData() {
+  void processHumidityData() {
     final steps = _homeController.forecast.value?.result?.steps;
 
     if (steps == null || steps.isEmpty) {

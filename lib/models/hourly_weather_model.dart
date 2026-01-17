@@ -1,5 +1,6 @@
 // models/hourly_weather_model.dart
 class HourlyWeatherModel {
+  final String date;
   final String time;
   final String iconKey;
   final double temp;
@@ -9,6 +10,7 @@ class HourlyWeatherModel {
   final int index;
 
   HourlyWeatherModel({
+    required this.date,
     required this.time,
     required this.iconKey,
     required this.temp,

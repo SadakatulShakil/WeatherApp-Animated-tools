@@ -203,7 +203,7 @@ class BaseWeatherCard extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
                         Text(
-                          "আমার পর্যবেক্ষণ",
+                          'my_feedback'.tr,
                           style: GoogleFonts.notoSansBengali(
                               fontSize: 14.sp,
                               color: Colors.white,
@@ -224,7 +224,7 @@ class BaseWeatherCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //runSpacing: 3.h, // vertical space if wrapped
               children: [
                 Text(

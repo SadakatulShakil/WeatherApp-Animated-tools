@@ -21,7 +21,7 @@ class _HourlyForecastDetailsPageState extends State<HourlyForecastDetailsPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
         elevation: 0,
-        title: const Text('পরবর্তী ৭২ ঘন্টার পূর্বাভাস'),
+        title: Text("next_72_hours_forecast".tr),
         leading: GestureDetector(
           onTap: () => Get.back(),
           child: const Icon(Icons.arrow_back_ios),
@@ -150,14 +150,13 @@ class _HourlyForecastDetailsPageState extends State<HourlyForecastDetailsPage> {
                       runSpacing: 16,
                       alignment: WrapAlignment.start,
                       children: [
-                        _iconLabel('বৃষ্টির সম্ভাবনা', item['rainChance'], icon: Icons.water_drop_outlined),
-                        _iconLabel('বৃষ্টির পরিমাণ', item['rainAmount'], icon: Icons.grain),
-                        _iconLabel('আর্দ্রতা', item['humidity'], icon: Icons.opacity),
-                        _iconLabel('বাতাসের গতি', item['windSpeed'], icon: Icons.air),
-                        _iconLabel('মেঘ', item['cloud'], icon: Icons.cloud_outlined),
-                        _iconLabel('দূরদর্শিতা', item['visibility'], icon: Icons.visibility_outlined),
-                        _iconLabel('অতিবেগুনী রশ্মি', item['uvIndex'], icon: Icons.wb_sunny_outlined),
-                        _iconLabel('বাতাসের দিক', item['windDirection'], icon: Icons.explore_outlined),
+                        _iconLabel('f_rainfall'.tr, item['rainAmount'], icon: Icons.grain),
+                        _iconLabel('f_humidity'.tr, item['humidity'], icon: Icons.opacity),
+                        _iconLabel('f_wind_speed'.tr, item['windSpeed'], icon: Icons.air),
+                        _iconLabel('f_cloud_cvr'.tr, item['cloud'], icon: Icons.cloud_outlined),
+                        _iconLabel('f_visibility'.tr, item['visibility'], icon: Icons.visibility_outlined),
+                        _iconLabel('f_uv_index'.tr, item['uvIndex'], icon: Icons.wb_sunny_outlined),
+                        _iconLabel('f_wind_dir'.tr, item['windDirection'], icon: Icons.explore_outlined),
                       ],
                     ),
                   )

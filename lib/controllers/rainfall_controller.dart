@@ -5,11 +5,11 @@ import 'package:intl/intl.dart';
 import 'home_controller.dart';
 import '../models/weather_ui_model.dart';
 
-class HumidityController extends GetxController {
+class RainFallController extends GetxController {
   final HomeController _homeController = Get.find<HomeController>();
 
-  var humidityDays = <WeatherUiModel>[].obs;
-  var selectedHumidityDay = 0.obs;
+  var rainDays = <WeatherUiModel>[].obs;
+  var selectedRainDay = 0.obs;
 
   bool get isBangla => Get.locale?.languageCode == 'bn';
 
@@ -36,7 +36,7 @@ class HumidityController extends GetxController {
     final steps = _homeController.forecast.value?.result?.steps;
 
     if (steps == null || steps.isEmpty) {
-      humidityDays.clear();
+      rainDays.clear();
       return;
     }
 
@@ -52,9 +52,9 @@ class HumidityController extends GetxController {
         String dateKey = DateFormat('yyyy-MM-dd').format(dt);
 
         double speed = 0.0;
-        if (step.rh?.valAvg != null) {
+        if (step.rf?.valAvg != null) {
           // STEP 1: Normalize the string before parsing
-          String rawValue = step.rh!.valAvg!;
+          String rawValue = step.rf!.valAvg!;
           String englishValue = _normalizeToEnglish(rawValue);
 
           // STEP 2: Calculation Task (Parsing works now!)
@@ -97,7 +97,7 @@ class HumidityController extends GetxController {
       ));
     }
 
-    humidityDays.assignAll(tempList);
+    rainDays.assignAll(tempList);
   }
 
 

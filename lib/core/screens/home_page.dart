@@ -400,7 +400,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
       final current = controller.forecast.value?.result?.current;
 
-      final feelsTemp =  isBangla ? englishNumberToBangla(banglaToEnglishNumber(current?.temp?.valAvg ?? '').split('.')[0]) : (current?.temp?.valAvg ?? '').split('.')[0];
+      final feelsTemp =  isBangla ? englishNumberToBangla(banglaToEnglishNumber(current?.feels ?? '').split('.')[0]) : (current?.feels ?? '').split('.')[0];
       print('checkCurrentTemp: ${current?.temp?.valAvg}');
       return BaseWeatherCard(
         //iconUrl: "https://bamisapp.bdservers.site/assets/weather_icons/ic_sunny.png",
@@ -408,10 +408,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
         date: "${current?.weekday}, ${current?.date}",
         temp: current?.temp?.valAvg ?? '',
         temp_unit: current?.tempUnit ?? '',
-        tempMax:
-        "${current?.temp?.valMax ?? ''}${current?.tempUnit ?? ''}",
-        tempMin:
-        "${current?.temp?.valMin ?? ''}${current?.tempUnit ?? ''}",
+        tempMax: current?.temp?.valMax ?? '',
+        tempMin: current?.temp?.valMin ?? '',
         rain: current?.rf?.valAvg ?? '',
         rain_unit: current?.rfUnit ?? '',
         feels_like:

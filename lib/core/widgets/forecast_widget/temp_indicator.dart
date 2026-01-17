@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class AnimatedTempIndicator extends StatefulWidget {
-  final double rangeFactor;
+  // Pass the calculated difference: (max - min).abs()
+  final double rangeDiff;
+  final double maxRangeScale;
 
-  const AnimatedTempIndicator({Key? key, required this.rangeFactor})
-      : super(key: key);
+  const AnimatedTempIndicator({
+    Key? key,
+    required this.rangeDiff,
+    this.maxRangeScale = 15.0, // Adjust this based on your data needs
+  }) : super(key: key);
 
   @override
   State<AnimatedTempIndicator> createState() => _AnimatedTempIndicatorState();
@@ -14,7 +19,7 @@ class AnimatedTempIndicator extends StatefulWidget {
 class _AnimatedTempIndicatorState extends State<AnimatedTempIndicator>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _position;
+  late Animation<double> _curveAnimation;
   bool _hasAnimated = false;
 
   @override
@@ -25,17 +30,11 @@ class _AnimatedTempIndicatorState extends State<AnimatedTempIndicator>
       vsync: this,
     );
 
-    // Dummy initialization to avoid LateInitializationError
-    _position = AlwaysStoppedAnimation(widget.rangeFactor);
+    // Standard ease out curve for smooth growth
+    _curveAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
   }
 
   void _startAnimation() {
-    _position = Tween<double>(begin: 0, end: widget.rangeFactor).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    )..addListener(() {
-      setState(() {});
-    });
-
     _controller.forward();
   }
 
@@ -47,6 +46,10 @@ class _AnimatedTempIndicatorState extends State<AnimatedTempIndicator>
 
   @override
   Widget build(BuildContext context) {
+    // Calculate final width percentage (0.0 to 1.0)
+    // e.g., if difference is 7 and scale is 15, width is 46%
+    final double targetWidthFactor = (widget.rangeDiff / widget.maxRangeScale).clamp(0.0, 1.0);
+
     return VisibilityDetector(
       key: UniqueKey(),
       onVisibilityChanged: (info) {
@@ -55,25 +58,34 @@ class _AnimatedTempIndicatorState extends State<AnimatedTempIndicator>
           _startAnimation();
         }
       },
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          final widthFactor = (_position.value / 15.0).clamp(0.0, 1.0);
-
-          return FractionallySizedBox(
-            alignment: Alignment.centerLeft,
-            widthFactor: widthFactor,
-            child: Container(
-              height: 8,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                gradient: const LinearGradient(
-                  colors: [Colors.orange, Colors.deepOrange],
+      child: Container(
+        height: 8,
+        // Optional: Add a background color if you want a "track"
+        // color: Colors.grey.withOpacity(0.1),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        alignment: Alignment.centerLeft, // Ensures it starts from min (Left)
+        child: AnimatedBuilder(
+          animation: _curveAnimation,
+          builder: (context, child) {
+            return FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              // We multiply the animation value (0 to 1) by your target width
+              widthFactor: _curveAnimation.value * targetWidthFactor,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: const LinearGradient(
+                    colors: [Colors.orange, Colors.deepOrange],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

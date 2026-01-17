@@ -222,6 +222,18 @@ class WeatherForecastChart extends StatelessWidget {
                                   children: [
                                     Text(
                                       isBangla
+                                          ?englishToBanglaNumber(data.date)
+                                          :data.date,
+                                      style: TextStyle(
+                                        color: themeController.themeMode.value == ThemeMode.light
+                                            ? Colors.black
+                                            : Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    Text(
+                                      isBangla
                                           ?englishToBanglaNumber(data.time)
                                           :data.time,
                                       style: TextStyle(

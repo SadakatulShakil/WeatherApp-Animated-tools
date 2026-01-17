@@ -60,7 +60,7 @@ class LocalizationString extends Translations {
       'citizen_charter': 'Citizen Charter',
       'dashboard_sidebar_privacy_policy': 'Privacy Policy',
       'dashboard_rainfall': 'Rainfall',
-      'dashboard_humidity': 'Humidity',
+      'dashboard_humidity': 'R. Humidity',
       'dashboard_wind': 'Wind Speed',
       'dashboard_time_good_morning': "Good Morning",
       'dashboard_time_good_noon': "Good Noon",
@@ -73,7 +73,7 @@ class LocalizationString extends Translations {
       'wf_subtitle': 'Weather forecast for next 10 days',
       'wf_temp': 'Temparature',
       'wf_rf': 'Rainfall',
-      'wf_rh': 'Humidity',
+      'wf_rh': 'R. Humidity',
       'wf_wind': 'Wind Speed',
 
       'today_weather': 'Today\'s Weather',
@@ -159,8 +159,9 @@ class LocalizationString extends Translations {
       'next_72_hours_forecast': 'Next 72 Hours Forecast',
       'next_15_days_forecast': 'Next 10 Days Forecast',
       'wind_title': 'Wind',
+      'wind_details_title': 'Wind Details',
       'pressure_title': 'Air Pressure',
-      'humidity_title': 'Humidity',
+      'humidity_title': 'R. Humidity',
       'uv_index_title': 'UV Ray',
       'rainfall_title': 'Rainfall',
       'sunrise_title': 'Sunrise',
@@ -211,10 +212,17 @@ class LocalizationString extends Translations {
       'pressure_unit': 'hPa',
       'rainfall_subtitle_prefix': 'There is a possibility of ',
       'rainfall_subtitle_suffix': ' mm rainfall in next 24 hours.',
-      'humidity_subtitle_prefix': 'Current Humidity is at ',
-      ''
-      'empty_marque': 'No weather warnings at this time. Have a safe day!'
+      'humidity_subtitle_prefix': 'Current R. Humidity is at ',
+      'empty_marque': 'No weather warnings at this time. Have a safe day!',
 
+      /// Weather forecast details
+      'f_rainfall': 'Rainfall Amount',
+      'f_humidity': 'R. Humidity',
+      'f_wind_speed': 'Wind Speed',
+      'f_cloud_cvr': 'Cloud Coverage',
+      'f_visibility': 'Visibility',
+      'f_uv_index': 'UV Index',
+      'f_wind_dir': 'Wind Direction',
 
     },
     'bn_BD': {
@@ -274,7 +282,7 @@ class LocalizationString extends Translations {
       'citizen_charter': 'নাগরিক সনদ',
       'dashboard_sidebar_privacy_policy': 'গোপনীয়তা নীতি',
       'dashboard_rainfall': 'বৃষ্টিপাত',
-      'dashboard_humidity': 'আর্দ্রতা',
+      'dashboard_humidity': 'আ. আর্দ্রতা',
       'dashboard_wind': 'বাতাসের গতি',
       'dashboard_time_good_morning': "শুভ সকাল",
       'dashboard_time_good_noon': "শুভ দুপুর",
@@ -374,8 +382,9 @@ class LocalizationString extends Translations {
       'next_72_hours_forecast': 'পরবর্তী ৭২ ঘন্টার পূর্বাভাস',
       'next_15_days_forecast': 'পরবর্তী ১০ দিনের পূর্বাভাস',
       'wind_title': 'বাতাস',
+      'wind_details_title': 'বাতাসের বিস্তারিত তথ্য',
       'pressure_title': 'বায়ু চাপ',
-      'humidity_title': 'আর্দ্রতা',
+      'humidity_title': 'আ. আর্দ্রতা',
       'uv_index_title': 'অতিবেগুনী রশ্মি',
       'rainfall_title': 'বৃষ্টিপাত',
       'sunrise_title': 'সূর্যোদয়',
@@ -387,7 +396,7 @@ class LocalizationString extends Translations {
       'index': 'এইরূপ আবহাওয়ায় করনীয়',
       'prayer_times_title': 'নামাজের সময়',
       'details': 'বিস্তারিত',
-      'my_feedback': 'আমার প্রতিক্রিয়া',
+      'my_feedback': 'আমার পর্যবেক্ষণ',
       'rainfall_subtitle': 'গত ২৪ ঘন্টায় ',
 
       ///Side menu item
@@ -424,8 +433,17 @@ class LocalizationString extends Translations {
       'pressure_unit': 'hPa',
       'rainfall_subtitle_prefix': 'পরবর্তী ২৪ ঘন্টায় ',
       'rainfall_subtitle_suffix': ' মিমি বৃষ্টিপাতের সম্ভাবনা রয়েছে।',
-      'humidity_subtitle_prefix': 'এই মুহূর্তে বাতাসে আর্দ্রতার মাত্রা ',
-      'empty_marque': 'বর্তমানে কোনো আবহাওয়া সতর্কবার্তা নেই। নিরাপদে থাকুন!'
+      'humidity_subtitle_prefix': 'এই মুহূর্তে আ. আর্দ্রতার মাত্রা ',
+      'empty_marque': 'বর্তমানে কোনো আবহাওয়া সতর্কবার্তা নেই। নিরাপদে থাকুন!',
+
+      /// Weather forecast details
+      'f_rainfall': 'বৃষ্টিপাতের পরিমাণ',
+      'f_humidity': 'আপেক্ষিক আর্দ্রতা',
+      'f_wind_speed': 'বাতাসের গতি',
+      'f_cloud_cvr': 'মেঘাচ্ছন্নতা',
+      'f_visibility': 'দৃষ্টিসীমা',
+      'f_uv_index': 'অতিবেগুনী রশ্মি',
+      'f_wind_dir': 'বাতাসের দিক',
 
     }
   };

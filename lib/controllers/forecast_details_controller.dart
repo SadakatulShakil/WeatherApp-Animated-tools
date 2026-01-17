@@ -102,8 +102,10 @@ class ForecastDetailsController extends GetxController {
         'windSpeed': '${_localizeNumber(wind.toInt())} ${isBangla ? "কিমি/ঘ" : "km/h"}',
         'windDirection': _getWindDir(windDir),
         'cloud': '${_localizeNumber(cloud.toInt())}%',
-        'visibility': '${_localizeNumber(5)} ${isBangla ? "কিমি" : "km"}',
-        'uvIndex': _localizeNumber(4),
+        'visibility': '---',
+        'uvIndex': '---',
+        // 'visibility': '${_localizeNumber(5)} ${isBangla ? "কিমি" : "km"}',
+        // 'uvIndex': _localizeNumber(4),
       };
 
       if (!_groupedSteps.containsKey(dateKey)) {

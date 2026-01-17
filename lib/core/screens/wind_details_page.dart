@@ -1,11 +1,8 @@
-import 'package:bmd_weather_app/controllers/wind_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
-import '../../controllers/forecast_details_controller.dart';
-
+import '../../controllers/wind_controller.dart';
 
 class WindDetailsPage extends StatefulWidget {
   @override
@@ -13,24 +10,18 @@ class WindDetailsPage extends StatefulWidget {
 }
 
 class _WindDetailsPageState extends State<WindDetailsPage> {
-
   final WindController controller = Get.put(WindController());
+
+  final isBangla = Get.locale?.languageCode == 'bn';
+  // Helper for Bangla Numbers
   String toBanglaNumber(num value) {
-    const en = ['0','1','2','3','4','5','6','7','8','9','.'];
-    const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯','.'];
+    const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+    const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯', '.'];
     return value
-        .toStringAsFixed(1) // one decimal place
+        .toStringAsFixed(1)
         .split('')
         .map((ch) => bn[en.indexOf(ch)] ?? ch)
         .join();
-  }
-
-  String getChartTitle(Map<String, dynamic> dayData) {
-    final List<double> brown = List<double>.from(dayData["brown"]);
-    final minVal = brown.reduce((a, b) => a < b ? a : b);
-    final maxVal = brown.reduce((a, b) => a > b ? a : b);
-
-    return "${toBanglaNumber(minVal)}–${toBanglaNumber(maxVal)} মিটার/সেকেন্ড";
   }
 
   @override
@@ -39,11 +30,11 @@ class _WindDetailsPageState extends State<WindDetailsPage> {
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: const Text('বাতাস'),
+        title: Text('wind_details_title'.tr, style: TextStyle(color: Colors.white)),
         elevation: 0,
-        leading:  GestureDetector(
+        leading: GestureDetector(
             onTap: () => Get.back(),
-            child: Icon(Icons.arrow_back_ios)),
+            child: const Icon(Icons.arrow_back_ios, color: Colors.white)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -53,11 +44,14 @@ class _WindDetailsPageState extends State<WindDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 12),
+
+                // --- Top Day Selector ---
                 SizedBox(
-                  height: 80,
+                  height: 60,
                   child: Obx(() {
                     if (controller.windDays.isEmpty) {
-                      return const Center(child: CircularProgressIndicator(color: Colors.white));
+                      return const Center(
+                          child: CircularProgressIndicator(color: Colors.white));
                     }
 
                     return ListView.builder(
@@ -65,164 +59,163 @@ class _WindDetailsPageState extends State<WindDetailsPage> {
                       itemCount: controller.windDays.length,
                       itemBuilder: (context, index) {
                         final item = controller.windDays[index];
-                        final isSelected = index == controller.selectedWindDay.value;
 
-                        return Container(
-                          margin: EdgeInsets.only(
-                            left: index == 0 ? 16.0 : 8.0,
-                            right: index == controller.windDays.length - 1 ? 16.0 : 8.0,
-                          ),
-                          child: GestureDetector(
-                            onTap: () => controller.selectedWindDay.value = index,
-                            child: Obx(() {
-                              final isSelected = controller.selectedWindDay.value == index;
-                              return AnimatedContainer(
-                                duration: Duration(milliseconds: 250),
-                                curve: Curves.easeInOut,
-                                padding: EdgeInsets.all(6),
-                                margin: EdgeInsets.symmetric(horizontal: 4),
-                                decoration: BoxDecoration(
-                                  color: isSelected ? const Color(0xFF2686BE) : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: isSelected
-                                      ? [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 6,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ]
-                                      : [],
-                                  border: Border.all(
-                                    color: Colors.white24,
-                                    width: 1,
-                                  ),
+                        return GestureDetector(
+                          onTap: () => controller.selectedWindDay.value = index,
+                          child: Obx(() {
+                            final isSelected =
+                                controller.selectedWindDay.value == index;
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut,
+                              width: 80,
+                              margin: EdgeInsets.only(
+                                left: index == 0 ? 16.0 : 8.0,
+                                right: index == controller.windDays.length - 1
+                                    ? 16.0
+                                    : 8.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? const Color(0xFF00D3B9) // Cyan selection
+                                    : Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.white24,
+                                  width: 1,
                                 ),
-                                child: AnimatedScale(
-                                  scale: isSelected ? 1.1 : 1.0,
-                                  duration: Duration(milliseconds: 250),
-                                  curve: Curves.easeInOut,
-                                  child: SizedBox(
-                                    width: 55,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          item.date,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight:
-                                            isSelected ? FontWeight.bold : FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text(
-                                          item.day,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight:
-                                            isSelected ? FontWeight.bold : FontWeight.normal,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Icon(
-                                          item.icon,
-                                          color: Colors.white,
-                                          size: isSelected ? 24 : 20,
-                                        ),
-                                      ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    item.dateDisplay,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                     ),
                                   ),
-                                ),
-                              );
-                            }),
-                          ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    item.dayName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                    ),
+                                  ),
+                                  // const SizedBox(height: 6),
+                                  // Icon(
+                                  //   item.icon,
+                                  //   color: Colors.white,
+                                  //   size: isSelected ? 22 : 18,
+                                  // ),
+                                ],
+                              ),
+                            );
+                          }),
                         );
                       },
                     );
                   }),
                 ),
-                SizedBox(height: 16),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Obx(() {
-                    if (controller.windDays.isEmpty) {
-                      return const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
-                      );
-                    }
-                    // Now it’s safe to access index 0 or selectedWindDay
-                    final dayData = controller.windDays[controller.selectedWindDay.value].toJson();
-                    final chartData = controller.windDays[controller.selectedWindDay.value];
-                    final brownValues = chartData.brown; final greenValues = chartData.green;
 
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          getChartTitle(dayData),
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          '২.১ মাইল/ঘণ্টা থেকে বাতাসের উত্তর ঝাঁপটা',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
+                const SizedBox(height: 20),
+
+                // --- Main Chart Card ---
+                Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Obx(() {
+                      if (controller.windDays.isEmpty) {
+                        return const SizedBox(height: 200);
+                      }
+
+                      final dayData = controller.windDays[controller.selectedWindDay.value];
+                      final points = dayData.points;
+
+                      // Calculate dynamic Y-axis Max for better visuals
+                      double maxY = dayData.maxVal + 5;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Dynamic Title
+                          Text(
+                            isBangla
+                                ?"${toBanglaNumber(dayData.minVal)} – ${toBanglaNumber(dayData.maxVal)} কিমি/ঘণ্টা"
+                                :"${dayData.minVal.toStringAsFixed(1)} – ${dayData.maxVal.toStringAsFixed(1)} km/h",
+                            style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 250,
-                          child: LineChart(
+                          const SizedBox(height: 4),
+                          Text(
+                            isBangla
+                                ?'বাতাসের গতিবেগ (3 ঘণ্টা ব্যবধানে)'
+                                :'Wind Speed (3-hour intervals)',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+
+                          // --- The Chart ---
+                          SizedBox(
+                            height: 250,
+                            child: LineChart(
                               LineChartData(
                                 minY: 0,
-                                maxY: 30,
+                                maxY: maxY, // Dynamic max height
                                 minX: 0,
-                                maxX: 24,
+                                maxX: 24,   // 24 Hours
                                 backgroundColor: Colors.transparent,
-                                gridData: FlGridData(show: false),
+                                gridData: FlGridData(
+                                  show: true,
+                                  drawVerticalLine: false,
+                                  horizontalInterval: 5,
+                                  getDrawingHorizontalLine: (value) => FlLine(
+                                    color: Colors.white10,
+                                    strokeWidth: 1,
+                                  ),
+                                ),
                                 titlesData: FlTitlesData(
+                                  // Bottom Titles (Hours: 00, 03, 06...)
                                   bottomTitles: AxisTitles(
                                     sideTitles: SideTitles(
                                       showTitles: true,
                                       reservedSize: 32,
-                                      interval: 6,
+                                      interval: 3, // Show label every 3 units (hours)
                                       getTitlesWidget: (value, meta) {
                                         final hour = value.toInt();
-                                        return Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
-                                          child: Text(
-                                            hour.toString().padLeft(2, '0'), // 00, 06, etc.
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  leftTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      reservedSize: 40,
-                                      interval: 5,
-                                      getTitlesWidget: (value, meta) {
-                                        const allowedValues = [0, 5, 10, 15, 20, 25, 30];
-                                        if (allowedValues.contains(value.toInt())) {
-                                          return Text(
-                                            '${value.toInt().toString().padLeft(2, '0')} মি/সে',
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 10,
+                                        // Only show titles if valid hours
+                                        if (hour % 3 == 0 && hour <= 24) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(top: 8.0),
+                                            child: Text(
+                                              isBangla
+                                                  ?toBanglaNumber(hour).padLeft(2, '0')
+                                                  :hour.toString().padLeft(2, '0'),
+                                              style: TextStyle(
+                                                color: Colors.white.withOpacity(0.7),
+                                                fontSize: 10,
+                                              ),
                                             ),
                                           );
                                         }
@@ -230,91 +223,134 @@ class _WindDetailsPageState extends State<WindDetailsPage> {
                                       },
                                     ),
                                   ),
-                                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                ),
-                                borderData: FlBorderData(
-                                  show: true,
-                                  border: Border.all(color: Colors.white24),
-                                ),
-                                lineBarsData: [
-                                  LineChartBarData(
-                                    spots: brownValues
-                                        .asMap()
-                                        .entries
-                                        .map((e) => FlSpot(e.key.toDouble(), e.value))
-                                        .toList(),
-                                    isCurved: true,
-                                    color: Colors.brown.shade400,
-                                    barWidth: 2,
-                                    dotData: FlDotData(show: false),
-                                    belowBarData: BarAreaData(
-                                      show: true,
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.brown.shade400.withOpacity(0.8),
-                                          Colors.brown.shade600.withOpacity(0.4),
-                                        ],
-                                      ),
+                                  // Left Titles (Speed values)
+                                  leftTitles: AxisTitles(
+                                    sideTitles: SideTitles(
+                                      showTitles: true,
+                                      reservedSize: 35,
+                                      interval: 5, // Interval for Y axis labels
+                                      getTitlesWidget: (value, meta) {
+                                        if (value == 0) return const SizedBox.shrink();
+                                        return Text(
+                                          isBangla
+                                              ?toBanglaNumber(value.toInt())
+                                              :value.toInt().toString(),
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.7),
+                                            fontSize: 10,
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
+                                  topTitles: const AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false)),
+                                  rightTitles: const AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false)),
+                                ),
+                                borderData: FlBorderData(show: false),
+
+                                // --- Single Line Data ---
+                                lineBarsData: [
                                   LineChartBarData(
-                                    spots: greenValues
-                                        .asMap()
-                                        .entries
-                                        .map((e) => FlSpot(e.key.toDouble(), e.value))
-                                        .toList(),
-                                    isCurved: true,
-                                    color: Colors.green.shade400,
-                                    barWidth: 2,
-                                    dotData: FlDotData(show: false),
+                                    spots: points.map((p) => FlSpot(p.x, p.y)).toList(),
+                                    isCurved: true, // Smooth line
+                                    curveSmoothness: 0.5,
+                                    color: const Color(0xFF00D3B9), // Teal Color
+                                    barWidth: 1,
+                                    isStrokeCapRound: true,
+                                    dotData: FlDotData(
+                                      show: true,
+                                      getDotPainter: (spot, percent, barData, index) {
+                                        return FlDotCirclePainter(
+                                          radius: 2,
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                          strokeColor: const Color(0xFF00D3B9),
+                                        );
+                                      },
+                                    ),
                                     belowBarData: BarAreaData(
                                       show: true,
                                       gradient: LinearGradient(
                                         begin: Alignment.topCenter,
                                         end: Alignment.bottomCenter,
                                         colors: [
-                                          Colors.green.shade400.withOpacity(0.8),
-                                          Colors.green.shade600.withOpacity(0.6),
+                                          const Color(0xFF00D3B9).withOpacity(0.3),
+                                          const Color(0xFF00D3B9).withOpacity(0.0),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ],
+                                // Tooltip setup
+                                lineTouchData: LineTouchData(
+                                  touchTooltipData: LineTouchTooltipData(
+                                    tooltipRoundedRadius: 8,
+                                    tooltipPadding: const EdgeInsets.all(8),
+                                    getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                                      return touchedBarSpots.map((barSpot) {
+                                        return LineTooltipItem(
+                                          "${toBanglaNumber(barSpot.y)} কিমি/ঘণ্টা",
+                                          const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
+                                  ),
+                                ),
                               ),
-                            )
+                            ),
+                          ),
 
-                        ),
-                        Divider(
-                          color: Colors.white24,
-                          height: 32,
-                        ),
-                        const Text(
-                          'দৈনিক প্রতিবেদন',
-                          style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'সোমবার, বাতাসের গতিবেগ ৭.২ মাইল প্রতি ঘন্টা থেকে ১১.১ মাইল প্রতি ঘন্টা পর্যন্ত থাকবে, এবং ২২.১ মাইল প্রতি ঘন্টা পর্যন্ত দমকা হাওয়া বইবে।',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
-                        ),
-                        Divider(
-                          color: Colors.white24,
-                          height: 32,
-                        ),
-                        const Text(
-                          'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে',
-                          style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে: বাতাসের গতি অনেক সময় গড় ব্যবহার করে গণনা করা হয়। এই গড়ের চেয়ে কম বাতাসের গতিটা একটি ঝোড়ো হাওয়া সাধারণত ২০ সেকেন্ডের কম স্থায়ী হয়।',
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
-                        ),
-                      ],
-                    );
-                  })
-                ),
+                          const Divider(color: Colors.white24, height: 40),
+
+                          // --- Dynamic Description ---
+                          Text(
+                            isBangla
+                                ?'দৈনিক প্রতিবেদন'
+                                :'Daily Report',
+                            style: TextStyle(
+                                color: Color(0xFF00D3B9),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            isBangla
+                                ?'${dayData.dayName}, বাতাসের গতিবেগ ${toBanglaNumber(dayData.minVal)} কিমি/ঘণ্টা থেকে ${toBanglaNumber(dayData.maxVal)} কিমি/ঘণ্টা পর্যন্ত থাকবে।'
+                                :'On ${dayData.dayName}, wind speed will range from ${dayData.minVal.toStringAsFixed(1)} km/h to ${dayData.maxVal.toStringAsFixed(1)} km/h.',
+                            style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5),
+                          ),
+
+                          const Divider(color: Colors.white24, height: 40),
+
+                          // --- Static Info ---
+                          Text(
+                            isBangla
+                                ?'বাতাসের গতি সম্পর্কে'
+                                :'About Wind Speed',
+                            style: TextStyle(
+                                color: Color(0xFF00D3B9),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            isBangla
+                                ?'বাতাসের গতি অনেক সময় গড় ব্যবহার করে গণনা করা হয়। এই গড়ের চেয়ে কম বাতাসের গতিটা একটি ঝোড়ো হাওয়া সাধারণত ২০ সেকেন্ডের কম স্থায়ী হয়।'
+                                :'Wind speed is often calculated using averages over time. A wind speed lower than this average is typically sustained for less than 20 seconds.',
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.7),
+                                fontSize: 13,
+                                height: 1.5
+                            ),
+                          ),
+                        ],
+                      );
+                    })),
               ],
             ),
           ),

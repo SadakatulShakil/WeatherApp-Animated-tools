@@ -178,8 +178,14 @@ class HomeController extends GetxController {
         wind = 0.0;
       }
 
+
       return HourlyWeatherModel(
-        time: _formatHour(step.stepStart),
+        date: step.stepStart != null
+            ? DateFormat('dd MMM').format(DateTime.parse(step.stepStart!))
+            : '15 Jan',
+        time: step.stepStart != null
+            ? DateFormat('HH:mm').format(DateTime.parse(step.stepStart!))
+            : '06:00',
         iconKey: step.icon ?? 'ic_sunny_cloud.png',
         temp: temp,
         rainAmount: rain,
@@ -188,16 +194,6 @@ class HomeController extends GetxController {
         index: index,
       );
     });
-  }
-
-  String _formatHour(String? raw) {
-    if (raw == null || raw.isEmpty) return '--:--';
-    try {
-      // Example: "2025-12-17 06:00:00" -> "06:00"
-      return raw.split(' ').last.substring(0, 5);
-    } catch (e) {
-      return raw;
-    }
   }
 
   // inside HomeController

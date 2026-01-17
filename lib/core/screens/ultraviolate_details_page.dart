@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:bmd_weather_app/controllers/rain_controller.dart';
 import 'package:bmd_weather_app/controllers/ultraviolate_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';

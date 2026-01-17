@@ -47,7 +47,7 @@ class HumidityCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         /// Navigate to details page if needed
-        //Get.to(() => HumidityDetailsPage(), transition: Transition.rightToLeft);
+        Get.to(() => HumidityDetailsPage(), transition: Transition.rightToLeft);
       },
       child: Container(
         padding: const EdgeInsets.all(12),

@@ -1,130 +1,145 @@
-// import 'dart:math';
-//
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:intl/intl.dart';
-//
-// class WindController extends GetxController {
-//   var selectedWindDay = 0.obs;
-//   final windDays = <Map<String, dynamic>>[].obs;
-//
-//
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     generateDemoWindDays();
-//
-//     _setCurrentWindDay();
-//   }
-//
-//   void generateDemoWindDays() {
-//     final now = DateTime.now();
-//     final icons = [
-//       Icons.sunny,
-//       Icons.nights_stay,
-//       Icons.air,
-//       Icons.sunny,
-//       Icons.cloud,
-//       Icons.cloudy_snowing,
-//       Icons.cloud,
-//     ];
-//
-//     // Create 24 values between 0 and 30 for the brown line (main values)
-//     final random = Random();
-//     final brownLine = List.generate(24, (i) => (9 + random.nextInt(20)).toDouble());
-//
-//     // Green line = 60% of brown line
-//     final greenLine = brownLine.map((v) => (v * 0.7)).toList();
-//
-//     windDays.value = List.generate(15, (index) {
-//       final date = now.add(Duration(days: index));
-//       return {
-//         'date': DateFormat('dd/MM').format(date),
-//         'day': DateFormat.E('bn_BD').format(date),
-//         'icon': icons[index % icons.length],
-//         'brown': brownLine,
-//         'green': greenLine,
-//       };
-//     });
-//   }
-//
-//   void _setCurrentWindDay() {
-//     selectedWindDay.value = 0; // today
-//   }
-// }
-
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
-import '../models/wind_day_model.dart';
+import 'package:intl/intl.dart';
+import '../models/weather_ui_model.dart';
+import 'home_controller.dart';
 
 class WindController extends GetxController {
+  final HomeController _homeController = Get.find<HomeController>();
+
+  var windDays = <WeatherUiModel>[].obs;
   var selectedWindDay = 0.obs;
-  var windDays = <WindDay>[].obs;
+
+  bool get isBangla => Get.locale?.languageCode == 'bn';
 
   @override
   void onInit() {
     super.onInit();
-    fetchWindData(); // call API instead of demo
-    //_setCurrentWindDay();
+    ever(_homeController.forecast, (_) => processWindData());
+    processWindData();
   }
 
+  // --- NEW HELPER: Normalize Bangla Digits to English for Parsing ---
+  String _normalizeToEnglish(String value) {
+    const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-  Future<void> fetchWindData() async {
-    try {
-      // 🔹 Example fake API call (replace with real API)
-      await Future.delayed(const Duration(seconds: 1));
-
-      // Example JSON response format
-
-      final List<Map<String, dynamic>> response = List.generate(15, (dayIndex) {
-        final date = DateTime.now().add(Duration(days: dayIndex));
-        final formattedDate = "${date.day.toString().padLeft(2,'0')}/${date.month.toString().padLeft(2,'0')}";
-        final dayName = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][date.weekday - 1];
-
-        final brownValues = List.generate(24, (i) {
-          // Base sine wave between 7 and 17 (amplitude 5, offset 12)
-          double value = 12 + 5 * sin((i / 24) * 2 * pi + dayIndex * 0.3);
-          return double.parse(value.toStringAsFixed(1)); // optional: round to 1 decimal
-        });
-
-        final greenValues = List.generate(24, (i) {
-          // Cosine wave slightly lower than brown (amplitude 4, offset 10)
-          double value = 10 + 4 * cos((i / 24) * 2 * pi + dayIndex * 0.3);
-          return double.parse(value.toStringAsFixed(1));
-        });
-
-        return {
-          "date": formattedDate,
-          "day": dayName,
-          "brown": brownValues,
-          "green": greenValues,
-        };
-      });
-
-      final icons = [
-        Icons.sunny,
-        Icons.cloud,
-        Icons.air,
-        Icons.cloudy_snowing,
-      ];
-
-      windDays.value = response.asMap().entries.map((e) {
-        final index = e.key;
-        final json = e.value;
-        return WindDay.fromJson(json, icons[index % icons.length]);
-      }).toList();
-
-      selectedWindDay.value = 0;
-    } catch (e) {
-      print("Error fetching wind data: $e");
+    String temp = value;
+    for (int i = 0; i < 10; i++) {
+      temp = temp.replaceAll(bn[i], en[i]);
     }
+    return temp;
   }
 
-  void _setCurrentWindDay() {
-    selectedWindDay.value = 0; // today
+  void processWindData() {
+    final steps = _homeController.forecast.value?.result?.steps;
+
+    if (steps == null || steps.isEmpty) {
+      windDays.clear();
+      return;
+    }
+
+    Map<String, List<ChartPoint>> groupedPoints = {};
+    Map<String, dynamic> dayInfo = {};
+
+    for (var step in steps) {
+      if (step.stepStart == null) continue;
+
+      try {
+        String formattedDate = step.stepStart!.replaceAll(' ', 'T');
+        DateTime dt = DateTime.parse(formattedDate);
+        String dateKey = DateFormat('yyyy-MM-dd').format(dt);
+
+        double speed = 0.0;
+        if (step.windspd?.valAvg != null) {
+          // STEP 1: Normalize the string before parsing
+          String rawValue = step.windspd!.valAvg!;
+          String englishValue = _normalizeToEnglish(rawValue);
+
+          // STEP 2: Calculation Task (Parsing works now!)
+          speed = double.tryParse(englishValue) ?? 0.0;
+        }
+
+        if (!groupedPoints.containsKey(dateKey)) {
+          groupedPoints[dateKey] = [];
+          dayInfo[dateKey] = {
+            "dateDisplay": DateFormat('dd MMM').format(dt),
+            "dayName": step.weekday ?? DateFormat('EEEE').format(dt),
+          };
+        }
+
+        groupedPoints[dateKey]!.add(ChartPoint(dt.hour.toDouble(), speed));
+      } catch (e) {
+        print("WIND_LOG: Error in loop: $e");
+      }
+    }
+
+    List<WeatherUiModel> tempList = [];
+    var sortedKeys = groupedPoints.keys.toList()..sort();
+
+    for (var key in sortedKeys) {
+      var points = groupedPoints[key]!;
+      points.sort((a, b) => a.x.compareTo(b.x));
+
+      // Calculate Min/Max (Task done in English doubles)
+      double min = points.isEmpty ? 0 : points.map((e) => e.y).reduce((a, b) => a < b ? a : b);
+      double max = points.isEmpty ? 0 : points.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+
+      tempList.add(WeatherUiModel(
+        dateRaw: key,
+        dateDisplay: _formatDate(dayInfo[key]['dateDisplay']),
+        dayName: _translateDay(dayInfo[key]['dayName']),
+        points: points,
+        minVal: min,
+        maxVal: max,
+        avgVal: points.isEmpty ? 0 : points.map((e) => e.y).reduce((a, b) => a + b) / points.length,
+      ));
+    }
+
+    windDays.assignAll(tempList);
+  }
+
+
+  // Helper for Date display (DD Month)
+  String _formatDate(String dateStr) {
+    bool isBangla = Get.locale?.languageCode == 'bn';
+    if (!isBangla) return dateStr;
+
+    // Splits "17 Jan" into ["17", "Jan"]
+    var parts = dateStr.split(' ');
+    if (parts.length < 2) return dateStr;
+
+    String day = toBanglaNumber(parts[0]);
+    String month = _translateMonth(parts[1]);
+    return "$day $month";
+  }
+
+  // Simplified logic for number conversion
+  String toBanglaNumber(String value) {
+    const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    for (int i = 0; i < en.length; i++) {
+      value = value.replaceAll(en[i], bn[i]);
+    }
+    return value;
+  }
+
+  String _translateMonth(String month) {
+    if (!isBangla) return month;
+    final months = {
+      'Jan': 'জানু', 'Feb': 'ফেব্রু', 'Mar': 'মার্চ', 'Apr': 'এপ্রিল',
+      'May': 'মে', 'Jun': 'জুন', 'Jul': 'জুলাই', 'Aug': 'আগস্ট',
+      'Sep': 'সেপ্টেম্বর', 'Oct': 'অক্টোবর', 'Nov': 'নভেম্বর', 'Dec': 'ডিসেম্বর'
+    };
+    return months[month] ?? month;
+  }
+
+  String _translateDay(String day) {
+    if (!isBangla) return day;
+    final days = {
+      'Saturday': 'শনিবার', 'Sunday': 'রবিবার', 'Monday': 'সোমবার',
+      'Tuesday': 'মঙ্গলবার', 'Wednesday': 'বুধবার', 'Thursday': 'বৃহস্পতিবার', 'Friday': 'শুক্রবার'
+    };
+    return days[day] ?? day;
   }
 }

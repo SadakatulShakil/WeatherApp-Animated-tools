@@ -27,34 +27,35 @@ class WeeklyForecastView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => FifteenDaysForecastPage());
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            colors: themeController.themeMode.value == ThemeMode.light
-                ? [Colors.white, Colors.white]
-                : [Color(0xFF3986DD), Color(0xFF3986DD)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 5,
-              offset: const Offset(0, 2),
-            ),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          colors: themeController.themeMode.value == ThemeMode.light
+              ? [Colors.white, Colors.white]
+              : [Color(0xFF3986DD), Color(0xFF3986DD)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- Header ---
-            Padding(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // --- Header ---
+          InkWell(
+            onTap: () {
+              // Default behavior: Open details page at index 0
+              Get.to(() => FifteenDaysForecastPage(), arguments: 0);
+            },
+            child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
@@ -87,36 +88,42 @@ class WeeklyForecastView extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-              child: Divider(
-                color: themeController.themeMode.value == ThemeMode.light
-                    ? Colors.grey.shade300
-                    : Colors.grey.shade500,
-                height: 1,
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: Divider(
+              color: themeController.themeMode.value == ThemeMode.light
+                  ? Colors.grey.shade300
+                  : Colors.grey.shade500,
+              height: 1,
             ),
+          ),
 
-            // --- List Content ---
-            Obx(() {
-              // Fetch data reactively. If empty, show loading or fallback.
-              final weeklyData = hController.getWeeklyForecast();
+          // --- List Content ---
+          Obx(() {
+            // Fetch data reactively. If empty, show loading or fallback.
+            final weeklyData = hController.getWeeklyForecast();
 
-              if (weeklyData.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Center(child: Text("data_load_indicator".tr)),
-                );
-              }
+            if (weeklyData.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(child: Text("data_load_indicator".tr)),
+              );
+            }
 
-              return Column(
-                children: List.generate(weeklyData.length, (index) {
-                  final item = weeklyData[index];
-                  // Use controller to get full asset path (e.g., assets/images/ic_sunny.png)
-                  final iconUrl = controller.getIconUrl(item.iconKey);
-                  final double rangeDiff = (item.maxTemp - item.minTemp).abs().toDouble();
+            return Column(
+              children: List.generate(weeklyData.length, (index) {
+                final item = weeklyData[index];
+                final iconUrl = controller.getIconUrl(item.iconKey);
+                final double rangeDiff = (item.maxTemp - item.minTemp).abs().toDouble();
 
-                  return Padding(
+                // ADDED: GestureDetector for specific list item
+                return InkWell(
+                  onTap: () {
+                    // Pass the specific index to the details page
+                    Get.to(() => FifteenDaysForecastPage(), arguments: index);
+                  },
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                     child: Row(
                       children: [
@@ -127,7 +134,7 @@ class WeeklyForecastView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                item.day, // e.g. "Wednesday"
+                                item.day,
                                 style: TextStyle(
                                   color: themeController.themeMode.value == ThemeMode.light
                                       ? Colors.black
@@ -137,7 +144,7 @@ class WeeklyForecastView extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                item.date, // e.g. "17 Dec, 2025"
+                                item.date,
                                 style: TextStyle(
                                   color: themeController.themeMode.value == ThemeMode.light
                                       ? Colors.grey.shade600
@@ -149,7 +156,7 @@ class WeeklyForecastView extends StatelessWidget {
                           ),
                         ),
 
-                        // Weather Icon
+                        // ... (Rest of your UI Row: Icon, Temp, Bar, etc.) -> No changes needed here
                         Expanded(
                           flex: 1,
                           child: Image.asset(
@@ -159,19 +166,12 @@ class WeeklyForecastView extends StatelessWidget {
                             errorBuilder: (c,e,s) => Icon(Icons.wb_sunny, color: Colors.orange),
                           ),
                         ),
-
-                        // Min Temp Text
-                        Text( isBangla ? englishToBanglaNumber('${item.minTemp.toInt()}°') :
-                          '${item.minTemp.toInt()}°',
+                        Text( isBangla ? englishToBanglaNumber('${item.minTemp.toInt()}°') : '${item.minTemp.toInt()}°',
                           style: TextStyle(
-                            color: themeController.themeMode.value == ThemeMode.light
-                                ? Colors.black
-                                : Colors.white,
+                            color: themeController.themeMode.value == ThemeMode.light ? Colors.black : Colors.white,
                             fontSize: 15,
                           ),
                         ),
-
-                        // Temp Bar Indicator
                         Expanded(
                           flex: 3,
                           child: Padding(
@@ -185,45 +185,36 @@ class WeeklyForecastView extends StatelessWidget {
                                     color: Colors.grey.withOpacity(0.3),
                                   ),
                                 ),
-                                // Assuming AnimatedTempIndicator handles the visual bar length
                                 AnimatedTempIndicator(
-                                  rangeFactor: rangeDiff,
+                                  rangeDiff : rangeDiff,
+                                  maxRangeScale: 10,
                                 ),
                               ],
                             ),
                           ),
                         ),
-
-                        // Max Temp Text
-                        Text( isBangla ? englishToBanglaNumber('${item.maxTemp.toInt()}°') :
-                          '${item.maxTemp.toInt()}°',
+                        Text( isBangla ? englishToBanglaNumber('${item.maxTemp.toInt()}°') : '${item.maxTemp.toInt()}°',
                           style: TextStyle(
-                            color: themeController.themeMode.value == ThemeMode.light
-                                ? Colors.black
-                                : Colors.white,
+                            color: themeController.themeMode.value == ThemeMode.light ? Colors.black : Colors.white,
                             fontSize: 15,
                           ),
                         ),
-
-                        // Arrow Icon
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Icon(
                             Icons.arrow_forward_ios,
-                            color: themeController.themeMode.value == ThemeMode.light
-                                ? Colors.grey
-                                : Colors.white,
+                            color: themeController.themeMode.value == ThemeMode.light ? Colors.grey : Colors.white,
                             size: 14,
                           ),
                         ),
                       ],
                     ),
-                  );
-                }),
-              );
-            }),
-          ],
-        ),
+                  ),
+                );
+              }),
+            );
+          }),
+        ],
       ),
     );
   }
