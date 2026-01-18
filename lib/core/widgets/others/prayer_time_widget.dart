@@ -148,10 +148,6 @@ class PrayerTimeWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Icon(
-                          Icons.arrow_drop_down,
-                          color: isDark ? Colors.white : Colors.black
-                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -166,7 +162,7 @@ class PrayerTimeWidget extends StatelessWidget {
                       _buildTimeCard(
                           'assets/svg/seheri_icon.svg',
                           isBangla
-                              ? englishToBanglaNumber(controller.formatTime(data.sehri) ?? "--:--")
+                              ? 'ভোর ${englishToBanglaNumber(controller.formatTime(data.sehri)?.replaceAll(RegExp(r'\s?[APap][Mm]'), '') ?? "ভোর ")}'
                               : controller.formatTime(data.sehri),
                           'seheri_time'.tr,
                           isDark
@@ -175,7 +171,7 @@ class PrayerTimeWidget extends StatelessWidget {
                       _buildTimeCard(
                           'assets/svg/ifter_icon.svg',
                           isBangla
-                              ? englishToBanglaNumber(controller.formatTime(data.iftar) ?? "--:--")
+                          ? 'সন্ধ্যা ${englishToBanglaNumber(controller.formatTime(data.iftar)?.replaceAll(RegExp(r'\s?[APap][Mm]'), '') ?? "সন্ধ্যা ")}'
                               : controller.formatTime(data.iftar),
                           'ifter_time'.tr,
                           isDark
@@ -188,19 +184,19 @@ class PrayerTimeWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       _buildDailyPrayerTime('fajr_time'.tr, isBangla
-                        ? englishToBanglaNumber(controller.formatTime(data.fajr) ?? '--:--')
+                        ? 'ভোর ${englishToBanglaNumber(controller.formatTime(data.fajr)?.replaceAll(RegExp(r'\s?[APap][Mm]'), '') ?? '--:--')}'
                         : controller.formatTime(data.fajr), isDark),
                       _buildDailyPrayerTime('juhr_time'.tr, isBangla
-                          ? englishToBanglaNumber(controller.formatTime(data.juhr) ?? '--:--')
+                          ? 'দুপুর ${englishToBanglaNumber(controller.formatTime(data.juhr)?.replaceAll(RegExp(r'\s?[APap][Mm]'), '') ?? '--:--')}'
                           : controller.formatTime(data.juhr), isDark),
                       _buildDailyPrayerTime('asr_time'.tr, isBangla
-                          ? englishToBanglaNumber(controller.formatTime(data.asr) ?? '--:--')
+                          ? 'বিকাল ${englishToBanglaNumber(controller.formatTime(data.asr)?.replaceAll(RegExp(r'\s?[APap][Mm]'), '') ?? '--:--')}'
                           : controller.formatTime(data.asr), isDark),
                       _buildDailyPrayerTime('magrib_time'.tr, isBangla
-                          ? englishToBanglaNumber(controller.formatTime(data.magrib) ?? '--:--')
+                          ? 'সন্ধ্যা ${englishToBanglaNumber(controller.formatTime(data.magrib)?.replaceAll(RegExp(r'\s?[APap][Mm]'), '') ?? '--:--')}'
                           : controller.formatTime(data.magrib), isDark),
                       _buildDailyPrayerTime('isha_time'.tr, isBangla
-                          ? englishToBanglaNumber(controller.formatTime(data.isha) ?? '--:--')
+                          ? 'রাত ${englishToBanglaNumber(controller.formatTime(data.isha)?.replaceAll(RegExp(r'\s?[APap][Mm]'), '') ?? '--:--')}'
                           : controller.formatTime(data.isha), isDark),
                     ],
                   ),

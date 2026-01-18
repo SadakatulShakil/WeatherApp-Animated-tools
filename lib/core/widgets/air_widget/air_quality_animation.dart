@@ -46,7 +46,7 @@ class _AirQualityAnimatedState extends State<AirQualityAnimated>
     } else if (value <= 200) {
       return {
         'label': isBangla ? 'অস্বাস্থ্যকর' : 'Unhealthy',
-        'color': Colors.red
+        'color': Colors.red.shade900
       };
     } else if (value <= 300) {
       return {

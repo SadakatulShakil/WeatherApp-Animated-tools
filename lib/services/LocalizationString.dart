@@ -181,7 +181,7 @@ class LocalizationString extends Translations {
       'my_feedback': 'My Feedback',
       'waxing_gibbous': 'Waxing Gibbous',
       'feels_like': 'Feels Like ',
-      'rainfall_subtitle': 'In last 24 hours',
+      'rainfall_subtitle': 'In next 3 hours',
       'uv_index_subtitle': 'Pay attention to sun protection at 3:00 PM',
       'visibility_subtitle': 'Low visibility, vision is not clear.',
       'air_quality_subtitle': 'Air quality is unhealthy, and air pollution poses high or risky.',
@@ -407,7 +407,7 @@ class LocalizationString extends Translations {
       'prayer_times_title': 'নামাজের সময়',
       'details': 'বিস্তারিত',
       'my_feedback': 'আমার পর্যবেক্ষণ',
-      'rainfall_subtitle': 'গত ২৪ ঘন্টায় ',
+      'rainfall_subtitle': 'আগামী ৩ ঘন্টায় ',
 
       ///Side menu item
       'preferences': 'পছন্দসমূহ',

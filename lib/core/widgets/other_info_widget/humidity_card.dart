@@ -8,16 +8,18 @@ import '../../screens/humidity_details_page.dart';
 class HumidityCard extends StatelessWidget {
   final String title;
   final String value;
+  final String start;
+  final String end;
   final String unit;
-  final String subtitle;
   final IconData icon;
 
   HumidityCard({
     super.key,
     required this.title,
     required this.value,
+    required this.start,
+    required this.end,
     required this.unit,
-    required this.subtitle,
     required this.icon,
   });
 
@@ -39,6 +41,13 @@ class HumidityCard extends StatelessWidget {
       input = input.replaceAll(english[i], bangla[i]);
     }
     return input;
+  }
+
+  String formatedDate(String dateStr) {
+    DateTime dateTime = DateTime.parse(isBangla? banglaToEnglishNumber(dateStr) : dateStr);
+    return isBangla
+        ? "${dateTime.hour}:${englishNumberToBangla(dateTime.minute.toString().padLeft(2, '0'))} ${dateTime.hour >= 12 ? 'pm' : 'am'}"
+        : "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')} ${dateTime.hour >= 12 ? 'pm' : 'am'}";
   }
 
   @override
@@ -143,7 +152,9 @@ class HumidityCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                subtitle,
+                isBangla
+                    ? '${englishNumberToBangla(formatedDate(start))} - ${englishNumberToBangla(formatedDate(end))} এর মধ্যে আপেক্ষিক আদ্রতার পরিমাণ $value $unit'
+                    : 'Relative humidity amount between ${formatedDate(start)} to ${formatedDate(end)} is $value $unit',
                 style: TextStyle(
                   color: themeController.themeMode.value == ThemeMode.light
                       ? Colors.black

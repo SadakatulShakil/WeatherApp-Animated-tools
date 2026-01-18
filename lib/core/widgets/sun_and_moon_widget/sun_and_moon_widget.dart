@@ -112,7 +112,7 @@ class SunAndMoonWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Icon(Icons.arrow_drop_down, color: Colors.white),
+                  //const Icon(Icons.arrow_drop_down, color: Colors.white),
                   Spacer(),
                 ],
               ),

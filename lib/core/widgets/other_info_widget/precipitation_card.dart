@@ -9,19 +9,22 @@ import '../../../controllers/theme_controller.dart';
 class PrecipitationCard extends StatelessWidget {
   final String title;
   final String value;
+  final String start;
+  final String end;
   final String unit;
-  final String subtitle;
   final IconData icon;
 
   PrecipitationCard({
     super.key,
     required this.title,
     required this.value,
+    required this.start,
+    required this.end,
     required this.unit,
-    required this.subtitle,
     required this.icon,
   });
 
+  final isBangla = Get.locale?.languageCode == 'bn';
   String banglaToEnglishNumber(String input) {
     const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
     const english = ['0','1','2','3','4','5','6','7','8','9'];
@@ -31,7 +34,7 @@ class PrecipitationCard extends StatelessWidget {
     }
     return input;
   }
-  final isBangla = Get.locale?.languageCode == 'bn';
+
   String englishNumberToBangla(String input) {
     const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
     const english = ['0','1','2','3','4','5','6','7','8','9'];
@@ -40,6 +43,13 @@ class PrecipitationCard extends StatelessWidget {
       input = input.replaceAll(english[i], bangla[i]);
     }
     return input;
+  }
+
+  String formatedDate(String dateStr) {
+    DateTime dateTime = DateTime.parse(isBangla? banglaToEnglishNumber(dateStr) : dateStr);
+    return isBangla
+        ? "${dateTime.hour}:${englishNumberToBangla(dateTime.minute.toString().padLeft(2, '0'))} ${dateTime.hour >= 12 ? 'pm' : 'am'}"
+        : "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')} ${dateTime.hour >= 12 ? 'pm' : 'am'}";
   }
 
   @override
@@ -155,9 +165,11 @@ class PrecipitationCard extends StatelessWidget {
 
             // Subtitle
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: EdgeInsets.only(top: 8.0),
               child: Text(
-                subtitle,
+                isBangla
+                    ?'${englishNumberToBangla(formatedDate(start))} - ${englishNumberToBangla(formatedDate(end))} এর মধ্যে বৃষ্টিপাতের পরিমাণ $value $unit'
+                    : 'Rainfall amount from ${formatedDate(start)} to ${formatedDate(end)} is $value $unit',
                 style: TextStyle(
                   color: themeController.themeMode.value == ThemeMode.light
                       ? Colors.black

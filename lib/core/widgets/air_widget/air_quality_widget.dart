@@ -10,10 +10,14 @@ class AirQualityWidget extends StatefulWidget {
 
   final String currentValue;// Expected between 0-100
   final String currentAnimValue;// Expected between 0-100
+  final String start;
+  final String end;
   AirQualityWidget({
     super.key,
     required this.currentValue,
     required this.currentAnimValue,
+    required this.start,
+    required this.end,
   });
   @override
   State<AirQualityWidget> createState() => _AirQualityWidgetState();
@@ -40,6 +44,14 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
     }
     return input;
   }
+
+  String formatedDate(String dateStr) {
+    DateTime dateTime = DateTime.parse(isBangla? banglaToEnglishNumber(dateStr) : dateStr);
+    return isBangla
+        ? "${dateTime.hour}:${englishNumberToBangla(dateTime.minute.toString().padLeft(2, '0'))} ${dateTime.hour >= 12 ? 'pm' : 'am'}"
+        : "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')} ${dateTime.hour >= 12 ? 'pm' : 'am'}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -93,7 +105,7 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
                           fontSize: 16,
                         ),
                       ),
-                      const Icon(Icons.arrow_drop_down, color: Colors.white),
+                      //const Icon(Icons.arrow_drop_down, color: Colors.white),
                     ],
                   ),
                 ],
@@ -131,7 +143,9 @@ class _AirQualityWidgetState extends State<AirQualityWidget> {
               SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('air_quality_subtitle'.tr,
+                child: Text(isBangla
+                    ? '${englishNumberToBangla(formatedDate(widget.start))} - ${englishNumberToBangla(formatedDate(widget.end))} এর মধ্যে এয়ার কোয়ালিটির পরিমাণ ${englishNumberToBangla(banglaToEnglishNumber(widget.currentValue))}'
+                    : 'Air quality level between ${formatedDate(widget.start)} - ${formatedDate(widget.end)} is ${widget.currentValue}',
                   style: TextStyle(color: themeController.themeMode.value == ThemeMode.light
                       ? Colors.black
                       : Colors.white, fontSize: 16),),
