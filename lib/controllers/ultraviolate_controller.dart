@@ -9,6 +9,7 @@ class UltraviolateRayController extends GetxController {
   final rayDays = <Map<String, dynamic>>[].obs;
 
 
+  final isBangla = Get.locale?.languageCode == 'bn';
   @override
   void onInit() {
     super.onInit();
@@ -39,7 +40,7 @@ class UltraviolateRayController extends GetxController {
 
       return {
         'date': DateFormat('dd/MM').format(date),
-        'day': DateFormat.E('bn_BD').format(date),
+        'day': isBangla?'${DateFormat.E('bn_BD').format(date)}বার':'${DateFormat.E().format(date)}day',
         'icon': icons[index % icons.length],
         'values': values,
       };

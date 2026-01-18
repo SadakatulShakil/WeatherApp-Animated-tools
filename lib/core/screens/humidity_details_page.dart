@@ -15,6 +15,7 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
   // Ensure the controller name matches your actual HumidityController
   final HumidityController controller = Get.put(HumidityController());
 
+  final isBangla = Get.locale?.languageCode == 'bn';
   String toBanglaNumber(num value) {
     const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
     const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯', '.'];
@@ -31,7 +32,7 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: const Text('আর্দ্রতা'), // Corrected Spelling
+        title: Text('humidity_details_title'.tr), // Corrected Spelling
         elevation: 0,
         leading: GestureDetector(
           onTap: () => Get.back(),
@@ -100,11 +101,15 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${toBanglaNumber(currentDay.minVal)}% – ${toBanglaNumber(currentDay.maxVal)}%",
+                          isBangla
+                              ?"${toBanglaNumber(currentDay.minVal)}% – ${toBanglaNumber(currentDay.maxVal)}%"
+                              :'${currentDay.minVal}% – ${currentDay.maxVal}%',
                           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),
                         ),
-                        const Text(
-                          'বাতাসের আপেক্ষিক আর্দ্রতা',
+                        Text(
+                          isBangla
+                              ?'বাতাসের আপেক্ষিক আর্দ্রতা'
+                              : 'Relative Humidity',
                           style: TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                         const SizedBox(height: 20),
@@ -131,7 +136,12 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
                                     interval: 3, // Shows 0, 3, 6, 9...
                                     getTitlesWidget: (value, meta) => Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(toBanglaNumber(value.toInt()), style: const TextStyle(color: Colors.white70, fontSize: 10)),
+                                      child: Text(
+                                          isBangla
+                                              ?toBanglaNumber(value.toInt())
+                                              :value.toString(),
+                                          style:
+                                          TextStyle(color: Colors.white70, fontSize: 10)),
                                     ),
                                   ),
                                 ),
@@ -140,7 +150,11 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
                                     showTitles: true,
                                     reservedSize: 40,
                                     interval: 20,
-                                    getTitlesWidget: (value, meta) => Text('${toBanglaNumber(value.toInt())}%', style: const TextStyle(color: Colors.white70, fontSize: 10)),
+                                    getTitlesWidget: (value, meta) => Text(
+                                        isBangla
+                                            ?'${toBanglaNumber(value.toInt())}%'
+                                            :'${value.toString()}%',
+                                        style: const TextStyle(color: Colors.white70, fontSize: 10)),
                                   ),
                                 ),
                                 topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -151,15 +165,16 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
                                 LineChartBarData(
                                   spots: currentDay.points.map((pt) => FlSpot(pt.x, pt.y)).toList(),
                                   isCurved: true,
+                                  curveSmoothness: .5,
                                   color: Colors.cyanAccent,
-                                  barWidth: 3,
+                                  barWidth: 0,
                                   isStrokeCapRound: true,
                                   dotData: FlDotData(
                                     show: true,
                                     getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-                                      radius: 3,
+                                      radius: 0,
                                       color: Colors.white,
-                                      strokeWidth: 1,
+                                      strokeWidth: 0,
                                       strokeColor: Colors.cyanAccent,
                                     ),
                                   ),
@@ -169,8 +184,8 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                       colors: [
-                                        Colors.cyanAccent.withOpacity(0.3),
-                                        Colors.cyanAccent.withOpacity(0.0),
+                                        Color(0xFF295CBB),
+                                        Color(0xFF3D8C78),
                                       ],
                                     ),
                                   ),
@@ -182,13 +197,51 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
 
                         const Divider(color: Colors.white24, height: 40),
 
-                        const Text(
-                          'দৈনিক প্রতিবেদন',
+                        Text(
+                          isBangla
+                              ?'দৈনিক প্রতিবেদন'
+                              :'Daily Report',
                           style: TextStyle(color: Color(0xFF00D3B9), fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '${currentDay.dayName}, বাতাসের আর্দ্রতা ${toBanglaNumber(currentDay.minVal)}% থেকে ${toBanglaNumber(currentDay.maxVal)}% এর মধ্যে থাকবে।',
+                          isBangla
+                              ?'${currentDay.dayName}, বাতাসের আর্দ্রতা ${toBanglaNumber(currentDay.minVal)}% থেকে ${toBanglaNumber(currentDay.maxVal)}% এর মধ্যে থাকবে।'
+                              :'On ${currentDay.dayName}, the humidity will range from ${toBanglaNumber(currentDay.minVal)}% to ${toBanglaNumber(currentDay.maxVal)}%.',
+                          style: const TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+
+                        ///About R. Humidity
+                        const Divider(color: Colors.white24, height: 40),
+
+                        Text(
+                          isBangla
+                              ?'আপেক্ষিক আর্দ্রতা সম্পর্কে'
+                              :'About Relative Humidity',
+                          style: TextStyle(color: Color(0xFF00D3B9), fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          isBangla
+                              ?'আপেক্ষিক আর্দ্রতা, যা সাধারণত আর্দ্রতা নামে পরিচিত, হল বাতাসে আর্দ্রতার পরিমাণ যা বাতাস ধরে রাখতে পারে তার তুলনায়। উচ্চ তাপমাত্রায় বাতাস বেশি আর্দ্রতা ধরে রাখতে পারে। ১০০% এর কাছাকাছি আপেক্ষিক আর্দ্রতা মানে শিশির বা কুয়াশা থাকতে পারে।'
+                              :'Relative humidity, commonly referred to as humidity, is the amount of moisture in the air compared to what the air can hold at that temperature. Warmer air can hold more moisture. A relative humidity close to 100% means dew or fog may form.',
+                          style: const TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+
+                        ///About Deu drop
+                        const Divider(color: Colors.white24, height: 40),
+
+                        Text(
+                          isBangla
+                              ?'শিশির বিন্দু সম্পর্কে'
+                              :'About Dew Point',
+                          style: TextStyle(color: Color(0xFF00D3B9), fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          isBangla
+                              ?'শিশির বিন্দু হলো শিশির তৈরির জন্য তাপমাত্রা কতটুকু কমতে হবে তা বোঝার একটি কার্যকর উপায় - শিশির বিন্দু যত বেশি হবে, বাতাসের আর্দ্রতা তত বেশি অনুভূত হবে। বর্তমান তাপমাত্রার সাথে মিলিত শিশির বিন্দুর অর্থ হল আপেক্ষিক আর্দ্রতা ১০০% এবং শিশির বা কুয়াশা থাকতে পারে।'
+                              :'The dew point is a useful way to understand how much the temperature needs to drop for dew to form - the higher the dew point, the more moisture will be felt in the air. A dew point that matches the current temperature means a relative humidity of 100% and dew or fog may form.',
                           style: const TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       ],

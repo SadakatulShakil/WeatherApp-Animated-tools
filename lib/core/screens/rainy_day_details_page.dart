@@ -15,6 +15,7 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
   // Use the correct name for the controller
   final RainFallController controller = Get.put(RainFallController());
 
+  final isBangla = Get.locale?.languageCode == 'bn';
   String toBanglaNumber(num value) {
     const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
     const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯', '.'];
@@ -31,7 +32,7 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: Text('বৃষ্টিপাত'), // Updated title
+        title: Text('rainfall_details_title'.tr), // Updated title
         elevation: 0,
         leading: GestureDetector(
           onTap: () => Get.back(),
@@ -127,15 +128,19 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${toBanglaNumber(currentDay.minVal)} – ${toBanglaNumber(currentDay.maxVal)} মি.মি.",
+                          isBangla
+                              ?"${toBanglaNumber(currentDay.minVal)} – ${toBanglaNumber(currentDay.maxVal)} মি.মি."
+                              :'${currentDay.minVal} – ${currentDay.maxVal} mm',
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 22,
                           ),
                         ),
-                        const Text(
-                          'সম্ভাব্য বৃষ্টিপাতের পরিমাণ',
+                        Text(
+                          isBangla
+                              ?'সম্ভাব্য বৃষ্টিপাতের পরিমাণ'
+                              : 'Possible Rainfall Amount',
                           style: TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                         const SizedBox(height: 20),
@@ -173,7 +178,9 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
                                       // Show labels for every 6 hours
                                       if (value % 3 == 0) {
                                         return Text(
-                                          toBanglaNumber(value),
+                                          isBangla
+                                              ?toBanglaNumber(value)
+                                              : value.toString(),
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 10,
@@ -190,8 +197,10 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
                                     reservedSize: 40,
                                     getTitlesWidget:
                                         (value, meta) => Text(
-                                          toBanglaNumber(value),
-                                          style: const TextStyle(
+                                          isBangla
+                                              ?toBanglaNumber(value)
+                                              : value.toString(),
+                                          style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 10,
                                           ),
@@ -217,8 +226,10 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
 
                         const Divider(color: Colors.white24, height: 40),
 
-                        const Text(
-                          'দৈনিক প্রতিবেদন',
+                        Text(
+                          isBangla
+                              ?'দৈনিক প্রতিবেদন'
+                              : 'Daily Report',
                           style: TextStyle(
                             color: Color(0xFF00D3B9),
                             fontSize: 18,
@@ -227,7 +238,9 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '${currentDay.dayName} বৃষ্টিপাতের গড় পরিমাণ ${toBanglaNumber(currentDay.avgVal)} মি.মি. হতে পারে। সর্বোচ্চ বৃষ্টিপাত ${toBanglaNumber(currentDay.maxVal)} মি.মি. পর্যন্ত পৌঁছাতে পারে।',
+                          isBangla
+                              ?'${currentDay.dayName} বৃষ্টিপাতের গড় পরিমাণ ${toBanglaNumber(currentDay.avgVal)} মি.মি. হতে পারে। সর্বোচ্চ বৃষ্টিপাত ${toBanglaNumber(currentDay.maxVal)} মি.মি. পর্যন্ত পৌঁছাতে পারে।'
+                              :'On ${currentDay.dayName}, the average rainfall is expected to be around ${toBanglaNumber(currentDay.avgVal)} mm, with a maximum reaching up to ${toBanglaNumber(currentDay.maxVal)} mm.',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,

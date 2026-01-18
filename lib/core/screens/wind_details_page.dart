@@ -47,86 +47,36 @@ class _WindDetailsPageState extends State<WindDetailsPage> {
 
                 // --- Top Day Selector ---
                 SizedBox(
-                  height: 60,
-                  child: Obx(() {
-                    if (controller.windDays.isEmpty) {
-                      return const Center(
-                          child: CircularProgressIndicator(color: Colors.white));
-                    }
+                  height: 90,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: controller.windDays.length,
+                    itemBuilder: (context, index) {
+                      final item = controller.windDays[index];
+                      final isSelected = controller.selectedWindDay.value == index;
 
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.windDays.length,
-                      itemBuilder: (context, index) {
-                        final item = controller.windDays[index];
-
-                        return GestureDetector(
-                          onTap: () => controller.selectedWindDay.value = index,
-                          child: Obx(() {
-                            final isSelected =
-                                controller.selectedWindDay.value == index;
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeInOut,
-                              width: 80,
-                              margin: EdgeInsets.only(
-                                left: index == 0 ? 16.0 : 8.0,
-                                right: index == controller.windDays.length - 1
-                                    ? 16.0
-                                    : 8.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? const Color(0xFF00D3B9) // Cyan selection
-                                    : Colors.white.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.white24,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    item.dateDisplay,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    item.dayName,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                    ),
-                                  ),
-                                  // const SizedBox(height: 6),
-                                  // Icon(
-                                  //   item.icon,
-                                  //   color: Colors.white,
-                                  //   size: isSelected ? 22 : 18,
-                                  // ),
-                                ],
-                              ),
-                            );
-                          }),
-                        );
-                      },
-                    );
-                  }),
+                      return GestureDetector(
+                        onTap: () => controller.selectedWindDay.value = index,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          width: 70,
+                          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: isSelected ? Colors.white.withOpacity(0.2) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.white24),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(item.dateDisplay, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                              Text(item.dayName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
 
                 const SizedBox(height: 20),
@@ -255,17 +205,17 @@ class _WindDetailsPageState extends State<WindDetailsPage> {
                                   LineChartBarData(
                                     spots: points.map((p) => FlSpot(p.x, p.y)).toList(),
                                     isCurved: true, // Smooth line
-                                    curveSmoothness: 0.5,
+                                    curveSmoothness: .5,
                                     color: const Color(0xFF00D3B9), // Teal Color
-                                    barWidth: 1,
+                                    barWidth: 0,
                                     isStrokeCapRound: true,
                                     dotData: FlDotData(
                                       show: true,
                                       getDotPainter: (spot, percent, barData, index) {
                                         return FlDotCirclePainter(
-                                          radius: 2,
+                                          radius: 0,
                                           color: Colors.white,
-                                          strokeWidth: 2,
+                                          strokeWidth: 0,
                                           strokeColor: const Color(0xFF00D3B9),
                                         );
                                       },
@@ -276,7 +226,7 @@ class _WindDetailsPageState extends State<WindDetailsPage> {
                                         begin: Alignment.topCenter,
                                         end: Alignment.bottomCenter,
                                         colors: [
-                                          const Color(0xFF00D3B9).withOpacity(0.3),
+                                          const Color(0xFF00E5CA),
                                           const Color(0xFF00D3B9).withOpacity(0.0),
                                         ],
                                       ),

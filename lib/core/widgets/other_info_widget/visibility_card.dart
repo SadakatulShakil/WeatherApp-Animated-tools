@@ -47,7 +47,7 @@ class VisibilityCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         /// Navigate to details page if needed
-        //Get.to(() => VisibilityDetailsPage(), transition: Transition.rightToLeft);
+        Get.to(() => VisibilityDetailsPage(), transition: Transition.rightToLeft);
       },
       child: Container(
         padding: const EdgeInsets.all(12),

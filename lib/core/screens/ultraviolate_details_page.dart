@@ -14,6 +14,7 @@ class UltraviolateDetailsPage extends StatefulWidget {
 class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
   final UltraviolateRayController controller = Get.put(UltraviolateRayController());
 
+  final isBangla = Get.locale?.languageCode == 'bn';
   Color getSmoothHeatColor(double value) {
     final t = value.clamp(0, 30) / 30;
     if (t < 0.5) {
@@ -22,15 +23,34 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
       return Color.lerp(Colors.orange, Colors.red, (t - 0.5) * 2)!;
     }
   }
+  String getBanglaDay(String day) {
+    switch (day.toLowerCase()) {
+      case 'saturday':
+        return 'শনিবার';
+      case 'sunday':
+        return 'রবিবার';
+      case 'monday':
+        return 'সোমবার';
+      case 'tuesday':
+        return 'মঙ্গলবার';
+      case 'wednesday':
+        return 'বুধবার';
+      case 'thursday':
+        return 'বৃহস্পতিবার';
+      case 'friday':
+        return 'শুক্রবার';
+      default:
+        return day; // fallback
+    }
+  }
 
-  String toBanglaNumber(num value) {
+  String toBanglaNumber(String value) {
     const en = ['0','1','2','3','4','5','6','7','8','9','.'];
     const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯','.'];
-    return value
-        .toStringAsFixed(1) // one decimal place
-        .split('')
-        .map((ch) => bn[en.indexOf(ch)] ?? ch)
-        .join();
+    return value.split('').map((e) {
+      final index = en.indexOf(e);
+      return index != -1 ? bn[index] : e;
+    }).join();
   }
 
   String getChartTitle(Map<String, dynamic> dayData) {
@@ -38,7 +58,9 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
     final minVal = values.reduce((a, b) => a < b ? a : b);
     final maxVal = values.reduce((a, b) => a > b ? a : b);
 
-    return "${toBanglaNumber(minVal)}–${toBanglaNumber(maxVal)} মিটার/সেকেন্ড";
+    return isBangla
+        ?"${toBanglaNumber(3.0.toString())}–${toBanglaNumber(4.0.toString())}"
+        :"${minVal.toStringAsFixed(1)}–${maxVal.toStringAsFixed(1)}";
   }
 
 
@@ -48,7 +70,7 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: const Text('অতিবেগুনী রশ্মি'),
+        title: Text('uv_index_details_title'.tr),
         elevation: 0,
         leading:  GestureDetector(
             onTap: () => Get.back(),
@@ -117,7 +139,9 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          item['date'],
+                                          isBangla
+                                              ? toBanglaNumber(item['date'].toString())
+                                              : item['date'].toString(),
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
@@ -126,19 +150,15 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                                           ),
                                         ),
                                         Text(
-                                          item['day'],
+                                        isBangla
+                                        ? toBanglaNumber(item['day'].toString())
+                                         : item['day'].toString(),
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
                                             fontWeight:
                                             isSelected ? FontWeight.bold : FontWeight.normal,
                                           ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Icon(
-                                          item['icon'],
-                                          color: Colors.white,
-                                          size: isSelected ? 24 : 20,
                                         ),
                                       ],
                                     ),
@@ -175,8 +195,10 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          '২.১ মাইল/ঘণ্টা থেকে বাতাসের উত্তর ঝাঁপটা',
+                        Text(
+                          isBangla
+                              ?'অতিবেগুনী রশ্মির পরিমাণ ৩ - ৪ হতে পারে'
+                              :'Ultraviolet ray index may be 3 - 4',
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
@@ -192,7 +214,7 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                               gridData: FlGridData(
                                 show: true,
                                 drawVerticalLine: false,
-                                horizontalInterval: 5,
+                                horizontalInterval: 3,
                                 getDrawingHorizontalLine: (value) => FlLine(
                                   color: Colors.white24,
                                   strokeWidth: 1,
@@ -202,12 +224,14 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                                 bottomTitles: AxisTitles(
                                   sideTitles: SideTitles(
                                     showTitles: true,
+                                    interval: 3,
                                     getTitlesWidget: (value, _) {
-                                      final hours = ['০০', '০৬', '১২', '১৮', '২৪'];
-                                      if (value.toInt() < hours.length) {
+                                      final hour = value.toInt();
+
+                                      if ([0, 3, 6, 12, 15, 18, 21].contains(hour)) {
                                         return Text(
-                                          hours[value.toInt()],
-                                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                                          isBangla ? toBanglaNumber(hour.toString()) : hour.toString(),
+                                          style: const TextStyle(color: Colors.white, fontSize: 10),
                                         );
                                       }
                                       return const SizedBox.shrink();
@@ -219,7 +243,9 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                                     showTitles: true,
                                     interval: 5,
                                     getTitlesWidget: (value, _) => Text(
-                                      '${value.toInt()} মি/সে',
+                                      isBangla
+                                          ?toBanglaNumber(value.toInt().toString())
+                                          :'${value.toInt()}',
                                       style: const TextStyle(color: Colors.white, fontSize: 10),
                                     ),
                                     reservedSize: 40,
@@ -257,24 +283,32 @@ class _UltraviolateDetailsPageState extends State<UltraviolateDetailsPage> {
                           color: Colors.white24,
                           height: 32,
                         ),
-                        const Text(
-                          'দৈনিক প্রতিবেদন',
+                        Text(
+                          isBangla
+                              ?'দৈনিক প্রতিবেদন'
+                              :'Daily Report',
                           style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'সোমবার, বাতাসের গতিবেগ ৭.২ মাইল প্রতি ঘন্টা থেকে ১১.১ মাইল প্রতি ঘন্টা পর্যন্ত থাকবে, এবং ২২.১ মাইল প্রতি ঘন্টা পর্যন্ত দমকা হাওয়া বইবে।',
+                          isBangla
+                              ?'আজকে, অতিবেগুনী রশ্মির পরিমাণ ৩ - ৪ হতে পারে।'
+                              :'Today, the ultraviolet ray index may be 3 - 4.',
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                         Divider(
                           color: Colors.white24,
                           height: 32,
                         ),
-                        const Text(
-                          'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে',
+                        Text(
+                          isBangla
+                              ?'অতিবেগুনী রশ্মি সম্পর্কে'
+                              :'About Ultraviolet Rays',
                           style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে: বাতাসের গতি অনেক সময় গড় ব্যবহার করে গণনা করা হয়। এই গড়ের চেয়ে কম বাতাসের গতিটা একটি ঝোড়ো হাওয়া সাধারণত ২০ সেকেন্ডের কম স্থায়ী হয়।',
+                          isBangla
+                              ?'বিশ্ব স্বাস্থ্য সংস্থার UV সূচক (UVI) অতিবেগুনী বিকিরণ পরিমাপ করে। UVI যত বেশি হবে, ক্ষতির সম্ভাবনা তত বেশি হবে এবং ক্ষতি তত দ্রুত ঘটতে পারে। UVI আপনাকে কখন সূর্য থেকে নিজেকে রক্ষা করতে হবে এবং কখন বাইরে থাকা এড়িয়ে চলতে হবে তা নির্ধারণ করতে সাহায্য করতে পারে। WHO 3 (মাঝারি) বা তার বেশি স্তরে ছায়া, সানস্ক্রিন টুপি এবং প্রতিরক্ষামূলক পোশাক ব্যবহারের পরামর্শ দেয়।'
+                              :'The World Health Organization\'s UV Index (UVI) measures ultraviolet radiation. The higher the UVI, the greater the potential for harm and the faster the damage can occur. The UVI can help you determine when to protect yourself from the sun and when to avoid being outside. WHO recommends using shade, sunscreen, hats, and protective clothing at levels of 3 (moderate) or higher.',
                           style: TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                       ],

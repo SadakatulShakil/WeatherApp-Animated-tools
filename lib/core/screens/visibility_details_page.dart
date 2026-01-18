@@ -16,14 +16,38 @@ class VisibilityDetailsPage extends StatefulWidget {
 class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
 
   final VisibilityController controller = Get.put(VisibilityController());
-  String toBanglaNumber(num value) {
+  final isBangla = Get.locale?.languageCode == 'bn';
+  String toBanglaNumber(String value) {
     const en = ['0','1','2','3','4','5','6','7','8','9','.'];
     const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯','.'];
-    return value
-        .toStringAsFixed(1) // one decimal place
-        .split('')
-        .map((ch) => bn[en.indexOf(ch)] ?? ch)
-        .join();
+    return value.split('').map((e) {
+      final index = en.indexOf(e);
+      if (index != -1) {
+        return bn[index];
+      }
+      return e;
+    }).join();
+  }
+
+  String getBanglaDay(String day) {
+    switch (day.toLowerCase()) {
+      case 'saturday':
+        return 'শনিবার';
+      case 'sunday':
+        return 'রবিবার';
+      case 'monday':
+        return 'সোমবার';
+      case 'tuesday':
+        return 'মঙ্গলবার';
+      case 'wednesday':
+        return 'বুধবার';
+      case 'thursday':
+        return 'বৃহস্পতিবার';
+      case 'friday':
+        return 'শুক্রবার';
+      default:
+        return day; // fallback
+    }
   }
 
   String getChartTitle(Map<String, dynamic> dayData) {
@@ -31,7 +55,9 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
     final minVal = brown.reduce((a, b) => a < b ? a : b);
     final maxVal = brown.reduce((a, b) => a > b ? a : b);
 
-    return "${toBanglaNumber(minVal)}–${toBanglaNumber(maxVal)} কিমি।";
+    return isBangla
+        ?"${toBanglaNumber(minVal.toString())}–${toBanglaNumber(maxVal.toString())} কিমি।"
+        :"${minVal.toStringAsFixed(1)}–${maxVal.toStringAsFixed(1)} km.";
   }
 
   @override
@@ -40,7 +66,7 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: const Text('দৃশ্যমানতা'),
+        title: Text('visibility_details_title'.tr),
         elevation: 0,
         leading:  GestureDetector(
             onTap: () => Get.back(),
@@ -106,8 +132,7 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          item.date,
+                                        Text(isBangla ? toBanglaNumber(item.date.toString()) : item.date,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
@@ -115,20 +140,15 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
                                             isSelected ? FontWeight.bold : FontWeight.normal,
                                           ),
                                         ),
-                                        Text(
-                                          item.day,
+                                        Text(isBangla
+                                            ? getBanglaDay(item.day)
+                                            : item.day,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
                                             fontWeight:
                                             isSelected ? FontWeight.bold : FontWeight.normal,
                                           ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Icon(
-                                          item.icon,
-                                          color: Colors.white,
-                                          size: isSelected ? 24 : 20,
                                         ),
                                       ],
                                     ),
@@ -165,13 +185,14 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          getChartTitle(dayData),
+                        Text(isBangla ? getBanglaDay(getChartTitle(dayData)) : getChartTitle(dayData),
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          '২.১ মাইল/ঘণ্টা থেকে বাতাসের উত্তর ঝাঁপটা',
+                        Text(
+                          isBangla
+                              ?'ভালো এবং স্পষ্ট দৃষ্টিসীমা'
+                              :'Good and clear visibility',
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
@@ -198,8 +219,9 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
                                         final hour = value.toInt();
                                         return Padding(
                                           padding: const EdgeInsets.only(top: 8.0),
-                                          child: Text(
-                                            hour.toString().padLeft(2, '0'), // 00, 06, etc.
+                                          child: Text(isBangla
+                                              ? toBanglaNumber(hour.toString().padLeft(2, '0'))
+                                              : hour.toString().padLeft(2, '0'), // 00, 06, etc.
                                             style: const TextStyle(
                                               color: Colors.white70,
                                               fontSize: 10,
@@ -217,8 +239,9 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
                                       getTitlesWidget: (value, meta) {
                                         const allowedValues = [0, 5, 10, 15, 20, 25, 30];
                                         if (allowedValues.contains(value.toInt())) {
-                                          return Text(
-                                            '${value.toInt().toString().padLeft(2, '0')} কি.মি',
+                                          return Text(isBangla
+                                              ? '${toBanglaNumber(value.toInt().toString().padLeft(2, '0'))} কি.মি'
+                                              : '${value.toInt().toString().padLeft(2, '0')} km',
                                             style: const TextStyle(
                                               color: Colors.white70,
                                               fontSize: 10,
@@ -268,24 +291,30 @@ class _VisibilityDetailsPageState extends State<VisibilityDetailsPage> {
                           color: Colors.white24,
                           height: 32,
                         ),
-                        const Text(
-                          'দৈনিক প্রতিবেদন',
+                        Text(
+                          isBangla
+                              ?'দৈনিক প্রতিবেদন'
+                              :'Daily Report',
                           style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'সোমবার, বাতাসের গতিবেগ ৭.২ মাইল প্রতি ঘন্টা থেকে ১১.১ মাইল প্রতি ঘন্টা পর্যন্ত থাকবে, এবং ২২.১ মাইল প্রতি ঘন্টা পর্যন্ত দমকা হাওয়া বইবে।',
+                          isBangla
+                              ?'আজ, দৃষ্টিসীমা ভালো এবং পরিষ্কার দৃষ্টি ক্ষেত্র, ৯.৮ - ১৬.৪ কিমি'
+                              :'Today, good visibility and clear sight range, 9.8 - 16.4 km',
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                         Divider(
                           color: Colors.white24,
                           height: 32,
                         ),
-                        const Text(
-                          'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে',
+                        Text(
+                          'দৃষ্টিসীমা সম্পর্কে',
                           style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে: বাতাসের গতি অনেক সময় গড় ব্যবহার করে গণনা করা হয়। এই গড়ের চেয়ে কম বাতাসের গতিটা একটি ঝোড়ো হাওয়া সাধারণত ২০ সেকেন্ডের কম স্থায়ী হয়।',
+                          isBangla
+                              ?'দৃষ্টিসীমা হল একটি পরিমাপ যা নির্ধারণ করে যে একটি পর্যবেক্ষক কত দূরত্ব পর্যন্ত স্পষ্টভাবে দেখতে পারে। এটি আবহাওয়ার পরিস্থিতি, যেমন কুয়াশা, বৃষ্টি, তুষারপাত এবং ধোঁয়ার দ্বারা প্রভাবিত হতে পারে। ভালো দৃষ্টিসীমা সাধারণত নিরাপদ যাতায়াত এবং কার্যক্রমের জন্য গুরুত্বপূর্ণ, বিশেষ করে বিমান চলাচল এবং সামুদ্রিক নেভিগেশনের ক্ষেত্রে।'
+                              :'Visibility is a measure that determines how far a observer can see clearly. It can be affected by weather conditions such as fog, rain, snow, and smoke. Good visibility is generally important for safe travel and activities, especially in aviation and maritime navigation.',
                           style: TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                       ],

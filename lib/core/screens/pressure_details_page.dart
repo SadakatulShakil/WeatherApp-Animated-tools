@@ -16,22 +16,46 @@ class PressureDetailsPage extends StatefulWidget {
 class _PressureDetailsPageState extends State<PressureDetailsPage> {
 
   final PressureController controller = Get.put(PressureController());
-  String toBanglaNumber(num value) {
+  final isBangla = Get.locale?.languageCode == 'bn';
+  String toBanglaNumber(String value) {
     const en = ['0','1','2','3','4','5','6','7','8','9','.'];
     const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯','.'];
-    return value
-        .toStringAsFixed(1) // one decimal place
-        .split('')
-        .map((ch) => bn[en.indexOf(ch)] ?? ch)
-        .join();
+    return value.split('').map((e) {
+      final index = en.indexOf(e);
+      return index != -1 ? bn[index] : e;
+    }).join();
   }
+
+  String getBanglaDay(String day) {
+    switch (day.toLowerCase()) {
+      case 'saturday':
+        return 'শনিবার';
+      case 'sunday':
+        return 'রবিবার';
+      case 'monday':
+        return 'সোমবার';
+      case 'tuesday':
+        return 'মঙ্গলবার';
+      case 'wednesday':
+        return 'বুধবার';
+      case 'thursday':
+        return 'বৃহস্পতিবার';
+      case 'friday':
+        return 'শুক্রবার';
+      default:
+        return day; // fallback
+    }
+  }
+
 
   String getChartTitle(Map<String, dynamic> dayData) {
     final List<double> brown = List<double>.from(dayData["brown"]);
     final minVal = brown.reduce((a, b) => a < b ? a : b);
     final maxVal = brown.reduce((a, b) => a > b ? a : b);
 
-    return "${toBanglaNumber(minVal)}–${toBanglaNumber(maxVal)} মিটার/সেকেন্ড";
+    return isBangla
+        ?"${toBanglaNumber(minVal.toString())}–${toBanglaNumber(maxVal.toString())} hpa"
+        :"${minVal.toStringAsFixed(1)}–${maxVal.toStringAsFixed(1)} hpa";
   }
 
   @override
@@ -40,7 +64,7 @@ class _PressureDetailsPageState extends State<PressureDetailsPage> {
       backgroundColor: const Color(0xFF1B76AB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B76AB),
-        title: const Text('চাপ'),
+        title: Text('pressure_details_title'.tr),
         elevation: 0,
         leading:  GestureDetector(
             onTap: () => Get.back(),
@@ -103,12 +127,14 @@ class _PressureDetailsPageState extends State<PressureDetailsPage> {
                                   duration: Duration(milliseconds: 250),
                                   curve: Curves.easeInOut,
                                   child: SizedBox(
-                                    width: 55,
+                                    width: 65,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          item.date,
+                                          isBangla
+                                              ?toBanglaNumber((item.date))
+                                              :item.date,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
@@ -117,19 +143,15 @@ class _PressureDetailsPageState extends State<PressureDetailsPage> {
                                           ),
                                         ),
                                         Text(
-                                          item.day,
+                                          isBangla
+                                              ?getBanglaDay(item.day)
+                                              :item.day,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
                                             fontWeight:
                                             isSelected ? FontWeight.bold : FontWeight.normal,
                                           ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Icon(
-                                          item.icon,
-                                          color: Colors.white,
-                                          size: isSelected ? 24 : 20,
                                         ),
                                       ],
                                     ),
@@ -171,8 +193,10 @@ class _PressureDetailsPageState extends State<PressureDetailsPage> {
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
-                            '২.১ মাইল/ঘণ্টা থেকে বাতাসের উত্তর ঝাঁপটা',
+                          Text(
+                            isBangla
+                                ?'3 ঘণ্টার মধ্যে বায়ু চাপের পরিবর্তন'
+                                :'Pressure changes over 3-hour intervals',
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -207,7 +231,9 @@ class _PressureDetailsPageState extends State<PressureDetailsPage> {
                                       reservedSize: 40,
                                       getTitlesWidget: (value, meta) {
                                         return Text(
-                                          value.toInt().toString(),
+                                          isBangla
+                                              ?toBanglaNumber(value.toInt().toString())
+                                              :value.toInt().toString(),
                                           style: const TextStyle(color: Colors.white70, fontSize: 10),
                                         );
                                       },
@@ -217,7 +243,7 @@ class _PressureDetailsPageState extends State<PressureDetailsPage> {
                                     sideTitles: SideTitles(
                                       showTitles: true,
                                       getTitlesWidget: (value, meta) {
-                                        final labels = ["0-6", "6-12", "12-18", "18-24"];
+                                        final labels = ["0.0", "3.0", "6.0", "9.0", "12.0", "15.0", "18.0", "21.0"];
                                         if (value.toInt() >= 0 && value.toInt() <= 3) {
                                           return Padding(
                                             padding: const EdgeInsets.only(top: 8.0),
@@ -263,24 +289,32 @@ class _PressureDetailsPageState extends State<PressureDetailsPage> {
                             color: Colors.white24,
                             height: 32,
                           ),
-                          const Text(
-                            'দৈনিক প্রতিবেদন',
+                          Text(
+                            isBangla
+                                ?'দৈনিক প্রতিবেদন'
+                                :'Daily Report',
                             style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            'বুধবার, ১৪ মে, ২০২৫ তারিখে বিকেল ৫:০০ টা পর্যন্ত, ঢাকার বায়ুমণ্ডলীয় চাপ প্রায় ১০০১ মিলিবার.',
+                            isBangla
+                                ?'বুধবার, ১৪ মে, ২০২৫ তারিখে বিকেল ৫:০০ টা পর্যন্ত, ঢাকার বায়ুর চাপ প্রায় ১০০১ hpa.'
+                                :'As of Wednesday, May 14, 2025, at 5:00 PM, the air pressure in Dhaka is approximately 1001 hpa.',
                             style: TextStyle(color: Colors.white, fontSize: 14),
                           ),
                           Divider(
                             color: Colors.white24,
                             height: 32,
                           ),
-                          const Text(
-                            'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে',
+                          Text(
+                            isBangla
+                                ?'বাতাসের গতি এবং ঝোড়ো হাওয়া সম্পর্কে'
+                                :'About Air Pressure',
                             style: TextStyle(color: Color(0xFF00D3B9), fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            'বায়ুমণ্ডলীয় চাপ পৃথিবীর পৃষ্ঠে বাতাসের দ্বারা প্রযুক্ত বল পরিমাপ করে। উচ্চ চাপের ফলে আকাশ পরিষ্কার হয়ে গেলে আবহাওয়া ব্যবস্থা তৈরি হয়, অন্যদিকে নিম্নচাপের ফলে মেঘ, বৃষ্টি বা ঝড় হতে পারে।',
+                            isBangla
+                                ?'বায়ুমণ্ডলীয় চাপ পৃথিবীর পৃষ্ঠে বাতাসের দ্বারা প্রযুক্ত বল পরিমাপ করে। উচ্চ চাপের ফলে আকাশ পরিষ্কার হয়ে গেলে আবহাওয়া ব্যবস্থা তৈরি হয়, অন্যদিকে নিম্নচাপের ফলে মেঘ, বৃষ্টি বা ঝড় হতে পারে।'
+                                :'Atmospheric pressure measures the force exerted by the air on the Earth\'s surface. High pressure typically leads to clear skies and stable weather conditions, while low pressure can result in clouds, rain, or storms.',
                             style: TextStyle(color: Colors.white70, fontSize: 13),
                           ),
                         ],

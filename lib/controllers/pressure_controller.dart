@@ -27,7 +27,7 @@ class PressureController extends GetxController {
       final List<Map<String, dynamic>> response = List.generate(15, (dayIndex) {
         final date = DateTime.now().add(Duration(days: dayIndex));
         final formattedDate = "${date.day.toString().padLeft(2,'0')}/${date.month.toString().padLeft(2,'0')}";
-        final dayName = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][date.weekday - 1];
+        final dayName = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][date.weekday - 1];
 
         // Example variation for each day
         final brownValues = [
