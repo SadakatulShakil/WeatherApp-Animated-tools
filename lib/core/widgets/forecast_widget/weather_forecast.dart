@@ -14,6 +14,8 @@ class WeatherForecastChart extends StatelessWidget {
   final ThemeController themeController = Get.find<ThemeController>();
   final HomeController hController = Get.find<HomeController>();
   var isBangla =  Get.locale?.languageCode == 'bn';
+
+
   String englishToBanglaNumber(String input) {
     const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     const bangla  = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
@@ -24,6 +26,35 @@ class WeatherForecastChart extends StatelessWidget {
     }
     return output;
   }
+
+  String translateMonth(String input) {
+    if (Get.locale?.languageCode != 'bn') return input;
+
+    const monthMap = {
+      'Jan': 'জানু', 'January': 'জানুয়ারি',
+      'Feb': 'ফেব্রু', 'February': 'ফেব্রুয়ারি',
+      'Mar': 'মার্চ', 'March': 'মার্চ',
+      'Apr': 'এপ্রিল', 'April': 'এপ্রিল',
+      'May': 'মে',
+      'Jun': 'জুন', 'June': 'জুন',
+      'Jul': 'জুলাই', 'July': 'জুলাই',
+      'Aug': 'আগস্ট', 'August': 'আগস্ট',
+      'Sep': 'সেপ্টে', 'September': 'সেপ্টেম্বর',
+      'Oct': 'অক্টো', 'October': 'অক্টোবর',
+      'Nov': 'নভে', 'November': 'নভেম্বর',
+      'Dec': 'ডিসে', 'December': 'ডিসেম্বর',
+    };
+
+    String translated = input;
+    monthMap.forEach((en, bn) {
+      // Use word boundaries or simple replace if the format is consistent
+      translated = translated.replaceAll(en, bn);
+    });
+
+    return translated;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -222,14 +253,14 @@ class WeatherForecastChart extends StatelessWidget {
                                   children: [
                                     Text(
                                       isBangla
-                                          ?englishToBanglaNumber(data.date)
-                                          :data.date,
+                                          ? englishToBanglaNumber(translateMonth(data.date)) // Order: Month first, then Numbers
+                                          : data.date,
                                       style: TextStyle(
-                                        color: themeController.themeMode.value == ThemeMode.light
-                                            ? Colors.black
-                                            : Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold
+                                          color: themeController.themeMode.value == ThemeMode.light
+                                              ? Colors.black
+                                              : Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold
                                       ),
                                     ),
                                     Text(

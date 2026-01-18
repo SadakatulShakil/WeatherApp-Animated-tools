@@ -174,7 +174,9 @@ class ForecastDetailsController extends GetxController {
     dailyViewData.add({
       'time': isBangla ? 'সারাদিন' : 'All Day',
       'date': _formatDateFull(dt),
-      'temperature': '▲ ${_localizeNumber(max.toInt())}° / ▼ ${_localizeNumber(min.toInt())}°',
+      'temperature': isBangla
+          ?'▲ ${_localizeNumber(max.toInt())}°সে / ▼ ${_localizeNumber(min.toInt())}°সে'
+          : '▲ ${_localizeNumber(max.toInt())}°C / ▼ ${_localizeNumber(min.toInt())}°C',
       'rainChance': '${_localizeNumber(rainChange.toStringAsFixed(1))} ${isBangla ? "মিমি" : "mm"}',
       'rainAmount': '${_localizeNumber(rainAmt.toStringAsFixed(1))} ${isBangla ? "মিমি" : "mm"}',
       'humidity': '${_localizeNumber(humidity.toInt())}%',

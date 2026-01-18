@@ -14,40 +14,83 @@ class SunAndMoonWidget extends StatelessWidget {
 
   final bool isBangla = Get.locale?.languageCode == 'bn';
 
-  String englishNumberToBangla(String input) {
-    const bangla = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-    for (int i = 0; i < english.length; i++) {
-      input = input.replaceAll(english[i], bangla[i]);
+  // --- Helper: Normalize to English for DateTime/Double parsing ---
+  String _toEnglish(String input) {
+    const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const en = ['0','1','2','3','4','5','6','7','8','9'];
+    for (int i = 0; i < 10; i++) {
+      input = input.replaceAll(bn[i], en[i]);
     }
     return input;
   }
 
-  /// Helper to convert API date-time string (yyyy-MM-dd HH:mm) to TimeOfDay
-  TimeOfDay _parseTime(String? dateTimeString) {
-    if (dateTimeString == null || dateTimeString.isEmpty) {
-      return TimeOfDay(hour: 6, minute: 0); // Default fallback
-    }
-    try {
-      String normalizedString = _normalizeToEnglish(dateTimeString);
-      DateTime date = DateFormat("yyyy-MM-dd HH:mm").parse(normalizedString);
-
-      return TimeOfDay(hour: date.hour, minute: date.minute);
-    } catch (e) {
-      // debugPrint("Time parse error: $e");
-      return TimeOfDay(hour: 6, minute: 0);
-    }
-  }
-
-  /// Helper to ensure digits are English before parsing
   String _normalizeToEnglish(String input) {
-    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
-    const english = ['0','1','2','3','4','5','6','7','8','9'];
-    for (int i = 0; i < bangla.length; i++) {
-      input = input.replaceAll(bangla[i], english[i]);
+    const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    for (int i = 0; i < 10; i++) {
+      input = input.replaceAll(bn[i], en[i]);
     }
     return input;
+  }
+
+  // --- Helper: Convert English to Bangla for Display ---
+  String _toBangla(String input) {
+    if (!isBangla) return input;
+    const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const en = ['0','1','2','3','4','5','6','7','8','9'];
+    for (int i = 0; i < 10; i++) {
+      input = input.replaceAll(en[i], bn[i]);
+    }
+    return input;
+  }
+
+  String formattedTime(String dateStr) {
+    try {
+      // Standardize input (replace space with T for ISO format)
+      String cleanDate = _toEnglish(dateStr).replaceAll(' ', 'T');
+      DateTime dateTime = DateTime.parse(cleanDate);
+
+      // Use intl's DateFormat for reliable 12h formatting
+      String time = DateFormat('hh:mm').format(dateTime);
+      String period = dateTime.hour >= 12
+          ? (isBangla ? 'PM' : 'PM')
+          : (isBangla ? 'AM' : 'AM');
+
+      return "${_toBangla(time)} $period";
+    } catch (e) {
+      return _toBangla(dateStr);
+    }
+  }
+
+  TimeOfDay stringToTimeOfDay(String timeStr) {
+    if (timeStr.isEmpty) return const TimeOfDay(hour: 0, minute: 0);
+
+    // 1. Normalize digits (Bangla to English) and uppercase for AM/PM
+    String cleanTime = _normalizeToEnglish(timeStr).toUpperCase().trim();
+
+    try {
+      // 2. Handle AM/PM format (e.g., "06:22 AM" or "6:22 PM")
+      if (cleanTime.contains("AM") || cleanTime.contains("PM")) {
+        int hour = int.parse(cleanTime.split(":")[0]);
+        int minute = int.parse(cleanTime.split(":")[1].split(" ")[0]);
+        bool isPM = cleanTime.contains("PM");
+
+        if (isPM && hour < 12) hour += 12;
+        if (!isPM && hour == 12) hour = 0;
+
+        return TimeOfDay(hour: hour, minute: minute);
+      }
+
+      // 3. Handle 24-hour format (e.g., "17:06")
+      else if (cleanTime.contains(":")) {
+        List<String> parts = cleanTime.split(":");
+        return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+      }
+    } catch (e) {
+      debugPrint("Error parsing TimeOfDay: $e");
+    }
+
+    return const TimeOfDay(hour: 0, minute: 0); // Fallback
   }
 
   @override
@@ -56,11 +99,18 @@ class SunAndMoonWidget extends StatelessWidget {
     return Obx(() {
       final current = hController.forecast.value?.result?.current;
 
+      print("SunAndMoonWidget: Current Data($isBangla) - ${current?.sunrise}, ${current?.sunset}, ${current?.moonrise}, ${current?.moonset}");
       // Parse times directly from the 'current' object
-      final TimeOfDay sunriseTime = _parseTime(current?.sunrise);
-      final TimeOfDay sunsetTime = _parseTime(current?.sunset);
-      final TimeOfDay moonriseTime = _parseTime(current?.moonrise);
-      final TimeOfDay moonsetTime = _parseTime(current?.moonset);
+      final sunriseStr = formattedTime(current?.sunrise.toString() ?? '');
+      final sunsetStr = formattedTime(current?.sunset ?? '');
+      final moonriseStr = formattedTime(current?.moonrise ?? '');
+      final moonsetStr = formattedTime(current?.moonset ?? '');
+
+      // Convert String to TimeOfDay
+      final TimeOfDay sunriseTime = stringToTimeOfDay(sunriseStr);
+      final TimeOfDay sunsetTime = stringToTimeOfDay(sunsetStr);
+      final TimeOfDay moonriseTime = stringToTimeOfDay(moonriseStr);
+      final TimeOfDay moonsetTime = stringToTimeOfDay(moonsetStr);
 
       return Container(
         decoration: BoxDecoration(
@@ -256,6 +306,7 @@ class SunAndMoonWidget extends StatelessWidget {
                             sunrise: sunriseTime,
                             sunset: sunsetTime,
                             currentTime: TimeOfDay.now(),
+                            languageCode: isBangla ? 'bn' : 'en',
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -264,6 +315,7 @@ class SunAndMoonWidget extends StatelessWidget {
                             moonrise: moonriseTime,
                             moonset: moonsetTime,
                             currentTime: TimeOfDay.now(),
+                            languageCode: isBangla ? 'bn' : 'en',
                           ),
                         ),
                       ],

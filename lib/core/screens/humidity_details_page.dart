@@ -207,7 +207,7 @@ class _HumidityDetailsPageState extends State<HumidityDetailsPage> {
                         Text(
                           isBangla
                               ?'${currentDay.dayName}, বাতাসের আর্দ্রতা ${toBanglaNumber(currentDay.minVal)}% থেকে ${toBanglaNumber(currentDay.maxVal)}% এর মধ্যে থাকবে।'
-                              :'On ${currentDay.dayName}, the humidity will range from ${toBanglaNumber(currentDay.minVal)}% to ${toBanglaNumber(currentDay.maxVal)}%.',
+                              :'On ${currentDay.dayName}, the humidity will range from ${currentDay.minVal}% to ${currentDay.maxVal}%.',
                           style: const TextStyle(color: Colors.white, fontSize: 14),
                         ),
 

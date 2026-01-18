@@ -240,7 +240,7 @@ class _RainyDayDetailsPageState extends State<RainyDayDetailsPage> {
                         Text(
                           isBangla
                               ?'${currentDay.dayName} বৃষ্টিপাতের গড় পরিমাণ ${toBanglaNumber(currentDay.avgVal)} মি.মি. হতে পারে। সর্বোচ্চ বৃষ্টিপাত ${toBanglaNumber(currentDay.maxVal)} মি.মি. পর্যন্ত পৌঁছাতে পারে।'
-                              :'On ${currentDay.dayName}, the average rainfall is expected to be around ${toBanglaNumber(currentDay.avgVal)} mm, with a maximum reaching up to ${toBanglaNumber(currentDay.maxVal)} mm.',
+                              :'On ${currentDay.dayName}, the average rainfall is expected to be around ${currentDay.avgVal} mm, with a maximum reaching up to ${currentDay.maxVal} mm.',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,

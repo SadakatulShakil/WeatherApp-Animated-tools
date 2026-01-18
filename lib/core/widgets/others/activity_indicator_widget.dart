@@ -80,9 +80,6 @@ class ActivityIndicatorWidget extends StatelessWidget {
                       ? Colors.black
                       : Colors.white, fontSize: 18),
                 ),
-                Icon(Icons.arrow_drop_down, color: themeController.themeMode.value == ThemeMode.light
-                    ? Colors.black
-                    : Colors.white,),
               ],
             ),
             const SizedBox(height: 10),

@@ -1,5 +1,8 @@
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -10,12 +13,16 @@ class SunriseArcWidget extends StatefulWidget {
   final TimeOfDay sunrise;
   final TimeOfDay sunset;
   final TimeOfDay currentTime;
+  final String languageCode;
+  final String svgPath;
 
   const SunriseArcWidget({
     super.key,
     required this.sunrise,
     required this.sunset,
     required this.currentTime,
+    required this.languageCode,
+    this.svgPath = 'assets/svg/sunrise.svg',
   });
 
   @override
@@ -28,6 +35,40 @@ class _SunriseArcWidgetState extends State<SunriseArcWidget> with SingleTickerPr
   final ThemeController themeController = Get.find<ThemeController>();
   double percent = 0.0;
 
+  // Updated state variables for flutter_svg 2.x
+  Picture? _moonPicture;
+  Size _svgSize = Size.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _calculatePercent();
+    _loadSvg();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _position = Tween<double>(begin: 0, end: 0).animate(_controller);
+  }
+
+  // Modern way to load SVG for CustomPainter in flutter_svg 2.x
+  Future<void> _loadSvg() async {
+    try {
+      final String rawSvg = await rootBundle.loadString(widget.svgPath);
+      final SvgLoader loader = SvgStringLoader(rawSvg);
+      final PictureInfo pictureInfo = await vg.loadPicture(loader, null);
+
+      setState(() {
+        _moonPicture = pictureInfo.picture;
+        _svgSize = pictureInfo.size;
+      });
+    } catch (e) {
+      debugPrint("Error loading SVG: $e");
+    }
+  }
+
   void _startAnimation() {
     _controller.reset();
     _position = Tween<double>(begin: 0, end: percent).animate(
@@ -38,42 +79,44 @@ class _SunriseArcWidgetState extends State<SunriseArcWidget> with SingleTickerPr
     _controller.forward();
   }
 
-  final bool isBangla = Get.locale?.languageCode == 'bn';
-
   String englishNumberToBangla(String input) {
     const bangla = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
     const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
     for (int i = 0; i < english.length; i++) {
       input = input.replaceAll(english[i], bangla[i]);
     }
     return input;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    double totalMinutes = _timeDiff(widget.sunrise, widget.sunset).inMinutes.toDouble();
-    double currentMinutes = _timeDiff(widget.sunrise, widget.currentTime).inMinutes.toDouble();
-    percent = (currentMinutes / totalMinutes).clamp(0, 1);
+  void _calculatePercent() {
+    int nowMin = widget.currentTime.hour * 60 + widget.currentTime.minute;
+    int riseMin = widget.sunrise.hour * 60 + widget.sunrise.minute;
+    int setMin = widget.sunset.hour * 60 + widget.sunset.minute;
 
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
+    double totalDuration;
+    double elapsed;
 
-    _position = Tween<double>(begin: 0, end: 0).animate(_controller);
-  }
-
-  Duration _timeDiff(TimeOfDay start, TimeOfDay end) {
-    final startMinutes = start.hour * 60 + start.minute;
-    final endMinutes = end.hour * 60 + end.minute;
-    return Duration(minutes: endMinutes - startMinutes);
+    if (riseMin < setMin) {
+      totalDuration = (setMin - riseMin).toDouble();
+      if (nowMin < riseMin) {
+        elapsed = 0;
+      } else if (nowMin > setMin) elapsed = totalDuration;
+      else elapsed = (nowMin - riseMin).toDouble();
+    } else {
+      totalDuration = ((24 * 60) - riseMin + setMin).toDouble();
+      if (nowMin >= riseMin) {
+        elapsed = (nowMin - riseMin).toDouble();
+      } else if (nowMin <= setMin) elapsed = ((24 * 60) - riseMin + nowMin).toDouble();
+      else elapsed = 0;
+    }
+    percent = (elapsed / totalDuration).clamp(0.0, 1.0);
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    // It's good practice to dispose the picture
+    _moonPicture?.dispose();
     super.dispose();
   }
 
@@ -90,18 +133,23 @@ class _SunriseArcWidgetState extends State<SunriseArcWidget> with SingleTickerPr
             }
           },
           child: CustomPaint(
-            size: Size(140, 70), // Width and Height of the widget
-            painter: ArcPainter(controller: themeController, progress: _position.value),
+            size: const Size(140, 70),
+            painter: ArcPainter(
+              controller: themeController,
+              progress: _position.value,
+              moonPicture: _moonPicture,
+              svgSize: _svgSize,
+            ),
           ),
         ),
         const SizedBox(height: 6),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(isBangla? englishNumberToBangla(widget.sunrise.format(context)) : widget.sunrise.format(context), style:  TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text(widget.languageCode == 'bn'? englishNumberToBangla(widget.sunrise.format(context)) : widget.sunrise.format(context), style:  TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white)),
-            Text(isBangla? englishNumberToBangla(widget.sunset.format(context)) : widget.sunset.format(context), style:  TextStyle(color: themeController.themeMode.value == ThemeMode.light
+            Text(widget.languageCode == 'bn'? englishNumberToBangla(widget.sunset.format(context)) : widget.sunset.format(context), style:  TextStyle(color: themeController.themeMode.value == ThemeMode.light
                 ? Colors.black
                 : Colors.white)),
           ],
@@ -114,20 +162,23 @@ class _SunriseArcWidgetState extends State<SunriseArcWidget> with SingleTickerPr
 class ArcPainter extends CustomPainter {
   final double progress;
   final ThemeController controller;
+  final Picture? moonPicture;
+  final Size svgSize;
 
   ArcPainter({
     required this.progress,
-    required this.controller
+    required this.controller,
+    this.moonPicture,
+    required this.svgSize,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final radius = size.width / 2.2;
     final center = Offset(size.width / 2, size.height);
-
     final Rect arcRect = Rect.fromCircle(center: center, radius: radius);
 
-    // 1. Create Path
+    // 1. Draw Background Path Gradient
     final Path path = Path()
       ..moveTo(0, size.height)
       ..arcTo(arcRect, math.pi, math.pi, false)
@@ -159,39 +210,55 @@ class ArcPainter extends CustomPainter {
     canvas.drawArc(arcRect, math.pi, math.pi, false, arcPaint);
 
     // 4. Draw the Bottom Straight Line
-    final Paint linePaint = Paint()
+    final Paint linePaint =
+    Paint()
       ..color = controller.themeMode.value == ThemeMode.light
           ? Colors.black.withValues(alpha: 0.7)
           : Colors.white
       ..strokeWidth = 2;
-    canvas.drawLine(Offset(-5, size.height), Offset(size.width+5, size.height), linePaint);
+    canvas.drawLine(
+      Offset(-5, size.height),
+      Offset(size.width + 5, size.height),
+      linePaint,
+    );
 
     // 5. Draw the Dots
-    final Paint dotPaint = Paint()
+    final Paint dotPaint =
+    Paint()
       ..color = controller.themeMode.value == ThemeMode.light
           ? Colors.black.withValues(alpha: 0.7)
           : Colors.white
       ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(6, size.height), 4, dotPaint);
     canvas.drawCircle(Offset(size.width-6, size.height), 4, dotPaint);
-
-    // 6. Draw the Sun Icon
-    final angle = math.pi + (math.pi * progress);
-    final Offset sunOffset = Offset(
+    // 4. Calculate Position for Moon
+    final angle = math.pi + (math.pi * progress.clamp(0.0, 1.0));
+    final Offset moonCenter = Offset(
       center.dx + radius * math.cos(angle),
       center.dy + radius * math.sin(angle),
     );
 
-    final textPainter = TextPainter(
-      text: const TextSpan(
-        text: '☀️', // or use any Flutter Icon
-        style: TextStyle(fontSize: 18),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    textPainter.paint(canvas, sunOffset - const Offset(10, 10)); // Centered nicely
+    // 5. Draw the SVG Moon icon
+    if (moonPicture != null) {
+      const double targetDim = 22.0; // Size of the moon icon
+
+      canvas.save();
+      canvas.translate(moonCenter.dx, moonCenter.dy);
+
+      // Scale to target size
+      final double scale = targetDim / math.max(svgSize.width, svgSize.height);
+      canvas.scale(scale);
+
+      // Center the picture relative to the moonCenter
+      canvas.translate(-svgSize.width / 2, -svgSize.height / 2);
+
+      canvas.drawPicture(moonPicture!);
+      canvas.restore();
+    }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant ArcPainter oldDelegate) {
+    return oldDelegate.progress != progress || oldDelegate.moonPicture != moonPicture;
+  }
 }

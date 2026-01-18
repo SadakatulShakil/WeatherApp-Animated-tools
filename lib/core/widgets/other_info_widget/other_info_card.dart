@@ -1,5 +1,5 @@
 import 'package:bmd_weather_app/controllers/home_controller.dart';
-import 'package:bmd_weather_app/core/widgets/other_info_widget/precipitation_card.dart';
+import 'package:bmd_weather_app/core/widgets/other_info_widget/rainfall_card.dart';
 import 'package:bmd_weather_app/core/widgets/other_info_widget/uv_index_card.dart';
 import 'package:bmd_weather_app/core/widgets/other_info_widget/visibility_card.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class OtherInfoCards extends StatelessWidget {
       mainAxisSpacing: 12,
       childAspectRatio: 0.70, // <<< Important! Adjust card height!
       children: [
-        PrecipitationCard(
+        RainfallCard(
           title: 'rainfall_title'.tr,
           value: current?.rf?.valAvg ?? '0',
           start: current?.start ?? '',

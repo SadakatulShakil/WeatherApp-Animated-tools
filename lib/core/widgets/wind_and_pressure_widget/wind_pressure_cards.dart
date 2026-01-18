@@ -48,7 +48,7 @@ class WindAndPressureCards extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            Get.to(() => WindDetailsPage());
+            Get.to(() => WindDetailsPage(), transition: Transition.rightToLeft);
           },
           child: Container(
             padding: const EdgeInsets.all(12),
@@ -107,7 +107,7 @@ class WindAndPressureCards extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => PressureDetailsPage());
+            Get.to(() => PressureDetailsPage(), transition: Transition.rightToLeft);
           },
           child: Container(
             padding: const EdgeInsets.all(12),

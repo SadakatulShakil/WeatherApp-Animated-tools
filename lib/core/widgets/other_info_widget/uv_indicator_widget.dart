@@ -1,8 +1,6 @@
 import 'dart:math' as math;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../controllers/theme_controller.dart';

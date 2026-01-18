@@ -1,11 +1,12 @@
+import 'package:bmd_weather_app/core/screens/rainy_day_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../../controllers/theme_controller.dart';
-import '../../screens/humidity_details_page.dart';
 
-class HumidityCard extends StatelessWidget {
+class RainfallCard extends StatelessWidget {
   final String title;
   final String value;
   final String start;
@@ -13,7 +14,7 @@ class HumidityCard extends StatelessWidget {
   final String unit;
   final IconData icon;
 
-  HumidityCard({
+  RainfallCard({
     super.key,
     required this.title,
     required this.value,
@@ -25,7 +26,7 @@ class HumidityCard extends StatelessWidget {
 
   bool get isBangla => Get.locale?.languageCode == 'bn';
 
-  // --- Helper: Normalize digits to English for parsing logic ---
+  // --- Helper: Normalize to English for DateTime/Double parsing ---
   String _toEnglish(String input) {
     const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
     const en = ['0','1','2','3','4','5','6','7','8','9'];
@@ -35,7 +36,7 @@ class HumidityCard extends StatelessWidget {
     return input;
   }
 
-  // --- Helper: Convert English to Bangla for UI display ---
+  // --- Helper: Convert English to Bangla for Display ---
   String _toBangla(String input) {
     if (!isBangla) return input;
     const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
@@ -48,11 +49,11 @@ class HumidityCard extends StatelessWidget {
 
   String formattedTime(String dateStr) {
     try {
-      // Normalize input digits and replace space with T for valid ISO parsing
+      // Standardize input (replace space with T for ISO format)
       String cleanDate = _toEnglish(dateStr).replaceAll(' ', 'T');
       DateTime dateTime = DateTime.parse(cleanDate);
 
-      // Format 12h time
+      // Use intl's DateFormat for reliable 12h formatting
       String time = DateFormat('hh:mm').format(dateTime);
       String period = dateTime.hour >= 12
           ? (isBangla ? 'PM' : 'PM')
@@ -71,12 +72,12 @@ class HumidityCard extends StatelessWidget {
         ? Colors.black
         : Colors.white;
 
-    // Extract the integer part of the humidity for the large display
+    // Process the "Value" (extracting integer part for large text)
     String displayValue = _toEnglish(value).split('.')[0];
 
     return GestureDetector(
       onTap: () {
-        Get.to(() => HumidityDetailsPage(), transition: Transition.rightToLeft);
+        Get.to(() => RainyDayDetailsPage(), transition: Transition.rightToLeft);
       },
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -86,17 +87,13 @@ class HumidityCard extends StatelessWidget {
               : const Color(0xFF3986DD),
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 8,
-              offset: Offset(0, 4),
-            ),
+            BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 4)),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Row
+            // Top Row
             Row(
               children: [
                 Icon(icon, color: contentColor, size: 22),
@@ -112,7 +109,7 @@ class HumidityCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // Main Humidity Value Section
+            // Value Section
             Expanded(
               child: Center(
                 child: Row(
@@ -122,7 +119,7 @@ class HumidityCard extends StatelessWidget {
                   children: [
                     Text(
                       _toBangla(displayValue),
-                      style: TextStyle(
+                      style: GoogleFonts.anekBangla(
                         color: contentColor.withOpacity(themeController.themeMode.value == ThemeMode.light ? 0.7 : 1.0),
                         fontWeight: FontWeight.bold,
                         fontSize: 65,
@@ -131,26 +128,30 @@ class HumidityCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       unit,
-                      style: TextStyle(color: contentColor.withOpacity(0.7), fontSize: 16),
+                      style: TextStyle(color: contentColor, fontSize: 14),
                     ),
                   ],
                 ),
               ),
             ),
 
+            Text(
+              'rainfall_subtitle'.tr,
+              style: TextStyle(
+                color: contentColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
 
-
-            // Descriptive Subtitle
+            // Description text
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 4.0),
               child: Text(
                 isBangla
-                    ? '${formattedTime(start)} - ${formattedTime(end)} এর মধ্যে আপেক্ষিক আর্দ্রতার পরিমাণ ${_toBangla(value)} $unit'
-                    : 'Relative humidity between ${formattedTime(start)} to ${formattedTime(end)} is $value $unit',
-                style: TextStyle(
-                  color: contentColor.withOpacity(0.8),
-                  fontSize: 11,
-                ),
+                    ? '${formattedTime(start)} - ${formattedTime(end)} এর মধ্যে বৃষ্টিপাতের পরিমাণ ${_toBangla(value)} $unit'
+                    : 'Rainfall from ${formattedTime(start)} to ${formattedTime(end)} is $value $unit',
+                style: TextStyle(color: contentColor.withOpacity(0.8), fontSize: 11),
               ),
             ),
           ],
